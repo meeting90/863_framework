@@ -1,0 +1,271 @@
+﻿@CHARSET "UTF-8";
+
+@CHARSET "UTF-8";
+ul,li{margin:0;padding:0}
+body{
+	margin:0px;
+	font-size:12px;
+	line-height: normal;
+	background-color: #FFF;
+	font-family: "微软雅黑";
+}
+#wapper{ <!--added by Zeng-->
+	margin: 0 auto;
+	min-height:400px;
+}
+a:link{
+text-decoration:none;
+color:#000;
+}
+a:visited{
+text-decoration:none;
+color:#000;
+}
+a:hover{
+text-decoration:none;
+color:#420AAB;
+}
+.userinfo {
+	line-height: 20px;
+	border: 3px #fbf4eb solid;
+	font-size: 14px;
+	background:#ccc;
+}
+
+.userinfo td,.userinfo th{
+	background:#FFF;
+}
+
+.userinfo td input[type=text],.userinfo td input[type=password], .userinfo td textarea{
+	background:#FFF;
+	border:1px solid #FFF;
+	width:99%;
+}
+
+.userinfo td input[type=text]:hover,.userinfo td input[type=password]:hover, .userinfo td textarea:hover{
+	background:#fffaf9;
+}
+
+.hiddenmenu{
+		  display:none;
+		}
+a:active{
+text-decoration:none;
+color:#420AAB;
+}
+.head {
+	height: 134px;
+	width: 964px;
+	margin-top: 5px;
+	margin-right: auto;
+	margin-left: auto;
+	padding:0 18px;
+	background:url("../images/primaryNav.png") no-repeat scroll 0 -250px #FFFFFF;
+}
+.head .logos {
+	height: 65px;
+	padding-top:30px;
+	width: 600px;
+	text-align:left;
+	padding-left:20px;
+	float:left;
+}
+.head .loginfobar{
+	float:right; 
+	width:200px; 
+	height:20px; 
+	text-align:right; 
+	margin-top:5px; 
+	margin-right:10px; 
+	font-size:12px; 
+	color:#666; 
+	line:height:20px; 
+}
+
+.head .loginfobar a, .head .loginfobar a:link, .head .loginfobar a:hover{
+	text-decoration:underline; 
+	color:#666;
+}
+
+.head .menu {
+	float: left;
+	width: 964px;
+	margin-top: 5px;position:relative;
+}
+.head .menu .nav {
+	float: left;
+	height: 35px;
+	width: 964px;
+}
+.A {
+	text-align: right;
+	font-weight: bold;
+}
+
+.B{
+	padding-left: 4px;
+	vertical-align: top;
+
+}
+
+ .head .menu .nav {} /* FireFox */
+ *html .head .menu .nav {} /* ie6 fixed */
+ *+html .head .menu .nav {} /* ie7 fixed, 注意顺序 */
+
+
+.head .menu .nav ul {
+	margin-left: 13px;
+}
+.head .menu .nav li {
+	line-height: 29px;
+	float: left;
+	height: 29px;
+	width: 83px;
+	margin-right: 2px;
+	list-style-type: none;
+}
+.head .menu .nav li a{
+	display:block;
+	width:83px;
+	height:29px;
+	overflow:hidden;
+	text-align:center;
+	text-decoration:none;
+	line-height:29px;
+}
+.nav li a.an {
+	background-image: ../images/navbg.gif);
+	background-repeat: no-repeat;
+	background-position: 0 -29px;;
+}
+.nav li a:hover {
+    background-position: 0 -58px;
+	text-decoration:none; 
+	color:#FF9900;
+	font-weight: bold;
+	overflow:visible;
+}
+.nav li a.dang {
+	background-position: 0 0;
+	color:#FFFFFF;
+	font-weight: bold;
+}
+.head .menu .colorbar {
+	background-color: #900;
+	float: left;
+	height: 30px;
+	width: 960px;
+}
+
+.head .menu .colorbar {margin-top:0px} /* FireFox */
+*html .head .menu .colorbar {margin-top:0px} /* ie6 fixed */
+*+html .head .menu .colorbar {margin-top:0px} /* ie7 fixed, 注意顺序 */
+
+.flink ul {
+	position:absolute;
+	width:83px;
+	height:115px;
+	z-index:1;
+	top: 29px;
+	display:block;
+	margin-left:0;
+}
+.flink li{display:none;}
+
+.flink:hover li {
+	display:block;
+	background-color:#ccc;
+	font-weight:normal;
+}
+
+.flink a:hover li {
+	display:block;
+	background-color:#ccc;
+	border:0;
+	font-weight:normal;
+}
+.flink table {
+border-collapse:collapse;
+padding:0;
+margin:-1px;
+}
+td a.an
+{
+	position:relative;
+	top:-29px;
+	*top:0
+}
+
+.head .menu .colorbar div {
+	/*font-family: "宋体";*/
+	margin-top: 8px;
+	margin-right:20px;
+	text-align: right;
+}
+.main {
+	/*font-family: "宋体";*/
+	width: 924px;
+	padding:0 38px;
+	background-color: #FFF;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	padding-bottom: 50px;
+	background:url('../images/sideGradMid.png');
+	min-height:400px;
+}
+
+.path{
+	float: left;
+	margin-left:40px;
+	margin-top:8px;
+	color:	#FFFFFF
+	}
+
+.bottom{
+	width:964px;
+	height:100px;	
+	margin: 0 auto;
+	padding: 8px 18px;
+	background: url('../images/primaryNav.png') no-repeat scroll 0 -420px transparent;
+}
+
+div.bottom div{
+	color: #333;
+	/*font-family: "arial";*/
+	font-size: 12px;
+	border-top:1px dotted #ccc;
+	text-align:center;
+	color:#203c53;
+	padding-top:10px;
+	text-shadow:#eee 1px 1px 1px;
+}
+
+.A1 {
+	text-align: right;
+	width: 200;
+}
+.B1 {
+/*	width: 500px;*/
+	text-align: left;
+}
+.main center a {
+	color: #3300CC;
+}
+.main .title{
+	text-align:center;
+	font-size:22px;
+	padding:25px 0;
+	line-height:22px;
+}
+.main .addpaper{
+	float:right;
+	height:31px;
+	line-height:31px;
+}
+.main .addpaper a{
+	color:#F47836;
+}
+.main .addpaper a:hover{
+	text-decoration:underline;
+}

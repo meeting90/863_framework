@@ -1,0 +1,10 @@
+1.workflow.user?query=getAllUser&size=5&offset=0
+[[1,"tzh"],[21,"Ramsey"],[22,"Isa"],[23,"Balmforth"],[24,"Annie"]]
+
+2.workflow.user?query=getUserName&uid=1
+tzh
+3.workflow.user?query=searchUser&name=abb
+[[313,"Abbs"],[361,"Abbas"]]
+
+4.workflow.user?query=getUserDetail&uid=316
+{"username":"Adamson","friends":["Goode","Dolores","Avis","Eleanore","Kelsey","Achilles","Fabian","Adie"],"email":"Adamson@ics.nju.edu.cn","fans":[],"userId":316,"focusedWebService":[{"wsPath":"/wsdls/freeibanvalidate.wsdl","wsName":"freeibanvalidate.wsdl","wsId":316}]}

@@ -1,0 +1,552 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="js/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.layout.js"></script>
+<script type="text/javascript" src="js/jquery.form.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+<!--  <script type="text/javascript" src="js/load_data.js"></script>-->
+<script type="text/javascript" src="js/html2canvas.js"></script>
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+<script type="text/javascript" src="flot/jquery.flot.js"></script>
+<script type="text/javascript" src="js/d3.v2.min.js"></script>
+
+<script type="text/javascript" src="js/viva/vivagraph.js"></script>
+<script type="text/javascript" src="js/viva/viva.js"></script>
+<script type="text/javascript" src="js/fisheye.js"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui/jquery-ui-1.8.17.custom.css">
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui-layout/layout-default-latest.css">
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui-layout/complex.css">
+
+
+<style type="text/css">
+.normal_message {
+	margin: 0px;
+	padding: 0px;
+}
+
+.successful_message {
+	margin: 0px;
+	padding: 0px;
+	color: green;
+}
+
+.failed_message {
+	margin: 0px;
+	padding: 0px;
+	color: red;
+}
+
+.ui-layout-north .content {
+	background-color: rgb(255, 255, 255);
+}
+
+#login {
+	position: absolute;
+	right: 0px;
+	top: 10px;
+	width: 200px;
+	height: 17px;
+	display: inline-block;
+}
+#list4 {
+	width: 280px;
+	font-family: Georgia, Times, serif;
+	font-size: 15px;
+}
+
+#list4 ul {
+	list-style: none;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	margin-right: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #CCCCCC;
+}
+
+#list4 ul li {
+	margin: 0px;
+	padding: 0px;
+}
+
+#list4 ul li a {
+	display: block;
+	text-decoration: none;
+	color: #000000;
+	background-color: #FFFFFF;
+	line-height: 30px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCCCCC;
+	padding-left: 0px;
+	cursor: pointer;
+}
+
+#list4 ul li a:hover {
+	color: #FFFFFF;
+	background-image: url(images/hover.png);
+	background-repeat: repeat-x;
+}
+
+#list4 ul li a strong {
+	margin-right: 0px;
+}
+
+.background {
+	fill: none;
+	pointer-events: all;
+}
+
+#placeholder .node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+#placeholder .link {
+	stroke: #999;
+	stroke-opacity: .6;
+	stroke-width: 1.5px;
+}
+
+#placeholder>svg {
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+
+<script type="text/javascript" charset="utf-8">
+	var SERVER_URL = null;
+	//var SERVER_URL = "http://114.212.190.242/workflowevaluation";
+	//var SERVER_URL2 = "http://114.212.85.95/SubGraph";
+	var gUserName = null;
+	var gUID = null;
+	var gGraphList = [];
+	var loginUrl = "../index.jsp";
+	var gIsFirstLoad = true;
+	var layoutSettings_Outer = {
+		name : "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
+		// options.defaults apply to ALL PANES - but overridden by pane-specific settings
+		,
+		defaults : {
+			size : "auto",
+			minSize : 50,
+			paneClass : "pane" // default = 'ui-layout-pane'
+			,
+			resizerClass : "resizer" // default = 'ui-layout-resizer'
+			,
+			togglerClass : "toggler" // default = 'ui-layout-toggler'
+			,
+			buttonClass : "button" // default = 'ui-layout-button'
+			,
+			contentSelector : ".content" // inner div to auto-size so only it scrolls, not the entire pane!
+			,
+			contentIgnoreSelector : "span" // 'paneSelector' for content to 'ignore' when measuring room for content
+			,
+			togglerLength_open : 35 // WIDTH of toggler on north/south edges - HEIGHT on east/west edges
+			,
+			togglerLength_closed : 35 // "100%" OR -1 = full height
+			,
+			hideTogglerOnSlide : true // hide the toggler when pane is 'slid open'
+			,
+			togglerTip_open : "关闭该面板",
+			togglerTip_closed : "打开改面板",
+			resizerTip : "Resize This Pane"
+			//  effect defaults - overridden on some panes
+			,
+			fxName : "slide" // none, slide, drop, scale
+			,
+			fxSpeed_open : 750,
+			fxSpeed_close : 1500,
+			fxSettings_open : {
+				easing : "easeInQuint"
+			},
+			fxSettings_close : {
+				easing : "easeOutQuint"
+			}
+		},
+		north : {
+			size : 100,
+			spacing_open : 1 // cosmetic spacing
+			,
+			togglerLength_open : 0 // HIDE the toggler button
+			,
+			togglerLength_closed : -1 // "100%" OR -1 = full width of pane
+			,
+			resizable : false,
+			slidable : false
+			//  override default effect
+			,
+			fxName : "slide" // none, slide, drop, scale
+		},
+		south : {
+			size : 200,
+			spacing_closed : 21 // HIDE resizer & toggler when 'closed'
+			,
+			slidable : false // REFERENCE - cannot slide if spacing_closed = 0
+			,
+			togglerLength_closed : 21 // make toggler 'square' - 21x21
+			,
+			togglerAlign_closed : "center" // align to top of resizer
+			,
+			togglerLength_open : 0 // NONE - using custom togglers INSIDE west-pane
+			,
+			togglerTip_open : "关闭面板",
+			togglerAlign_open : "center",
+			togglerLength_close : 21,
+			togglerTip_closed : "打开面板",
+			resizerTip_open : "调整面板大小",
+			slideTrigger_open : "click" // default
+			,
+			initClosed : true
+		},
+		west : {
+			size : 300,
+			spacing_closed : 21 // wider space when closed
+			,
+			togglerLength_closed : 21 // make toggler 'square' - 21x21
+			,
+			togglerAlign_closed : "top" // align to top of resizer
+			,
+			togglerLength_open : 0 // NONE - using custom togglers INSIDE west-pane
+			,
+			togglerTip_open : "Close West Pane",
+			togglerTip_closed : "关闭面板",
+			resizerTip_open : "调整面板大小",
+			slideTrigger_open : "点击" // default
+			,
+			initClosed : true
+			//  add 'bounce' option to default 'slide' effect
+			,
+			fxName : "drop",
+			fxSpeed : "slow",
+			fxSettings : {
+				easing : "easeOutBounce"
+			}
+		}
+
+	};
+
+	function checkLogin() {
+		gUserName = $.cookie('name');
+		gUID = $.cookie('uid');
+		SERVER_URL = $.cookie('php_host');
+		if (gUserName == null || gUID == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function refreshLoginStatus() {
+
+		if (!checkLogin()) {
+			console.info("nologin");
+			window.location = loginUrl;
+		} else
+			console.info("ok,login");
+	}
+
+	function logout() {
+		gUserName = null;
+		gUID = null;
+		$.cookie('name', null);
+		$.cookie('uid', null);
+		window.location.replace(loginUrl);
+	}
+	function getParamters() {
+		var prmstr = window.location.search.substr(1);
+		var prmarr = prmstr.split("&");
+		var params = {};
+		for ( var i = 0; i < prmarr.length; i++) {
+			var tmparr = prmarr[i].split("=");
+			params[tmparr[0]] = tmparr[1];
+		}
+		return params;
+	}
+
+	function loadLeftData(param) {
+
+		var url = "../" + param + ".left";
+		$.ajax({
+			url : url,
+			success : function(data) {
+
+				$("#leftholder").html(decodeURI(data));
+
+			}
+		});
+	}
+	function loadRightData(param) {
+
+		var url = "../" + param + ".right";
+		$.ajax({
+			url : url,
+			success : function(data) {
+
+				$("#rightholder").html(decodeURI(data));
+
+			}
+		});
+	}
+	function loadCenterData(document, param) {
+		var url = "../" + param + ".center";
+		$.ajax({
+			url : url,
+			success : function(data) {
+				var jsonstr = decodeURI(data);
+				var jsonobj = JSON.parse(jsonstr);
+				if (document == 'SETI:SOURCE'){
+					drawFisheyeGraph(jsonobj);
+					console.log(jsonstr);
+				}
+					
+				else
+					drawKSgraph(jsonobj);
+				//$("#placeholder").html(decodeURI(data));
+
+			}
+		});
+	}
+	function loadBottomData(param) {
+		var url = "../" + param + ".bottom";
+		$.ajax({
+			url : url,
+			success : function(data) {
+				console.info(decodeURI(data));
+				$("#consoleholder").html(decodeURI(data));
+
+			}
+		});
+	}
+	function showData() {
+		var params = getParamters();
+		var parm = params["param"];
+		var document = params["document"];
+		loadLeftData(parm);
+		loadRightData(parm);
+		loadCenterData(document, parm);
+		loadBottomData(parm);
+		outerLayout.open('east');
+		outerLayout.open("west");
+		outerLayout.open("north");
+
+	}
+
+	function retry() {
+		window.location = './seti.html';
+	}
+
+	function drawFisheyeGraph(data) {
+
+		var width = $("#placeholder").width();
+		var height = $("#placeholder").height();
+
+		var color = d3.scale.category20();
+
+		var fisheye = d3.fisheye.circular().radius(120);
+
+		var force = d3.layout.force().charge(-240).linkDistance(40).size(
+				[ width, height ]);
+
+		$('svg').remove();
+		var svg = d3.select("#placeholder").append("svg").attr("width", width)
+				.attr("height", height);
+
+		svg.append("rect").attr("class", "background").attr("width", width)
+				.attr("height", height);
+
+		var n = data.nodes.length;
+
+		force.nodes(data.nodes).links(data.edges);
+
+		data.nodes.forEach(function(d, i) {
+			d.x = d.y = width / n * i;
+		});
+
+		force.start();
+		for ( var i = n; i > 0; --i)
+			force.tick();
+		force.stop();
+
+		var ox = 0, oy = 0;
+		data.nodes.forEach(function(d) {
+			ox += d.x, oy += d.y;
+		});
+		ox = ox / n - width / 2, oy = oy / n - height / 2;
+		data.nodes.forEach(function(d) {
+			d.x -= ox, d.y -= oy;
+		});
+
+		var link = svg.selectAll(".link").data(data.edges).enter().append(
+				"line").attr("class", "link").attr("x1", function(d) {
+			return d.source.x;
+		}).attr("y1", function(d) {
+			return d.source.y;
+		}).attr("x2", function(d) {
+			return d.target.x;
+		}).attr("y2", function(d) {
+			return d.target.y;
+		}).style("stroke-width", function(d) {
+			return Math.sqrt(d.weight);
+		});
+
+		var node = svg.selectAll(".node").data(data.nodes).enter().append("g")
+				.call(force.drag);
+
+		node.append("circle").attr("class", "node").attr("cx", function(d) {
+			return d.x;
+		}).attr("cy", function(d) {
+			return d.y;
+		}).attr("r", 4.5).style("fill", function(d) {
+			return color(d.weight);
+		});
+
+		var label = svg.append("text").attr("font-size", 20).attr("fill",
+				'blue');
+
+		svg.on("click", function() {
+			var clickX = d3.mouse(this)[0];
+			var clickY = d3.mouse(this)[1];
+
+			outerLayout.open('south');
+
+			node.each(function(d) {
+				if ((Math.abs(focusX - d.x) < 3)
+						&& (Math.abs(focusY - d.y) < 3)) {
+
+					appendConsoleMessage("*********************");
+					appendConsoleMessage("Name:" + d.name);
+					appendConsoleMessage("ID:" + d.id);
+
+				}
+			});
+		});
+
+		svg.on("mousemove", function() {
+
+			fisheye.focus(d3.mouse(this));
+
+			focusX = d3.mouse(this)[0];
+			focusY = d3.mouse(this)[1];
+			var flag = false;
+
+			node.each(function(d) {
+				d.fisheye = fisheye(d);
+				$(this).find("circle").attr("cx", d.fisheye.x).attr("cy",
+						d.fisheye.y).attr("r", d.fisheye.z * 4.5);
+
+				if ((Math.abs(focusX - d.x) < 3)
+						&& (Math.abs(focusY - d.y) < 3)) {
+					label.attr("x", d.fisheye.x).attr("y", d.fisheye.y).text(
+							d.name);
+
+					flag = true;
+				}
+			});
+
+			if (!flag)
+				label.text("");
+
+			link.attr("x1", function(d) {
+				return d.source.fisheye.x;
+			}).attr("y1", function(d) {
+				return d.source.fisheye.y;
+			}).attr("x2", function(d) {
+				return d.target.fisheye.x;
+			}).attr("y2", function(d) {
+				return d.target.fisheye.y;
+			});
+		});
+
+	}
+
+	//*****************************Start Page Load*******************************
+	var outerLayout, innerLayout;
+
+	$(document).ready(function() {
+		outerLayout = $("body").layout(layoutSettings_Outer);
+		var westSelector = "body > .ui-layout-west"; // outer-west pane  	
+		$("<span></span>").addClass("pin-button").prependTo(westSelector);
+		outerLayout.addPinBtn(westSelector + " .pin-button", "west");
+		$("<span></span>").attr("id", "west-closer").prependTo(westSelector);
+		outerLayout.addCloseBtn("#west-closer", "west");
+		$("a").each(function() {
+			var path = document.location.href;
+			if (path.substr(path.length - 1) == "#")
+				path = path.substr(0, path.length - 1);
+			if (this.href.substr(this.href.length - 1) == "#")
+				this.href = path + "#";
+		});
+		refreshLoginStatus();
+		showData();
+		$('#tbarAddService').click(function() {
+			retry()
+		});
+
+	});
+</script>
+
+
+</head>
+
+<body>
+
+	<div class="ui-layout-west">
+
+		<div class="header">社会网络数据集列表</div>
+
+		<div class="content" id="leftholder"></div>
+
+
+	</div>
+
+	<div class="ui-layout-north">
+		<div class="content">
+			<table width="100%" cellspacing="0" border="0">
+				<tbody>
+					<tr>
+						<td width="28%"><a href="../main.jsp"><img border="0"
+								align="left" src="./images/logo-left.png"></a></td>
+						<td><font size="6px" face="arial,helvetica,sanserif">
+								基于社会网络的Web服务 </font> <br> <font face="arial,helvetica,sanserif">
+								可信信息收集工具 </font></td>
+						<td><a href="http://www.nju.edu.cn"><img border="0"
+								align="right" alt="NJU Logo" src="./images/nju.png"></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<ul class="toolbar">
+			<li id="tbarOpenSouth"><span></span>打开控制台</li>
+			<li id="tbarCloseSouth"><span></span>关闭控制台</li>
+			<li id="tbarAddService"><span></span>重新执行</li>
+
+		</ul>
+	</div>
+
+
+	<div class="ui-layout-south">
+		<div class="header">控制台</div>
+		<div class="content" id="consoleholder"></div>
+	</div>
+
+	<div class="ui-layout-center">
+		<div class="header">观测数据</div>
+		<div class="content" id="placeholder"></div>
+	</div>
+
+
+
+
+
+
+</body>
+</html>

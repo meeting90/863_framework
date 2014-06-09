@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:FileUploadWSIService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="urn:FileUploadWSIService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="urn:FileUploadWSIService" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+			<xsd:element name="GetVersion">
+	 			<xsd:complexType>
+					<xsd:sequence/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="GetVersionResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Version" nillable="true" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="UploadFile">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="tid" type="xsd:string"/>
+						<xsd:element name="benid" type="xsd:string"/>
+						<xsd:element name="pin" type="xsd:string"/>
+						<xsd:element name="art" type="xsd:string"/>
+						<xsd:element name="uebermittlung" type="xsd:string"/>
+						<xsd:element name="data" type="xsd:string"/>						
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="UploadFileResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="Result" type="xsd:string"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="UploadFileResponse">
+    <wsdl:part element="tns:UploadFileResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="UploadFileRequest">
+    <wsdl:part element="tns:UploadFile" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetVersionResponse">
+    <wsdl:part element="tns:GetVersionResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetVersionRequest">
+    <wsdl:part element="tns:GetVersion" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="FileUploadWSI">
+    <wsdl:operation name="GetVersion">
+      <wsdl:input message="tns:GetVersionRequest" name="GetVersionRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:GetVersionResponse" name="GetVersionResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadFile">
+      <wsdl:input message="tns:UploadFileRequest" name="UploadFileRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:UploadFileResponse" name="UploadFileResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="FileUploadWSIServiceSoapBinding" type="tns:FileUploadWSI">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetVersion">
+      <soap:operation/>
+      <wsdl:input name="GetVersionRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetVersionResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadFile">
+      <soap:operation/>
+      <wsdl:input name="UploadFileRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="UploadFileResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FileUploadWSIService">
+    <wsdl:port binding="tns:FileUploadWSIServiceSoapBinding" name="FileUploadWSI">
+      <soap:address location="https://finanzonline.bmf.gv.at:443/fon/services/FileUploadWSI"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+    <script type="text/javascript" src="vivagraph.js"></script>
+    <script type="text/javascript" src="viva.js"></script>
+    <script type="text/javascript">
+    function main(){
+    	var nodeData=[];
+    	for(var i=0;i<7;i++){
+    		var node={'id': i, 'name': "name"+i, 'tag':""};
+    		nodeData.push(node);
+    	}
+    	var edgeData=[];
+    	for(var i=0;i<6;i++){
+    		var edge={'source':i,'target': i+1};
+    		edgeData.push(edge);
+    	}
+    	var data=new Object();
+    	data.nodes=nodeData;
+    	data.edges=edgeData;
+    	drawKSgraph(data);
+    }
+  
+    </script>
+      <style type="text/css" media="screen">
+        html, body, svg { width: 100%; height: 100%;}
+     
+    </style>
+   
+</head>
+<body onload=main()>
+<div id="placeholder">
+</div>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://parse.nju" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://parse.nju" xmlns:intf="http://parse.nju" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://parse.nju" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="doFilt">
+    <complexType>
+     <sequence>
+      <element name="bpel" type="xsd:string"/>
+      <element name="wsdls" type="xsd:string"/>
+      <element name="xml" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="doFiltResponse">
+    <complexType>
+     <sequence>
+      <element name="doFiltReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="doFiltRequest">
+
+      <wsdl:part element="impl:doFilt" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="doFiltResponse">
+
+      <wsdl:part element="impl:doFiltResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Filter">
+
+      <wsdl:operation name="doFilt">
+
+         <wsdl:input message="impl:doFiltRequest" name="doFiltRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:doFiltResponse" name="doFiltResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="FilterSoapBinding" type="impl:Filter">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="doFilt">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="doFiltRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="doFiltResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="FilterService">
+
+      <wsdl:port binding="impl:FilterSoapBinding" name="Filter">
+
+         <wsdlsoap:address location="http://localhost:8080/Filt/services/Filter"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

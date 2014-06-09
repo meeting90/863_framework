@@ -1,0 +1,1296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax23="http://fields.vo.business.cardif.com.br/xsd" xmlns:ax21="http://retorno.vo.business.cardif.com.br/xsd" xmlns:ns="http://service.cardif.com.br" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://service.cardif.com.br">
+    <wsdl:documentation>
+		Please Type your service description here
+	</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema xmlns:ax22="http://retorno.vo.business.cardif.com.br/xsd" xmlns:ax24="http://fields.vo.business.cardif.com.br/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://service.cardif.com.br">
+            <xs:import namespace="http://retorno.vo.business.cardif.com.br/xsd"/>
+            <xs:import namespace="http://fields.vo.business.cardif.com.br/xsd"/>
+            <xs:element name="AutofacilServiceException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="AutofacilServiceException" nillable="true" type="ns:Exception"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="Exception">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="solicitarCotacaoMolicar">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="codigoMolicar" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="solicitarCotacaoMolicarResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:CotacaoMolicarVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="solicitaCotacao1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="estadoCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoFipe" type="xs:int"/>
+                        <xs:element minOccurs="0" name="anoModelo" type="xs:int"/>
+                        <xs:element minOccurs="0" name="combustivel" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="zeroKM" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="solicitaCotacao1Response">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ValorCotacaoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="solicitaCotacao">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cpfSegurado" type="xs:long"/>
+                        <xs:element minOccurs="0" name="telefoneSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dataNascimento" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="estadoCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoFipe" type="xs:int"/>
+                        <xs:element minOccurs="0" name="anoModelo" type="xs:int"/>
+                        <xs:element minOccurs="0" name="combustivel" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="zeroKM" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cnpjSegurado" type="xs:long"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="solicitaCotacaoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ValorCotacaoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registraPagamento">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="usuario" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroContrato" nillable="true" type="xs:integer"/>
+                        <xs:element minOccurs="0" name="numeroParcela" type="xs:int"/>
+                        <xs:element minOccurs="0" name="dataPagamento" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="valorPago" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registraPagamentoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:RetornoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="isAlive">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="isAliveResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gravarCotacaoMolicar">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="usuario" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="emailSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cpfSegurado" type="xs:long"/>
+                        <xs:element minOccurs="0" name="cnpjSegurado" type="xs:long"/>
+                        <xs:element minOccurs="0" name="sexoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dataNascimentoSegurado" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="enderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroEnderecoSegurado" type="xs:int"/>
+                        <xs:element minOccurs="0" name="complementoEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="bairroEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="ufEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoMolicar" type="xs:int"/>
+                        <xs:element minOccurs="0" name="numeroCotacao" type="xs:int"/>
+                        <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="chassi" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="anoFabricacao" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gravarCotacaoMolicarResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:GravarCotacaoMolicarVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gravarCotacao">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cpfSegurado" type="xs:long"/>
+                        <xs:element minOccurs="0" name="sexoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dataNascimentoSegurado" nillable="true" type="xs:date"/>
+                        <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="enderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="complementoEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="bairroEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="ufEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="estadoCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeCirculacao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoFipe" type="xs:int"/>
+                        <xs:element minOccurs="0" name="anoModelo" type="xs:int"/>
+                        <xs:element minOccurs="0" name="anoFabricacao" type="xs:int"/>
+                        <xs:element minOccurs="0" name="combustivel" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="zeroKM" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="chassi" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cor" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="formaPagamento" type="xs:int"/>
+                        <xs:element minOccurs="0" name="diaVencimentoBoleto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="bandeiraCartao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="nomeCartaoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoSegurancaCartao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroCartao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="validadeCartao" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoDoBanco" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroAgencia" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroAgenciaDigito" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroContaCorrente" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroContaCorrenteDigito" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="diaVencimento" type="xs:int"/>
+                        <xs:element minOccurs="0" name="nomeTerceiroCobranca" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cpfTerceiroCobranca" type="xs:long"/>
+                        <xs:element minOccurs="0" name="numeroCotacao" type="xs:int"/>
+                        <xs:element minOccurs="0" name="emailSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cnpjSegurado" type="xs:long"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gravarCotacaoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:CotacaoSalvaVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="geraBoleto">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroContrato" nillable="true" type="xs:integer"/>
+                        <xs:element minOccurs="0" name="numeroParcela" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="geraBoletoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:GeraBoletoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="contratarCotacaoUpgrade">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="usuario" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="codigoOperacao" type="xs:int"/>
+                        <xs:element minOccurs="0" name="numeroCertificado" type="xs:long"/>
+                        <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="enderecoTelefone" nillable="true" type="ax23:EnderecoTelefone"/>
+                        <xs:element minOccurs="0" name="formaPagamento" nillable="true" type="ax23:FormaPagamento"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="contratarCotacaoUpgradeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ContratarCotacaoUpgradeResponseVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="contratarCotacao">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="usuario" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="solicitarCotacao" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="codigoProduto" type="xs:int"/>
+                        <xs:element minOccurs="0" name="dadosVeiculo" nillable="true" type="ax23:Veiculo"/>
+                        <xs:element minOccurs="0" name="dadosPessoais" nillable="true" type="ax23:DadosPessoais"/>
+                        <xs:element minOccurs="0" name="dadosEnderecoTelefone" nillable="true" type="ax23:EnderecoTelefone"/>
+                        <xs:element minOccurs="0" name="formaPagamento" nillable="true" type="ax23:FormaPagamento"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="contratarCotacaoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ContratarCotacaoResponseVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="consultaCotacao">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="codigoProduto" nillable="true" type="xs:integer"/>
+                        <xs:element minOccurs="0" name="cpfSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroProposta" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroCotacao" nillable="true" type="xs:integer"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="consultaCotacaoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ConsultaCotacaoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cancelaVenda">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroProposta" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dataCancelamento" nillable="true" type="xs:date"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="cancelaVendaResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:CancelaVendaVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="buscarDetalhesCertificado">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="usuario" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cpfSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cnpjSegurado" nillable="true" type="xs:string"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="codigoProdutos" type="xs:int"/>
+                        <xs:element minOccurs="0" name="statusCertificado" type="xs:int"/>
+                        <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="buscarDetalhesCertificadoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:BuscarDetalhesCertificadoResponseVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="atualizaSegurado">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroProposta" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="sexoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="enderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="numeroEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="complementoEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="bairroEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="cidadeEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="ufEnderecoSegurado" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneResidencial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneCelular" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="dddComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="telefoneComercial" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="emailSegurado" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="atualizaSeguradoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:AtualizaSeguradoVO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://fields.vo.business.cardif.com.br/xsd">
+            <xs:complexType name="EnderecoTelefone">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bairroEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cidadeEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="complementoEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddTelefoneCelular" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddTelefoneComercial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddTelefoneResidencial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="emailSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="enderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroEnderecoSegurado" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="telefoneCelular" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneComercial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneResidencial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ufEnderecoSegurado" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="FormaPagamento">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bandeiraCartao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="codigoBanco" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="codigoFormaPagamento" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="codigoSegurancaCartao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cpfTerceiroCobranca" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddTelefoneTerceiroCobranca" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="diaVencimentoBoleto" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="diaVencimentoConta" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="digitoAgencia" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="digitoContaCorrente" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeCartaoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeTerceiroCobranca" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroAgencia" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroCartao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroContaCorrente" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneTerceiroCobranca" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="validadeCartao" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="DadosPessoais">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="cnpjSegurado" nillable="true" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="contatoPessoas" nillable="true" type="ax23:ContatoPessoa"/>
+                    <xs:element minOccurs="0" name="cpfSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dataNascimentoSegurado" nillable="true" type="xs:date"/>
+                    <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="razaoSocialSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sexoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="tipoPessoa" nillable="true" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ContatoPessoa">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="dddTelefoneCelularContato" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddTelefoneComercialContato" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="emailContato" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeContato" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneCelularContato" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneComercialContato" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="Veiculo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="anoFabricacao" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="anoModelo" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="chassi" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cidadeCirculacao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="codigoFipe" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="combustivel" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cor" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="estadoCirculacao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="zeroKM" nillable="true" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax25="http://fields.vo.business.cardif.com.br/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://retorno.vo.business.cardif.com.br/xsd">
+            <xs:import namespace="http://fields.vo.business.cardif.com.br/xsd"/>
+            <xs:complexType name="RetornoVO">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="codRetorno" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="retorno" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="CotacaoMolicarVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="numeroCotacao" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="quantidadeParcelas" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="valorParcela" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="ValorCotacaoVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="codigoFipe" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="codigoProduto" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="cpf" nillable="true" type="xs:long"/>
+                            <xs:element minOccurs="0" name="nome" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numeroCotacao" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="totalParcelas" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="valorDemaisParcelas" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorFipe" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPrimeiraParcela" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="GravarCotacaoMolicarVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="caracteristicasSeguro" nillable="true" type="xs:anyType"/>
+                            <xs:element minOccurs="0" name="dataFimVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="dataInicioVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="numeroCertificado" nillable="true" type="xs:long"/>
+                            <xs:element minOccurs="0" name="planoAssistencia" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="valorIof" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPremio" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="CotacaoSalvaVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="codigoFipe" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="codigoProduto" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="cpfSegurado" nillable="true" type="xs:long"/>
+                            <xs:element minOccurs="0" name="formaPagamento" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numeroProposta" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="statusProposta" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="totalParcelas" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="valorDemaisParcelas" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPrimeiraParcela" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="GeraBoletoVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="codigoBanco" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="codigoBarras" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="dataVencimento" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numeroBoleto" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="url" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="valorBoleto" nillable="true" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="ContratarCotacaoUpgradeResponseVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="dadosPessoais" nillable="true" type="ax25:DadosPessoais"/>
+                            <xs:element minOccurs="0" name="enderecoTelefone" nillable="true" type="ax25:EnderecoTelefone"/>
+                            <xs:element minOccurs="0" name="fimVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="inicioVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="marcaVeiculo" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="modeloVeiculo" nillable="true" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numeroCertificado" nillable="true" type="xs:long"/>
+                            <xs:element minOccurs="0" name="quantidadeParcela" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="statusCertificado" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="valorFipe" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPremioMensal" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="veiculo" nillable="true" type="ax25:Veiculo"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="ContratarCotacaoResponseVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="fimVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="inicioVigencia" nillable="true" type="xs:date"/>
+                            <xs:element minOccurs="0" name="numeroCertificado" nillable="true" type="xs:long"/>
+                            <xs:element minOccurs="0" name="quantidadeParcela" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="statusCertificado" nillable="true" type="xs:int"/>
+                            <xs:element minOccurs="0" name="valorFipe" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPremioMensal" nillable="true" type="xs:double"/>
+                            <xs:element minOccurs="0" name="valorPremioTotal" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="ConsultaCotacaoVO">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="codRetorno" nillable="true" type="xs:int"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="consultaCotacoes" nillable="true" type="ax21:ConsultaCotacao"/>
+                    <xs:element minOccurs="0" name="retorno" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ConsultaCotacao">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="anoFabricacao" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="anoModelo" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="bairroEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="bandeiraCartao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cepSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="chassi" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cidadeCirculacao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cidadeEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="codigoFipe" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="codigoProduto" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="codigoSegurancaCartao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="combustivel" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="complementoEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cor" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="cpfSegurado" nillable="true" type="xs:long"/>
+                    <xs:element minOccurs="0" name="cpfTerceiroCobranca" nillable="true" type="xs:long"/>
+                    <xs:element minOccurs="0" name="dataNascimentoSegurado" nillable="true" type="xs:date"/>
+                    <xs:element minOccurs="0" name="dddCelular" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddComercial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="dddResidencial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="diaVencimento" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="enderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="estadoCirculacao" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="estadoCivilSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fimVigencia" nillable="true" type="xs:date"/>
+                    <xs:element minOccurs="0" name="formaPagamento" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="inicioVigencia" nillable="true" type="xs:date"/>
+                    <xs:element minOccurs="0" name="nomeBanco" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeCartaoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nomeTerceiroCobranca" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroAgencia" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroAgenciaDigito" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroCartao" nillable="true" type="xs:long"/>
+                    <xs:element minOccurs="0" name="numeroContaCorrente" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroContaCorrenteDigito" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroCotacao" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="numeroEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numeroProposta" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="placa" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="renavam" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sexoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="statusProposta" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="telefoneCelular" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneComercial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="telefoneResidencial" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="totalParcelas" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="ufEnderecoSegurado" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="user" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="validadeCartao" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="valorDemaisParcelas" nillable="true" type="xs:double"/>
+                    <xs:element minOccurs="0" name="valorPrimeiraParcela" nillable="true" type="xs:double"/>
+                    <xs:element minOccurs="0" name="zeroKM" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="CancelaVendaVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="valorARestituir" nillable="true" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="BuscarDetalhesCertificadoResponseVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="detalhesCertificado" nillable="true" type="xs:anyType"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="AtualizaSeguradoVO">
+                <xs:complexContent>
+                    <xs:extension base="ax21:RetornoVO">
+                        <xs:sequence/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="isAliveRequest">
+        <wsdl:part name="parameters" element="ns:isAlive"/>
+    </wsdl:message>
+    <wsdl:message name="isAliveResponse">
+        <wsdl:part name="parameters" element="ns:isAliveResponse"/>
+    </wsdl:message>
+    <wsdl:message name="atualizaSeguradoRequest">
+        <wsdl:part name="parameters" element="ns:atualizaSegurado"/>
+    </wsdl:message>
+    <wsdl:message name="atualizaSeguradoResponse">
+        <wsdl:part name="parameters" element="ns:atualizaSeguradoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="AutofacilServiceException">
+        <wsdl:part name="parameters" element="ns:AutofacilServiceException"/>
+    </wsdl:message>
+    <wsdl:message name="buscarDetalhesCertificadoRequest">
+        <wsdl:part name="parameters" element="ns:buscarDetalhesCertificado"/>
+    </wsdl:message>
+    <wsdl:message name="buscarDetalhesCertificadoResponse">
+        <wsdl:part name="parameters" element="ns:buscarDetalhesCertificadoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="contratarCotacaoRequest">
+        <wsdl:part name="parameters" element="ns:contratarCotacao"/>
+    </wsdl:message>
+    <wsdl:message name="contratarCotacaoResponse">
+        <wsdl:part name="parameters" element="ns:contratarCotacaoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="geraBoletoRequest">
+        <wsdl:part name="parameters" element="ns:geraBoleto"/>
+    </wsdl:message>
+    <wsdl:message name="geraBoletoResponse">
+        <wsdl:part name="parameters" element="ns:geraBoletoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="consultaCotacaoRequest">
+        <wsdl:part name="parameters" element="ns:consultaCotacao"/>
+    </wsdl:message>
+    <wsdl:message name="consultaCotacaoResponse">
+        <wsdl:part name="parameters" element="ns:consultaCotacaoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="gravarCotacaoMolicarRequest">
+        <wsdl:part name="parameters" element="ns:gravarCotacaoMolicar"/>
+    </wsdl:message>
+    <wsdl:message name="gravarCotacaoMolicarResponse">
+        <wsdl:part name="parameters" element="ns:gravarCotacaoMolicarResponse"/>
+    </wsdl:message>
+    <wsdl:message name="gravarCotacaoRequest">
+        <wsdl:part name="parameters" element="ns:gravarCotacao"/>
+    </wsdl:message>
+    <wsdl:message name="gravarCotacaoResponse">
+        <wsdl:part name="parameters" element="ns:gravarCotacaoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="cancelaVendaRequest">
+        <wsdl:part name="parameters" element="ns:cancelaVenda"/>
+    </wsdl:message>
+    <wsdl:message name="cancelaVendaResponse">
+        <wsdl:part name="parameters" element="ns:cancelaVendaResponse"/>
+    </wsdl:message>
+    <wsdl:message name="solicitarCotacaoMolicarRequest">
+        <wsdl:part name="parameters" element="ns:solicitarCotacaoMolicar"/>
+    </wsdl:message>
+    <wsdl:message name="solicitarCotacaoMolicarResponse">
+        <wsdl:part name="parameters" element="ns:solicitarCotacaoMolicarResponse"/>
+    </wsdl:message>
+    <wsdl:message name="solicitaCotacao1Request">
+        <wsdl:part name="parameters" element="ns:solicitaCotacao1"/>
+    </wsdl:message>
+    <wsdl:message name="solicitaCotacao1Response">
+        <wsdl:part name="parameters" element="ns:solicitaCotacao1Response"/>
+    </wsdl:message>
+    <wsdl:message name="solicitaCotacaoRequest">
+        <wsdl:part name="parameters" element="ns:solicitaCotacao"/>
+    </wsdl:message>
+    <wsdl:message name="solicitaCotacaoResponse">
+        <wsdl:part name="parameters" element="ns:solicitaCotacaoResponse"/>
+    </wsdl:message>
+    <wsdl:message name="contratarCotacaoUpgradeRequest">
+        <wsdl:part name="parameters" element="ns:contratarCotacaoUpgrade"/>
+    </wsdl:message>
+    <wsdl:message name="contratarCotacaoUpgradeResponse">
+        <wsdl:part name="parameters" element="ns:contratarCotacaoUpgradeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="registraPagamentoRequest">
+        <wsdl:part name="parameters" element="ns:registraPagamento"/>
+    </wsdl:message>
+    <wsdl:message name="registraPagamentoResponse">
+        <wsdl:part name="parameters" element="ns:registraPagamentoResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="AutofacilServicePortType">
+        <wsdl:operation name="isAlive">
+            <wsdl:input message="ns:isAliveRequest" wsaw:Action="urn:isAlive"/>
+            <wsdl:output message="ns:isAliveResponse" wsaw:Action="urn:isAliveResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="atualizaSegurado">
+            <wsdl:input message="ns:atualizaSeguradoRequest" wsaw:Action="urn:atualizaSegurado"/>
+            <wsdl:output message="ns:atualizaSeguradoResponse" wsaw:Action="urn:atualizaSeguradoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:atualizaSeguradoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="buscarDetalhesCertificado">
+            <wsdl:input message="ns:buscarDetalhesCertificadoRequest" wsaw:Action="urn:buscarDetalhesCertificado"/>
+            <wsdl:output message="ns:buscarDetalhesCertificadoResponse" wsaw:Action="urn:buscarDetalhesCertificadoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:buscarDetalhesCertificadoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacao">
+            <wsdl:input message="ns:contratarCotacaoRequest" wsaw:Action="urn:contratarCotacao"/>
+            <wsdl:output message="ns:contratarCotacaoResponse" wsaw:Action="urn:contratarCotacaoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:contratarCotacaoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="geraBoleto">
+            <wsdl:input message="ns:geraBoletoRequest" wsaw:Action="urn:geraBoleto"/>
+            <wsdl:output message="ns:geraBoletoResponse" wsaw:Action="urn:geraBoletoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:geraBoletoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="consultaCotacao">
+            <wsdl:input message="ns:consultaCotacaoRequest" wsaw:Action="urn:consultaCotacao"/>
+            <wsdl:output message="ns:consultaCotacaoResponse" wsaw:Action="urn:consultaCotacaoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:consultaCotacaoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacaoMolicar">
+            <wsdl:input message="ns:gravarCotacaoMolicarRequest" wsaw:Action="urn:gravarCotacaoMolicar"/>
+            <wsdl:output message="ns:gravarCotacaoMolicarResponse" wsaw:Action="urn:gravarCotacaoMolicarResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacao">
+            <wsdl:input message="ns:gravarCotacaoRequest" wsaw:Action="urn:gravarCotacao"/>
+            <wsdl:output message="ns:gravarCotacaoResponse" wsaw:Action="urn:gravarCotacaoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:gravarCotacaoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="cancelaVenda">
+            <wsdl:input message="ns:cancelaVendaRequest" wsaw:Action="urn:cancelaVenda"/>
+            <wsdl:output message="ns:cancelaVendaResponse" wsaw:Action="urn:cancelaVendaResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:cancelaVendaAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="solicitarCotacaoMolicar">
+            <wsdl:input message="ns:solicitarCotacaoMolicarRequest" wsaw:Action="urn:solicitarCotacaoMolicar"/>
+            <wsdl:output message="ns:solicitarCotacaoMolicarResponse" wsaw:Action="urn:solicitarCotacaoMolicarResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:solicitarCotacaoMolicarAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao1">
+            <wsdl:input message="ns:solicitaCotacao1Request" wsaw:Action="urn:solicitaCotacao1"/>
+            <wsdl:output message="ns:solicitaCotacao1Response" wsaw:Action="urn:solicitaCotacao1Response"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:solicitaCotacao1AutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao">
+            <wsdl:input message="ns:solicitaCotacaoRequest" wsaw:Action="urn:solicitaCotacao"/>
+            <wsdl:output message="ns:solicitaCotacaoResponse" wsaw:Action="urn:solicitaCotacaoResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:solicitaCotacaoAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacaoUpgrade">
+            <wsdl:input message="ns:contratarCotacaoUpgradeRequest" wsaw:Action="urn:contratarCotacaoUpgrade"/>
+            <wsdl:output message="ns:contratarCotacaoUpgradeResponse" wsaw:Action="urn:contratarCotacaoUpgradeResponse"/>
+            <wsdl:fault message="ns:AutofacilServiceException" name="AutofacilServiceException" wsaw:Action="urn:contratarCotacaoUpgradeAutofacilServiceException"/>
+        </wsdl:operation>
+        <wsdl:operation name="registraPagamento">
+            <wsdl:input message="ns:registraPagamentoRequest" wsaw:Action="urn:registraPagamento"/>
+            <wsdl:output message="ns:registraPagamentoResponse" wsaw:Action="urn:registraPagamentoResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AutofacilServiceSoap11Binding" type="ns:AutofacilServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="isAlive">
+            <soap:operation soapAction="urn:isAlive" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="atualizaSegurado">
+            <soap:operation soapAction="urn:atualizaSegurado" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacao">
+            <soap:operation soapAction="urn:contratarCotacao" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="buscarDetalhesCertificado">
+            <soap:operation soapAction="urn:buscarDetalhesCertificado" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="geraBoleto">
+            <soap:operation soapAction="urn:geraBoleto" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="consultaCotacao">
+            <soap:operation soapAction="urn:consultaCotacao" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacaoMolicar">
+            <soap:operation soapAction="urn:gravarCotacaoMolicar" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacao">
+            <soap:operation soapAction="urn:gravarCotacao" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="cancelaVenda">
+            <soap:operation soapAction="urn:cancelaVenda" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitarCotacaoMolicar">
+            <soap:operation soapAction="urn:solicitarCotacaoMolicar" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao1">
+            <soap:operation soapAction="urn:solicitaCotacao1" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao">
+            <soap:operation soapAction="urn:solicitaCotacao" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="registraPagamento">
+            <soap:operation soapAction="urn:registraPagamento" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacaoUpgrade">
+            <soap:operation soapAction="urn:contratarCotacaoUpgrade" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="AutofacilServiceSoap12Binding" type="ns:AutofacilServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="isAlive">
+            <soap12:operation soapAction="urn:isAlive" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="atualizaSegurado">
+            <soap12:operation soapAction="urn:atualizaSegurado" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacao">
+            <soap12:operation soapAction="urn:contratarCotacao" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="buscarDetalhesCertificado">
+            <soap12:operation soapAction="urn:buscarDetalhesCertificado" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="geraBoleto">
+            <soap12:operation soapAction="urn:geraBoleto" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="consultaCotacao">
+            <soap12:operation soapAction="urn:consultaCotacao" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacaoMolicar">
+            <soap12:operation soapAction="urn:gravarCotacaoMolicar" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacao">
+            <soap12:operation soapAction="urn:gravarCotacao" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="cancelaVenda">
+            <soap12:operation soapAction="urn:cancelaVenda" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitarCotacaoMolicar">
+            <soap12:operation soapAction="urn:solicitarCotacaoMolicar" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao1">
+            <soap12:operation soapAction="urn:solicitaCotacao1" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao">
+            <soap12:operation soapAction="urn:solicitaCotacao" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="registraPagamento">
+            <soap12:operation soapAction="urn:registraPagamento" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacaoUpgrade">
+            <soap12:operation soapAction="urn:contratarCotacaoUpgrade" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AutofacilServiceException">
+                <soap12:fault use="literal" name="AutofacilServiceException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="AutofacilServiceHttpBinding" type="ns:AutofacilServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="isAlive">
+            <http:operation location="isAlive"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="atualizaSegurado">
+            <http:operation location="atualizaSegurado"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacao">
+            <http:operation location="contratarCotacao"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="buscarDetalhesCertificado">
+            <http:operation location="buscarDetalhesCertificado"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="geraBoleto">
+            <http:operation location="geraBoleto"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="consultaCotacao">
+            <http:operation location="consultaCotacao"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacaoMolicar">
+            <http:operation location="gravarCotacaoMolicar"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="gravarCotacao">
+            <http:operation location="gravarCotacao"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="cancelaVenda">
+            <http:operation location="cancelaVenda"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="solicitarCotacaoMolicar">
+            <http:operation location="solicitarCotacaoMolicar"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao1">
+            <http:operation location="solicitaCotacao1"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="solicitaCotacao">
+            <http:operation location="solicitaCotacao"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registraPagamento">
+            <http:operation location="registraPagamento"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="contratarCotacaoUpgrade">
+            <http:operation location="contratarCotacaoUpgrade"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AutofacilService">
+        <wsdl:port name="AutofacilServiceHttpsSoap11Endpoint" binding="ns:AutofacilServiceSoap11Binding">
+            <soap:address location="https://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpsSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="AutofacilServiceHttpSoap11Endpoint" binding="ns:AutofacilServiceSoap11Binding">
+            <soap:address location="http://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="AutofacilServiceHttpsSoap12Endpoint" binding="ns:AutofacilServiceSoap12Binding">
+            <soap12:address location="https://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpsSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="AutofacilServiceHttpSoap12Endpoint" binding="ns:AutofacilServiceSoap12Binding">
+            <soap12:address location="http://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="AutofacilServiceHttpEndpoint" binding="ns:AutofacilServiceHttpBinding">
+            <http:address location="http://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpEndpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="AutofacilServiceHttpsEndpoint" binding="ns:AutofacilServiceHttpBinding">
+            <http:address location="https://www.autofacilseguro.com.br/CardifWebServiceDS/services/AutofacilService.AutofacilServiceHttpsEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

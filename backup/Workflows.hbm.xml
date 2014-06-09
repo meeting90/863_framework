@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-5-15 19:06:46 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="workflow.db.Workflows" table="workflows" catalog="internetware">
+        <id name="wfId" type="java.lang.Long">
+            <column name="wfId" />
+            <generator class="identity" />
+        </id>
+        <property name="wfName" type="string">
+            <column name="wfName" length="200" />
+        </property>
+        <property name="wfPath" type="string">
+            <column name="wfPath" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

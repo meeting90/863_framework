@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/demo/demo.css">
+	
+<style type="text/css">
+.normal_message {
+	margin: 0px;
+	padding: 0px;
+}
+
+.successful_message {
+	margin: 0px;
+	padding: 0px;
+	color: green;
+}
+
+.failed_message {
+	margin: 0px;
+	padding: 0px;
+	color: red;
+}
+
+
+#userDetailpg{
+	width:300px;
+	text-align: center;
+	
+}
+#fsInfoContainer{
+	width:600px;
+	padding:10px;
+	text-align: center;
+	margin-left:auto;
+	margin-right:auto;
+}
+#login {
+	position: absolute;
+	right: 0px;
+	top: 10px;
+	width: 200px;
+	height: 17px;
+	display: inline-block;
+}
+#list4 {
+	width: 100%;
+	font-family: Georgia, Times, serif;
+	font-size: 15px;
+}
+
+#list4 ul {
+	list-style: none;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	margin-right: 0px;
+	margin-left:0px;
+	padding: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #FFF;
+}
+
+#list4 ul li {
+	margin: 0px;
+	padding: 0px;
+}
+
+#list4 ul li a {
+	display: block;
+	text-decoration: none;
+	color: #000000;
+	background-color: #FFFFFF;
+	line-height: 30px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCCCCC;
+	padding-left: 0px;
+	cursor: pointer;
+}
+#list ul li a.more{
+	color: green;
+}
+
+#list4 ul li a:hover {
+	color: #FFFFFF;
+	background-image: url(images/hover.png);
+	background-repeat: repeat-x;
+}
+
+#list4 ul li a strong {
+	margin-right: 0px;
+}
+
+.background {
+	fill: none;
+	pointer-events: all;
+}
+
+#wholeview .node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+#wholeview .link {
+	stroke: #999;
+	stroke-opacity: .6;
+	stroke-width: 1.5px;
+}
+
+#wholeview >svg {
+	width: 100%;
+	height: 100%;
+}
+</style>
+	
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/raphael.js"></script>
+	<script type="text/javascript" src="globalvar.js"></script>
+	<script type="text/javascript" src="common.js"></script>
+	<script type="text/javascript" src="popup.js"></script>
+	<script type="text/javascript" src="relation.js"></script>
+	<script type="text/javascript" src="webservice.js"></script>
+	<script type="text/javascript" src="workflow.js"></script>
+
+	
+</head>
+<body class="easyui-layout">
+    <div data-options="region:'north',split:true" style="height:60px;padding:10px">
+   north region
+    </div>
+	<div data-options="region:'west',split:true,minWidth:200,maxWidth:200" style="width:200px;padding:0px;">
+	
+	<div class="easyui-accordion" data-options="fit:true,border:false" >
+		<div title="用户关系"  style="padding:2px;" id="list4">
+			<ul id="relationBar" >
+			<li><span><a href="#" onclick="showAllRelation();">整体视图</a></span></li>
+			<li><span><a href="#" onclick="showRelationOfUser();">信任关系</a></span></li>
+			
+			
+			</ul>
+		</div>
+		<div title="服务列表"  style="padding:2px;" id="list4">
+			<ul id="service_bar" >
+			<li><span><a href="#" onclick="showSericeList();">服务列表</a></span></li>
+			<li><span><a href="#" onclick="showUploadWsPanel();">上传服务</a></span></li>
+			</ul>
+		</div>
+		<div title="工作流列表" style="padding:2px;" id="list4">
+			<ul id="workflow_bar" >
+			<li><span><a href="#" onclick="showWorkflowList();">工作流列表</a></span></li>
+			
+			
+			</ul>
+		</div>
+	</div>
+	</div>
+	<div data-options="region:'south',split:true" style="height:50px;padding:10px;">south region</div>
+	<div data-options="region:'center',split:true">
+	<div id="relationTab" class="easyui-tabs" data-options="fit:true">
+	
+		<div title="关于" style="padding:10px">
+			<p style="font-size:14px">用户信任关系</p>
+			<ul>
+				<li>整体视图</li>
+				<li>用户信任关系</li>
+				<li>修改用户信任关系</li>
+			</ul>
+		</div>	
+		
+		</div>
+	
+	</div>
+
+	
+	
+	<div id="userDetail"></div>
+
+</body>
+
+
+</html>

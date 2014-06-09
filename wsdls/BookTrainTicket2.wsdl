@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://booktrainticket2.nju" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://booktrainticket2.nju" xmlns:intf="http://booktrainticket2.nju" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://booktrainticket2.nju" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="bookTrainTicket">
+    <complexType>
+     <sequence>
+      <element name="trainID" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="bookTrainTicketResponse">
+    <complexType>
+     <sequence>
+      <element name="bookTrainTicketReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="bookTrainTicketResponse">
+
+      <wsdl:part element="impl:bookTrainTicketResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="bookTrainTicketRequest">
+
+      <wsdl:part element="impl:bookTrainTicket" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="BookTrainTicket2">
+
+      <wsdl:operation name="bookTrainTicket">
+
+         <wsdl:input message="impl:bookTrainTicketRequest" name="bookTrainTicketRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:bookTrainTicketResponse" name="bookTrainTicketResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="BookTrainTicket2SoapBinding" type="impl:BookTrainTicket2">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="bookTrainTicket">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="bookTrainTicketRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="bookTrainTicketResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="BookTrainTicket2Service">
+
+      <wsdl:port binding="impl:BookTrainTicket2SoapBinding" name="BookTrainTicket2">
+
+         <wsdlsoap:address location="http://localhost:80/Booktrainticket2/services/BookTrainTicket2"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

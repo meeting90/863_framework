@@ -1,0 +1,1178 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="js/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.layout.js"></script>
+<script type="text/javascript" src="js/jquery.form.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+<!--  <script type="text/javascript" src="js/load_data.js"></script>-->
+<script type="text/javascript" src="js/html2canvas.js"></script>
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+<script type="text/javascript" src="flot/jquery.flot.js"></script>
+<script type="text/javascript" src="js/d3.v2.min.js"></script>
+
+<script type="text/javascript" src="js/viva/vivagraph.js"></script>
+<script type="text/javascript" src="js/viva/viva.js"></script>
+<script type="text/javascript" src="js/fisheye.js"></script>
+<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+<script type="text/javascript" src="grapheditor.js" charset="UTF-8"></script>
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui/jquery-ui-1.8.17.custom.css">
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui-layout/layout-default-latest.css">
+<link rel="stylesheet" type="text/css"
+	href="css/jquery-ui-layout/complex.css">
+
+
+<style type="text/css">
+.normal_message {
+	margin: 0px;
+	padding: 0px;
+}
+
+.successful_message {
+	margin: 0px;
+	padding: 0px;
+	color: green;
+}
+
+.failed_message {
+	margin: 0px;
+	padding: 0px;
+	color: red;
+}
+
+.ui-layout-north .content {
+	background-color: rgb(255, 255, 255);
+	/*background-image:url('images/sky_bg.jpg');*/
+}
+
+#login {
+	position: absolute;
+	right: 0px;
+	top: 10px;
+	width: 200px;
+	height: 17px;
+	display: inline-block;
+}
+
+/* #rightholder1 {
+      height: 200px;
+    }*/
+#list4 {
+	width: 280px;
+	font-family: Georgia, Times, serif;
+	font-size: 15px;
+}
+
+#list4 ul {
+	list-style: none;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	margin-right: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #CCCCCC;
+}
+
+#list4 ul li {
+	margin: 0px;
+	padding: 0px;
+}
+
+#list4 ul li a {
+	display: block;
+	text-decoration: none;
+	color: #000000;
+	background-color: #FFFFFF;
+	line-height: 30px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCCCCC;
+	padding-left: 0px;
+	cursor: pointer;
+}
+
+#list4 ul li a:hover {
+	color: #FFFFFF;
+	background-image: url(images/hover.png);
+	background-repeat: repeat-x;
+}
+
+#list4 ul li a strong {
+	margin-right: 0px;
+}
+
+.background {
+	fill: none;
+	pointer-events: all;
+}
+
+#placeholder .node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+#placeholder .link {
+	stroke: #999;
+	stroke-opacity: .6;
+	stroke-width: 1.5px;
+}
+
+#placeholder>svg {
+	width: 100%;color: #FFFFFF; 
+	height: 100%;
+}
+
+#sortable { 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	float: left; 
+	margin-right: 10px; 
+	
+	padding: 5px; 
+	width: 360px;
+}
+#sortable li{ 
+	margin: 10px; 
+	padding: 10px; 
+	font-size: 0.8em; 
+	width: 320px; 
+	
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCCCCC;
+}
+</style>
+
+
+<script type="text/javascript" charset="utf-8">
+	var SERVER_URL = null;
+	//var SERVER_URL = "http://114.212.190.242/workflowevaluation";
+	//var SERVER_URL2 = "http://114.212.85.95/SubGraph";
+	var gUserName = null;
+	var gUID = null;
+	var gGraphList = [];
+	var loginUrl = "../index.jsp";
+	var gIsFirstLoad = true;
+	var gCurGraphData=[];
+	var layoutSettings_Outer = {
+		name : "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
+		// options.defaults apply to ALL PANES - but overridden by pane-specific settings
+		,
+		defaults : {
+			size : "auto",
+			minSize : 50,
+			paneClass : "pane" // default = 'ui-layout-pane'
+			,
+			resizerClass : "resizer" // default = 'ui-layout-resizer'
+			,
+			togglerClass : "toggler" // default = 'ui-layout-toggler'
+			,
+			buttonClass : "button" // default = 'ui-layout-button'
+			,
+			contentSelector : ".content" // inner div to auto-size so only it scrolls, not the entire pane!
+			,
+			contentIgnoreSelector : "span" // 'paneSelector' for content to 'ignore' when measuring room for content
+			,
+			togglerLength_open : 35 // WIDTH of toggler on north/south edges - HEIGHT on east/west edges
+			,
+			togglerLength_closed : 35 // "100%" OR -1 = full height
+			,
+			hideTogglerOnSlide : true // hide the toggler when pane is 'slid open'
+			,
+			togglerTip_open : "关闭该面板",
+			togglerTip_closed : "打开改面板",
+			resizerTip : "Resize This Pane"
+			//  effect defaults - overridden on some panes
+			,
+			fxName : "slide" // none, slide, drop, scale
+			,
+			fxSpeed_open : 750,
+			fxSpeed_close : 1500,
+			fxSettings_open : {
+				easing : "easeInQuint"
+			},
+			fxSettings_close : {
+				easing : "easeOutQuint"
+			}
+		},
+		north : {
+			size : 100,
+			spacing_open : 1 // cosmetic spacing
+			,
+			togglerLength_open : 0 // HIDE the toggler button
+			,
+			togglerLength_closed : -1 // "100%" OR -1 = full width of pane
+			,
+			resizable : false,
+			slidable : false
+			//  override default effect
+			,
+			fxName : "slide" // none, slide, drop, scale
+		},
+		south : {
+			size : 200,
+			spacing_closed : 21 // HIDE resizer & toggler when 'closed'
+			,
+			slidable : false // REFERENCE - cannot slide if spacing_closed = 0
+			,
+			togglerLength_closed : 21 // make toggler 'square' - 21x21
+			,
+			togglerAlign_closed : "center" // align to top of resizer
+			,
+			togglerLength_open : 0 // NONE - using custom togglers INSIDE west-pane
+			,
+			togglerTip_open : "关闭面板",
+			togglerAlign_open : "center",
+			togglerLength_close : 21,
+			togglerTip_closed : "打开面板",
+			resizerTip_open : "调整面板大小",
+			slideTrigger_open : "click" // default
+			,
+			initClosed : true
+		},
+		west : {
+			size : 300,
+			spacing_closed : 21 // wider space when closed
+			,
+			togglerLength_closed : 21 // make toggler 'square' - 21x21
+			,
+			togglerAlign_closed : "top" // align to top of resizer
+			,
+			togglerLength_open : 0 // NONE - using custom togglers INSIDE west-pane
+			,
+			togglerTip_open : "Close West Pane",
+			togglerTip_closed : "关闭面板",
+			resizerTip_open : "调整面板大小",
+			slideTrigger_open : "点击" // default
+			,
+			initClosed : true
+			//  add 'bounce' option to default 'slide' effect
+			,
+			fxName : "drop",
+			fxSpeed : "slow",
+			fxSettings : {
+				easing : "easeOutBounce"
+			}
+		}
+
+	};
+
+	function checkLogin() {
+		gUserName = $.cookie('name');
+		gUID = $.cookie('uid');
+		SERVER_URL = $.cookie('php_host');
+		if (gUserName == null || gUID == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function refreshLoginStatus() {
+
+		if (!checkLogin()) {
+			console.info("nologin");
+			window.location = loginUrl;
+		} else
+			console.info("ok,login");
+	}
+
+	function logout() {
+		gUserName = null;
+		gUID = null;
+		$.cookie('name', null);
+		$.cookie('uid', null);
+		window.location.replace(loginUrl);
+	}
+
+	//*****************************数据集列表操作********************
+
+	function getGraphList() {
+		$.blockUI({
+			message : '<h1><img src="images/spinner.gif" /> 加载中...</h1>'
+		});
+		gGraphList = [];
+		gIsFinishgetGraphListName = false;
+		var serviceListUrl = SERVER_URL + '/graphapi.php?apiname=getgraphlist'
+				+ '&uid=' + gUID;
+		$.ajax({
+			url : serviceListUrl,
+			dataType : 'json',
+			success : function(data) {
+				
+				$.each(data, function(key, val) {
+					
+					gGraphList.push(val);
+				});
+			
+				refreshGraphList();
+			},
+			error : function() {
+				console.info("getGraphList:error");
+				$.unblockUI();
+			}
+		});
+	}
+
+	function refreshGraphList() {
+		$.unblockUI();
+		$('#graph_list').empty();
+		for ( var i = 0; i < gGraphList.length; i++) {
+			href_tag = $('<a>').attr('href', '#').attr('onclick',
+					"onClickGraph('" + gGraphList[i].graphid + "')").html(
+					"" + gGraphList[i].graphname + "");
+			li_tag = $('<li>');
+			li_tag.appendTo($('#graph_list'));
+			href_tag.appendTo(li_tag);
+		}
+		outerLayout.open('west');
+	}
+
+	var gCurGraphId;
+	function onClickGraph(graphId) {
+		gCurGraphId = graphId;
+		outerLayout.close('south');
+		// fillForm(graphId);
+		clearConsole();
+		getGraphUrl(graphId);
+	}
+
+	//*********************控制台操作***************************
+
+	var gConsoleText = "";
+	function appendConsoleMessage(newMsg) {
+		gConsoleText = "<p class='normal_message'>" + newMsg + "</p>"
+				+ gConsoleText;
+		$("#console_holder").html(gConsoleText);
+	}
+
+	function appendErrorMessage(newMsg) {
+		gConsoleText = "<p class='failed_message'>" + newMsg + "</p>"
+				+ gConsoleText;
+		$("#console_holder").html(gConsoleText);
+	}
+
+	function appendSuccMessage(newMsg) {
+		gConsoleText = "<p class='successful_message'>" + newMsg + "</p>"
+				+ gConsoleText;
+		$("#console_holder").html(gConsoleText);
+	}
+
+	function clearConsole() {
+		gConsoleText = "";
+		$("#console_holder").empty();
+	}
+
+	//*****************************Draw subGraph begin********************
+
+	function getGraphUrl(graphId) {
+		var oneGraphUrl = SERVER_URL + '/graphapi.php?apiname=graph&graphid='
+				+ graphId + '&uid=' + gUID;
+		$.blockUI({
+			message : '<h1><img src="images/spinner.gif" /> 加载中...</h1>'
+		});
+
+		$.ajax({
+			url : oneGraphUrl,
+			dataType : 'json',
+			success : function(data) {
+				getGraphOriginalData(data.json);
+			},
+			error : function() {
+				console.info('getGraphUrl error');
+			}
+		});
+	}
+
+	function getGraphOriginalData(url) {
+
+		var originalGraphUrl = SERVER_URL + '/' + url;
+		console.info("URL:" + originalGraphUrl);
+
+		$.ajax({
+			url : originalGraphUrl,
+			dataType : 'json',
+			success : function(data) {
+				var jsonstr=JSON.stringify(data);
+				gCurGraphData=JSON.parse(jsonstr);
+				var candidate=avaliableNodes()
+				$('#ks_Start').autocomplete({
+				      source: candidate
+				    });
+				$('#ks_End').autocomplete({
+				      source: candidate
+				    });
+				drawFisheyeGraph(data);
+				$.unblockUI();
+				appendSuccMessage("初始数据集加载成功");
+				appendSuccMessage("节点总数:"+data.nodes.length);
+				appendSuccMessage("边          数："+data.edges.length);
+				saveHistory(jsonstr, "SETI:SOURCE");
+
+			},
+			error : function() {
+				gCurGraphData=[];
+				$.unblockUI();
+				appendErrorMessage("初始数据集加载失败");
+			}
+		});
+	}
+
+	function drawFisheyeGraph(data) {
+
+		var width = $("#placeholder").width();
+		var height = $("#placeholder").height();
+
+		var color = d3.scale.category20();
+
+		var fisheye = d3.fisheye.circular().radius(120);
+
+		var force = d3.layout.force().charge(-240).linkDistance(40).size(
+				[ width, height ]);
+
+		$('svg').remove();
+		var svg = d3.select("#placeholder").append("svg").attr("width", width)
+				.attr("height", height);
+
+		svg.append("rect").attr("class", "background").attr("width", width)
+				.attr("height", height);
+
+		var n = data.nodes.length;
+
+		force.nodes(data.nodes).links(data.edges);
+
+		data.nodes.forEach(function(d, i) {
+			d.x = d.y = width / n * i;
+		});
+
+		force.start();
+		for ( var i = n; i > 0; --i)
+			force.tick();
+		force.stop();
+
+		var ox = 0, oy = 0;
+		data.nodes.forEach(function(d) {
+			ox += d.x, oy += d.y;
+		});
+		ox = ox / n - width / 2, oy = oy / n - height / 2;
+		data.nodes.forEach(function(d) {
+			d.x -= ox, d.y -= oy;
+		});
+
+		var link = svg.selectAll(".link").data(data.edges).enter().append(
+				"line").attr("class", "link").attr("x1", function(d) {
+			return d.source.x;
+		}).attr("y1", function(d) {
+			return d.source.y;
+		}).attr("x2", function(d) {
+			return d.target.x;
+		}).attr("y2", function(d) {
+			return d.target.y;
+		}).style("stroke-width", function(d) {
+			return Math.sqrt(d.weight);
+		});
+
+		var node = svg.selectAll(".node").data(data.nodes).enter().append("g")
+				.call(force.drag);
+
+		node.append("circle").attr("class", "node").attr("cx", function(d) {
+			return d.x;
+		}).attr("cy", function(d) {
+			return d.y;
+		}).attr("r", 4.5).style("fill", function(d) {
+			return color(d.weight);
+		});
+
+		var label = svg.append("text").attr("font-size", 20).attr("fill",
+				'blue');
+
+		svg.on("click", function() {
+			var clickX = d3.mouse(this)[0];
+			var clickY = d3.mouse(this)[1];
+
+			outerLayout.open('south');
+
+			node.each(function(d) {
+				if ((Math.abs(focusX - d.x) < 3)
+						&& (Math.abs(focusY - d.y) < 3)) {
+
+					appendConsoleMessage("*********************");
+					appendConsoleMessage("Name:" + d.name);
+					appendConsoleMessage("ID:" + d.id);
+
+				}
+			});
+		});
+
+		svg.on("mousemove", function() {
+
+			fisheye.focus(d3.mouse(this));
+
+			focusX = d3.mouse(this)[0];
+			focusY = d3.mouse(this)[1];
+			var flag = false;
+
+			node.each(function(d) {
+				d.fisheye = fisheye(d);
+				$(this).find("circle").attr("cx", d.fisheye.x).attr("cy",
+						d.fisheye.y).attr("r", d.fisheye.z * 4.5);
+
+				if ((Math.abs(focusX - d.x) < 3)
+						&& (Math.abs(focusY - d.y) < 3)) {
+					label.attr("x", d.fisheye.x).attr("y", d.fisheye.y).text(
+							d.name);
+
+					flag = true;
+				}
+			});
+
+			if (!flag)
+				label.text("");
+
+			link.attr("x1", function(d) {
+				return d.source.fisheye.x;
+			}).attr("y1", function(d) {
+				return d.source.fisheye.y;
+			}).attr("x2", function(d) {
+				return d.target.fisheye.x;
+			}).attr("y2", function(d) {
+				return d.target.fisheye.y;
+			});
+		});
+		//************************add edit part************************//
+		
+		
+
+	}
+	
+
+	//********************************Save Histrory*********************************
+	function saveEvaluateResult(left, right, bottom, center, message) {
+		var jsonData = {
+			"document" : message,
+			"serviceId" : 5,
+			"left" : left,
+			"right" : right,
+			"bottom" : bottom,
+			"center" : center
+
+		}
+		$.ajax({
+			url : "../SaveHistory",
+			type : 'POST',
+			dataType : "json",
+			data : jsonData,
+			success : function() {
+				console.info("success");
+			}
+
+		});
+	}
+	function saveHistory(jsonstr, message) {
+
+		var htmlCenter, htmlLeft, htmlRight, htmlBottom;
+
+		htmlCenter = encodeURI(jsonstr);
+		//console.info("htmlCenter:"+htmlCenter);
+
+		htmlLeft = encodeURI($("#leftholder").html());
+		htmlRight = encodeURI($("#rightholder").html());
+		htmlBottom = encodeURI($("#consoleholder").html());
+		saveEvaluateResult(htmlLeft, htmlRight, htmlBottom, htmlCenter, message);
+	}
+
+	//*****************************start  draw ksgraph begin*****************************
+
+	function getKSgraph() {
+
+		
+		if($("#ks_Start").val()=='')
+		{
+			alert("请输入起点");
+			return;
+		}
+		if($("#ks_End").val()==''){
+			alert("请输入终点");
+			return;
+		}
+		if($("#ks_kValue").val()==''){
+			alert("请输入参数k");
+			return;
+		}
+		$.blockUI({
+			message : '<h1><img src="images/spinner.gif" /> 加载中...</h1>'
+		});
+		var startIndex=$("#ks_Start").val().split(":")[0];
+		var endIndex=$("#ks_End").val().split(":")[0];
+		
+		var getKSgraphUrl = SERVER_URL
+				+ '/graphapi.php?apiname=subgraph&graphid=' + gCurGraphId
+				+ '&source=' + startIndex + '&target='
+				+ endIndex + '&topk=' + $("#ks_kValue").val()
+				+ '&uid=' + gUID;
+
+		console.info(getKSgraphUrl);
+		$('svg').remove();
+
+		$.ajax({
+			url : getKSgraphUrl,
+			dataType : 'json',
+			success : function(data) {
+				console.info("success getKSgraph");
+				var jsonstr=JSON.stringify(data);
+				drawKSgraph(data);
+
+				$.unblockUI();
+				appendSuccMessage("子图抽取成功");
+				saveHistory(jsonstr, "SETI:SUBGRAPH");
+
+			},
+			error : function() {
+				console.info('getKSgraphData error');
+				$.unblockUI();
+				appendErrorMessage("子图抽取失败");
+			}
+		});
+
+	}
+
+	function getEVOgraph() {
+
+		$.blockUI({
+			message : '<h1><img src="images/spinner.gif" /> 加载中...</h1>'
+		});
+
+		if($("#evo_kValue").val()==''){
+			alert("请输入路径数");
+			return;
+		}
+		var startIndex=$("#evo_Start").val().split(":")[0];
+		var endIndex=$("#evo_End").val().split(":")[0];
+		var getEVOgraphUrl = SERVER_URL
+				+ '/graphapi.php?apiname=evograph&graphid=' + gCurGraphId
+				+ '&source=' + startIndex + '&target='
+				+ endIndex + '&pathnum=' + $("#evo_pValue").val()
+				+ '&uid=' + gUID + '&topk=' + $("#evo_kValue").val();
+
+		console.info(getEVOgraphUrl);
+		$('svg').remove();
+
+		$.ajax({
+			url : getEVOgraphUrl,
+			dataType : 'json',
+			success : function(data) {
+			
+				var jsonstr=JSON.stringify(data);
+				drawKSgraph(data);
+				$.unblockUI();
+				appendSuccMessage("信任网络成功可视化");
+
+				saveHistory(jsonstr, "SETI:EVOGRAPH");
+			},
+			error : function() {
+				console.info('getKSgraphData error');
+				$.unblockUI();
+				appendErrorMessage("信任网络未成功可视化");
+			}
+		});
+
+	}
+
+	//*****************************Open Param Dialog Start*****************************
+
+	var point_End = null;
+	var point_Start = null;
+	var point_K = null;
+
+	function ksParamDialog() {
+		if (!gCurGraphId) {
+			alert("请选择社会网络.");
+			return;
+		}
+
+		$('#ks_End').val("");
+		$('#ks_Start').val("");
+		$('#ks_kValue').val("");
+
+		$('#ksparam-form').dialog(
+				{
+					autoOpen : false,
+					buttons : {
+						确定 : function() {
+							point_Start = $("#ks_Start").val();
+							point_End = $("#ks_End").val();
+							point_K = $("#ks_kValue").val();
+							
+							console.info("Start:" + point_Start + "End:"
+									+ point_End + "value:" + point_K);
+
+							getKSgraph();
+							if(point_Start==''||point_End==''||point_K=='')
+								return;
+							$('#ksparam-form').dialog("close");
+						},
+						取消 : function() {
+							$('#ksparam-form').dialog("close");
+						}
+
+					}
+				});
+		$("#ksparam-form").dialog("open");
+	}
+
+	function evoParamDialog() {
+
+		if (!gCurGraphId) {
+			alert("请选择社会网络.");
+			return;
+		}
+		;
+
+		if (!point_Start) {
+			alert("请先抽取子图");
+			return;
+		}
+
+		$('#evo_nValue').val("");
+		$("#evoparam-form").dialog({
+			autoOpen : false,
+			buttons : {
+				确定 : function() {
+
+					getEVOgraph();
+					if($("#evo_kValue").val()=='')
+						return;
+					$('#evoparam-form').dialog('close');
+				},
+				取消 : function() {
+					$('#evoparam-form').dialog('close');
+				}
+			}
+		});
+
+		$('#evo_Start').val(point_Start);
+		$('#evo_End').val(point_End);
+		$('#evo_kValue').val(point_K);
+
+		$('#evoparam-form').dialog('open');
+	}
+
+	//*****************************Add Service Begin*****************************
+
+	function clickAddService() {
+		$("#upload_dlg").dialog({
+			title : "请选择一个.json或.dot文件",
+			autoOpen : false,
+			show : "blind",
+			hide : "explode",
+			resizable : false,
+			width : 410
+		});
+		$("#upload_dlg").dialog("open");
+	}
+
+	function ajaxFileUpload() {
+
+		$("#loading").ajaxStart(function() {
+			$(this).show();
+		}).ajaxComplete(function() {
+			$(this).hide();
+			
+			
+		});
+
+		$.ajaxFileUpload({
+			url : SERVER_URL+'/graphapi.php?apiname=addgraph'+'&uid='+gUID,
+			secureuri:false,
+			fileElementId : 'fileToUpload',
+			dataType : 'json',
+			data : {name : 'logan',id : 'id'},
+			success : function(data, status) {
+				if (typeof (data.error) != 'undefined') {
+					if (data.error != '') {
+						$('#warning').text('上传错误:' + data.error);
+					} else {
+						$('#warning').text('上传成功：' + data.msg);
+						$('#upload_dlg').dialog('close');
+						getGraphList();
+					}
+				}
+			},
+			error : function(data, status, e) {
+				$('#upload_dlg').dialog('close');
+				getGraphList();
+			}
+		})
+
+		return false;
+
+	}
+	var workid;
+	var historyid;
+
+	function startwork() {
+		$.ajax({
+			type : "POST",
+			url : SERVER_URL + '/graphapi.php?apiname=startwork&uid=' + gUID,
+			success : function(data) {
+				//var json = JSON.parse(data);
+				//$('#pulldata').append('<h5>'+json.msg+'</h5>');
+				var json = JSON.parse(data);
+				if (json.go == 1) {
+					//set pulldata after 0.5s
+					workid = data.workid;
+					historyid = data.historyid;
+					alert('start work');
+					setTimeout('working()', 500);
+				} else if (json.go == 2) {
+					setTimeout('startwork()', 2000);
+				} else {
+					//
+					alert('fail to start working');
+				}
+			},
+			error : function(e) {
+				alert(e);
+			}
+		});
+	}
+
+	function working() {
+		$.ajax({
+			type : "POST",
+			url : SERVER_URL + '/graphapi.php?apiname=working&uid=' + gUID + '&historyid='
+					+ historyid + '&workid=' + workid,
+			success : function(data) {
+				//var json = JSON.parse(data);
+				//$('#pulldata').append('<h5>'+json.msg+'</h5>');
+				if (data.go == 1) {//data received and display
+					historyid = data.historyid;
+					var msg = data.msg;
+					alert('receive message:' + msg);
+					//todo display
+
+					setTimeout('working()', 3000);
+				} else if (data.go == 2) {//no data receive and continue ask for data
+					setTimeout('working()', 3000);
+				} else if (data.go == 3) {//end
+					endwork();
+				}
+			},
+			error : function(e) {
+				alert(e);
+			}
+		});
+	}
+
+	function endwork() {
+		$.ajax({
+			type : "POST",
+			url : SERVER_URL + '/graphapi.php?apiname=endwork&uid=' + gUID + '&historyid='
+					+ historyid + '&workid=' + workid,
+			success : function(data) {
+				//var json = JSON.parse(data);
+				//$('#pulldata').append('<h5>'+json.msg+'</h5>');
+				if (data.go == 1) {
+					alert('End Work');
+				} else {
+					setTimeout('endwork()', 3000);
+				}
+			},
+			error : function(e) {
+				alert(e);
+			}
+		});
+	}
+
+	//*****************************Start Page Load*******************************
+	var outerLayout, innerLayout;
+
+	$(document).ready(function() {
+		// create the OUTER LAYOUT
+		outerLayout = $("body").layout(layoutSettings_Outer);
+		outerLayout.addOpenBtn("#tbarOpenSouth", "south");
+		outerLayout.addCloseBtn("#tbarCloseSouth", "south");
+
+		// save selector strings to vars so we don't have to repeat it
+		// must prefix paneClass with "body > " to target ONLY the outerLayout panes
+		var westSelector = "body > .ui-layout-west"; // outer-west pane
+
+		// CREATE SPANs for pin-buttons - using a generic class as identifiers
+		$("<span></span>").addClass("pin-button").prependTo(westSelector);
+
+		// BIND events to pin-buttons to make them functional
+		outerLayout.addPinBtn(westSelector + " .pin-button", "west");
+
+		// CREATE SPANs for close-buttons - using unique IDs as identifiers
+		$("<span></span>").attr("id", "west-closer").prependTo(westSelector);
+		// BIND layout events to close-buttons to make them functional
+		outerLayout.addCloseBtn("#west-closer", "west");
+
+		// DEMO HELPER: prevent hyperlinks from reloading page when a 'base.href' is set
+		$("a").each(function() {
+			var path = document.location.href;
+			if (path.substr(path.length - 1) == "#")
+				path = path.substr(0, path.length - 1);
+			if (this.href.substr(this.href.length - 1) == "#")
+				this.href = path + "#";
+		});
+
+
+		$('#tbarAddService').click(function() {
+			clickAddService();
+		});
+		$('#tbarksGraph').click(function() {
+			ksParamDialog();
+		});
+		$('#tbarevoGraph').click(function() {
+			evoParamDialog();
+		});
+		$('#tbarEditGraph').click(function(){
+			editFormDialog();
+		});
+		editorClick();
+		refreshLoginStatus();
+		getGraphList();
+		
+
+	});
+	
+	//***************************search candidate ***************************//
+
+	
+	function avaliableNodes(){
+		var result=[];
+		var i;
+		for(i=0;i<gCurGraphData.nodes.length;i++){
+		
+			result.push(gCurGraphData.nodes[i].id+":"+gCurGraphData.nodes[i].name);
+		}
+
+		return result;
+	}
+	
+	
+
+</script>
+
+
+</head>
+
+<body>
+
+	<div class="ui-layout-west">
+
+		<div class="header">社会网络数据集列表</div>
+
+		<div class="content" id="leftholder">
+			<h3>
+				<b>选择列表</b>
+			</h3>
+			<div id='list4'>
+				<ul id="graph_list">
+				</ul>
+			</div>
+		</div>
+
+
+	</div>
+
+	<div class="ui-layout-north">
+		<div class="content">
+			<!-- <img src="images/logo-nju4-cn.jpg">
+        <span id="login" style="margin:1px; float:right"></span>
+         -->
+			<table width="100%" cellspacing="0" border="0">
+				<tbody>
+					<tr>
+						<td width="28%"><a href="../main.jsp"><img border="0"
+								align="left" src="./images/logo-left.png"></a></td>
+						<td><font size="6px" face="arial,helvetica,sanserif">
+								基于社会网络的Web服务 </font> <br> <font face="arial,helvetica,sanserif">
+								可信信息收集工具 </font></td>
+						<td><a href="http://www.nju.edu.cn"><img border="0"
+								align="right" alt="NJU Logo" src="./images/nju.png"></a></td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+		<ul class="toolbar">
+			<li id="tbarOpenSouth"><span></span>打开控制台</li>
+			<li id="tbarCloseSouth"><span></span>关闭控制台</li>
+			<li id="tbarAddService"><span></span>添加社会网络数据集</li>
+			<li id='tbarEditGraph'><span></span>编辑数据集</li>
+			<li id="tbarksGraph"><span></span>子网抽取</li>
+			<li id='tbarevoGraph'><span></span>信任网络可视化</li>
+			
+		</ul>
+	</div>
+
+
+	<div class="ui-layout-south">
+		<div class="header">控制台</div>
+		<div class="content" id="console_holder"></div>
+	</div>
+
+	<div class="ui-layout-center">
+		<div class="header">观测数据</div>
+		<div class="content" id="placeholder"></div>
+	</div>
+
+
+
+	<div id="upload_dlg" style="display:none;">
+		<input id="fileToUpload" type="file" size="45" name="fileToUpload"
+			class="input">
+		<button class="button" id="buttonUpload"
+			onclick="return ajaxFileUpload();">上传</button>
+		<!--<button class="button" onclick="startwork()">test</button>-->
+		<h4 class='' id='warning'></h4>
+		<img id="loading" src="images/loading.gif" style="display: none;">
+	</div>
+
+	<div id="ksparam-form" style="display:none;"
+		class="ui-widget ui-widget-content ui-corner-all" title="子网抽取参数">
+		<p class="validateTips">所有的表单域都为必填项</p>
+		<form id="reg-form">
+			<table>
+				<tr>
+					<td><a>起点:</a><input type="text" name="ks_Start" id="ks_Start"
+						value="" />
+						
+			
+						
+					</td>
+				</tr>
+				<tr>
+					<td><a>终点:</a><input type="text" name="ks_End" id="ks_End" 
+					value=""  /> 
+					
+					</td>
+				</tr>
+				<tr>
+					<td><a>k值:</a><input type="text" name="ks_kValue" id="ks_kValue"
+						value="" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div id="evoparam-form" style="display:none;"
+		class="ui-widget ui-widget-content ui-corner-all" title="网络可视化参数">
+		<p class="validateTips">所有的表单域都为必填项,*默认子网抽取参数.</p>
+		<form id="reg-form">
+			<table>
+				<tr>
+					<td><a>*起点:</a><input type="text" name="evo_Start" id="evo_Start"
+						value="" disabled='true' />
+					</td>
+				</tr>
+				<tr>
+					<td><a>*终点:</a><input type="text" name="evo_End" id="evo_End"
+						value="" disabled='true' />
+					</td>
+				</tr>
+				<tr>
+					<td><a>*k值 :</a><input type="text" name="evo_kValue" id="evo_kValue"
+						value="" disabled='true' />
+					</td>
+				</tr>
+				<tr>
+					<td><a>路径数:</a><input type='text' name="evo_pValue" id='evo_pValue'
+						value=''>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<div id="edit-form" style="display:none;"
+		class="ui-widget ui-widget-content ui-corner-all" title="修改网络数据集">
+		<form id="reg-form">
+			<div>
+			<input type='text' id='new_graph_name' value='' placeholder='输入新数据集的名称'>
+			</div>
+			<div id="update_graph">
+				<div id="update_options">
+  				<ul>
+    			<li><a href="#add_nodes" style="font-size: 0.8em;" >添加节点</a></li>
+    			<li><a href="#add_edges" style="font-size: 0.8em;" >添加边</a></li>
+    			<li><a href="#delete_nodes" style="font-size: 0.8em;">删除节点</a></li>
+    			<li><a href="#delete_edges" style="font-size: 0.8em;">删除边</a></li>
+ 				</ul>
+ 				</div>
+ 				<div id="add_nodes">
+ 					<table align="center">
+						<tr>
+							<td><a>名&nbsp;&nbsp;&nbsp;称:</a><input type='text' id='add_nodes_input' placeholder="输入新增节点名称" value="">
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><a href="#" id="add_nodes_button">执行</a> </td>
+						</tr>	
+  					</table>
+  				</div>
+  				<div id="add_edges">
+  					<table	align="center">
+						<tr>
+							<td><a>起&nbsp;&nbsp;&nbsp;点:</a><input type= 'text' id='add_edges_input_s' placeholder="输入边的起点" value="">
+							</td>
+						</tr>
+						<tr>
+							<td><a>终&nbsp;&nbsp;&nbsp;点:</a><input type='text' id='add_edges_input_t' placeholder="输入边的终点" value="">
+							</td>
+						</tr>
+						<tr>
+							<td><a>信任值:</a><input type='text' id='add_edges_input_w' placeholder="输入边的信任值" value="">
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><a href="#" id="add_edges_button">执行</a> </td>
+						</tr>	
+  					</table>
+  				</div>
+  				<div id="delete_nodes">
+  					<table	align="center">
+						<tr>
+							<td><a>节&nbsp;&nbsp;&nbsp;点:</a><input type='text' id='delete_nodes_input' placeholder="输入待删除节点" value="">
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><a href="#" id="delete_nodes_button">执行</a> </td>
+						</tr>	
+						
+  					</table>
+  				</div>
+  				<div id="delete_edges">
+  					<table	align="center">
+						<tr>
+							<td><a>&nbsp;&nbsp;边&nbsp;</a>:<input type= 'text' id='delete_edges_input' placeholder="输入待删除边" value="">
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><a href="#" id="delete_edges_button">执行</a> </td>
+						</tr>	
+  					</table>
+  				</div>
+  			
+  			</div>
+  			<div>
+  			<div>
+  			<ul id="sortable" >
+  				
+			</ul>
+			</div>
+			
+			
+			</div>
+		</form>
+	</div>
+</body>
+</html>

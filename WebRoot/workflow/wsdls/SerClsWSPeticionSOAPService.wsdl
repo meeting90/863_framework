@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://webservices.tpvpc.sermepa.es" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://webservices.tpvpc.sermepa.es" xmlns:intf="http://webservices.tpvpc.sermepa.es" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://webservices.tpvpc.sermepa.es" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://webservices.tpvpc.sermepa.es" xmlns:intf="http://webservices.tpvpc.sermepa.es" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+   <element name="trataPeticion">
+    <complexType>
+     <sequence>
+      <element name="entradaXML" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionResponse">
+    <complexType>
+     <sequence>
+      <element name="trataPeticionReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionInfoPagoRF">
+    <complexType>
+     <sequence>
+      <element name="entradaXML" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionInfoPagoRFResponse">
+    <complexType>
+     <sequence>
+      <element name="trataPeticionInfoPagoRFReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionPago">
+    <complexType>
+     <sequence>
+      <element name="entradaXML" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionPagoResponse">
+    <complexType>
+     <sequence>
+      <element name="trataPeticionPagoReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataComunicacionContable">
+    <complexType>
+     <sequence>
+      <element name="entradaXML" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataComunicacionContableResponse">
+    <complexType>
+     <sequence>
+      <element name="trataComunicacionContableReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionInfo">
+    <complexType>
+     <sequence>
+      <element name="entradaXML" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="trataPeticionInfoResponse">
+    <complexType>
+     <sequence>
+      <element name="trataPeticionInfoReturn" nillable="true" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="trataPeticionInfoPagoRFResponse">
+
+      <wsdl:part element="intf:trataPeticionInfoPagoRFResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionPagoRequest">
+
+      <wsdl:part element="intf:trataPeticionPago" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionInfoResponse">
+
+      <wsdl:part element="intf:trataPeticionInfoResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionInfoPagoRFRequest">
+
+      <wsdl:part element="intf:trataPeticionInfoPagoRF" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataComunicacionContableRequest">
+
+      <wsdl:part element="intf:trataComunicacionContable" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionInfoRequest">
+
+      <wsdl:part element="intf:trataPeticionInfo" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataComunicacionContableResponse">
+
+      <wsdl:part element="intf:trataComunicacionContableResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionPagoResponse">
+
+      <wsdl:part element="intf:trataPeticionPagoResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionRequest">
+
+      <wsdl:part element="intf:trataPeticion" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="trataPeticionResponse">
+
+      <wsdl:part element="intf:trataPeticionResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SerClsWSPeticionSOAP">
+
+      <wsdl:operation name="trataPeticion">
+
+         <wsdl:input message="intf:trataPeticionRequest" name="trataPeticionRequest"/>
+
+         <wsdl:output message="intf:trataPeticionResponse" name="trataPeticionResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionInfoPagoRF">
+
+         <wsdl:input message="intf:trataPeticionInfoPagoRFRequest" name="trataPeticionInfoPagoRFRequest"/>
+
+         <wsdl:output message="intf:trataPeticionInfoPagoRFResponse" name="trataPeticionInfoPagoRFResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionPago">
+
+         <wsdl:input message="intf:trataPeticionPagoRequest" name="trataPeticionPagoRequest"/>
+
+         <wsdl:output message="intf:trataPeticionPagoResponse" name="trataPeticionPagoResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataComunicacionContable">
+
+         <wsdl:input message="intf:trataComunicacionContableRequest" name="trataComunicacionContableRequest"/>
+
+         <wsdl:output message="intf:trataComunicacionContableResponse" name="trataComunicacionContableResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionInfo">
+
+         <wsdl:input message="intf:trataPeticionInfoRequest" name="trataPeticionInfoRequest"/>
+
+         <wsdl:output message="intf:trataPeticionInfoResponse" name="trataPeticionInfoResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="SerClsWSPeticionSOAPSoapBinding" type="intf:SerClsWSPeticionSOAP">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="trataPeticion">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="trataPeticionRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="trataPeticionResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionInfoPagoRF">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="trataPeticionInfoPagoRFRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="trataPeticionInfoPagoRFResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionPago">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="trataPeticionPagoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="trataPeticionPagoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataComunicacionContable">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="trataComunicacionContableRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="trataComunicacionContableResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="trataPeticionInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="trataPeticionInfoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="trataPeticionInfoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SerClsWSPeticionSOAPService">
+
+      <wsdl:port binding="intf:SerClsWSPeticionSOAPSoapBinding" name="SerClsWSPeticionSOAP">
+
+         <wsdlsoap:address location="http://sis-d.sermepa.es/TPV_PC/services/SerClsWSPeticionSOAP"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

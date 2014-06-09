@@ -1,0 +1,44 @@
+  .normal_message {
+			  margin: 0px;
+			  padding: 0px;
+		  }
+          	
+      .successful_message {
+        margin: 0px;
+        padding: 0px;
+        color: green;
+      }
+          	
+      .failed_message {
+        margin: 0px;
+        padding: 0px;
+        color: red;
+      }
+      
+      .ui-layout-north .content {
+          background-color:rgb(255,255,255);
+      }
+      
+      #login {
+        position: absolute;
+        right: 0px;
+  			top: 10px;
+  			width:200px;
+  			height:17px;
+  			display:inline-block;
+      }
+      
+      #tool1 {
+        position: absolute;
+        display:inline-block;
+  			margin-left:30px;
+  			margin-top:30px;
+      }
+      
+      #list4 {font-family:Georgia, Times, serif; font-size:15px; }
+      #list4 ul { list-style: none; margin-bottom:0px; padding-bottom:0px; margin-right:0px; border-style:solid; border-width:1px; border-color:#CCCCCC; }
+      #list4 ul li { margin:0px; padding:0px; }
+      #list4 ul li a { display:block; text-decoration:none; color:#000000; background-color:#FFFFFF; line-height:30px;
+        border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#CCCCCC; padding-left:0px; cursor:pointer;               }
+      #list4 ul li a strong { margin-right:0px; }
+      

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2014-5-15 18:04:08 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="workflow.db.Focusws" table="focusws" catalog="internetware">
+        <id name="fwsid" type="java.lang.Long">
+            <column name="fwsid" />
+            <generator class="identity" />
+        </id>
+        <property name="userid" type="long">
+            <column name="userid" not-null="true" />
+        </property>
+        <property name="wsid" type="long">
+            <column name="wsid" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

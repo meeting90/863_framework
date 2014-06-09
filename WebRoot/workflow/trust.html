@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/demo/demo.css">
+	
+<style type="text/css">
+.normal_message {
+	margin: 0px;
+	padding: 0px;
+}
+
+.successful_message {
+	margin: 0px;
+	padding: 0px;
+	color: green;
+}
+
+.failed_message {
+	margin: 0px;
+	padding: 0px;
+	color: red;
+}
+#toolbar {
+  background-color: #E0ECFF;
+  background: -webkit-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+  background: -moz-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+  background: -o-linear-gradient(top,#EFF5FF 0,#E0ECFF 100%);
+  background: linear-gradient(to bottom,#EFF5FF 0,#E0ECFF 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#EFF5FF,endColorstr=#E0ECFF,GradientType=0);
+}
+#console{
+	margin-left:auto;
+	margin-right:auto;
+	text-align: center;
+}
+
+#userDetailpg{
+	width:300px;
+	text-align: center;
+	
+}
+#fsInfoContainer{
+	width:600px;
+	padding:10px;
+	text-align: center;
+	margin-left:auto;
+	margin-right:auto;
+}
+#login {
+	position: absolute;
+	right: 0px;
+	top: 10px;
+	width: 200px;
+	height: 17px;
+	display: inline-block;
+}
+#list4 {
+	width: 100%;
+	font-family: Georgia, Times, serif;
+	font-size: 15px;
+}
+
+#list4 ul {
+	list-style: none;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+	margin-right: 0px;
+	margin-left:0px;
+	padding: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #FFF;
+}
+
+#list4 ul li {
+	margin: 0px;
+	padding: 0px;
+}
+
+#list4 ul li a {
+	display: block;
+	text-decoration: none;
+	color: #000000;
+	background-color: #FFFFFF;
+	line-height: 30px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #CCCCCC;
+	padding-left: 0px;
+	cursor: pointer;
+}
+#list ul li a.more{
+	color: green;
+}
+
+#list4 ul li a:hover {
+	color: #FFFFFF;
+	background-image: url(images/hover.png);
+	background-repeat: repeat-x;
+}
+
+#list4 ul li a strong {
+	margin-right: 0px;
+}
+
+.background {
+	fill: none;
+	pointer-events: all;
+}
+
+#wholeview .node {
+	stroke: #fff;
+	stroke-width: 1.5px;
+}
+
+#wholeview .link {
+	stroke: #999;
+	stroke-opacity: .6;
+	stroke-width: 1.5px;
+}
+
+#wholeview >svg {
+	width: 100%;
+	height: 100%;
+}
+</style>
+	
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery-easyui-1.3.6/jquery.easyui.min.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	
+	<script type="text/javascript" src="js/raphael.js"></script>
+	<script type="text/javascript" src="globalvar.js"></script>
+	<script type="text/javascript" src="common.js"></script>
+	<script type="text/javascript" src="popup.js"></script>
+	<script type="text/javascript" src="relation.js"></script>
+	<script type="text/javascript" src="webservice.js"></script>
+	<script type="text/javascript" src="workflow.js"></script>
+	<script type="text/javascript">
+		 $(document).ready( function() {
+		
+		  $(document.body).layout();
+		 
+		  showAllRelation();
+		
+		  
+		}); 
+	
+	</script>
+
+	
+</head>
+<body class="easyui-layout" id="body_layout">
+    <div  data-options="region:'north',height:100"  >
+   		<div class="content">
+			<table width="100%" cellspacing="0" border="0">
+				
+					<tr>
+						<td width="28%"><a href="../main.jsp"><img border="0"
+								align="left" src="./images/logo-left.png"></a></td>
+						<td><font size="6px" face="arial,helvetica,sanserif">
+								基于社会网络的Web服务 </font>
+								<br> 
+								<font size="6px" face="arial,helvetica,sanserif">
+								可信信息收集工具 </font></td>
+						<td><a href="http://www.nju.edu.cn"><img border="0"
+								align="right" alt="NJU Logo" src="./images/nju.png"></a></td>
+					</tr>
+				
+			</table>
+		
+
+		</div>
+
+    </div>
+    <div data-options="region:'west',split:true,width:0" ></div>
+
+	<div data-options="region:'center',split:true" >
+	 <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'north',border:false" style="height:50px">
+            	    <div id='toolbar' class="easyui-panel" style>
+	 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="openConsole();">打开控制台</a> |
+	 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="closeConsole();">关闭控制台</a> |
+      					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showAllRelation()">信任网络整体视图</a> |
+       					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showExtraDialog();">用户信任子网抽取</a> |
+        				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showUserList();">修改用户关系</a> 
+       
+   					 </div>
+                </div>
+                <div id="mainView" data-options="region:'center',border:false"></div>
+            </div>
+	 
+  
+    
+    
+ </div>
+	
+	
+      
+   
+    
+    <div id='userList' data-options="region:'east',split:true,minWidth:300,maxWidth:300,title:'用户列表',collapsed:true,onExpand:loadUserData()" >
+	
+	
+    </div>
+    
+    
+     <div data-options="region:'south',split:true,title:'控制台',collapsed:true,height:150,maxHeight:150" >
+     	<div id='console'>
+     	<p id='console_p'></p>
+     	</div>
+     </div>
+	
+		
+	
+
+
+	
+	
+	<div id="userDetail"></div>
+	<div id="extraDialog">
+		<div style="padding:20px;margin-left:auto;margin-right:auto">
+      	  	<label for="name">信任阈值:(输入0.0~1.0之间的小数)</label>
+      	  	<br></br>
+       		<input id='threshold_input' class="easyui-numberbox" type="text" name="name" data-options="min:0,max:1,precision:2" style="width:250px" />
+    	</div>
+	</div>
+
+</body>
+
+
+</html>

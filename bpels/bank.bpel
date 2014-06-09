@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="gb2312"?>
+<process xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bank="http://xservice.act.buaa.edu.cn/bpel/wsdl" xmlns:ext="http://xservice.act.buaa.edu.cn/bank/partnerLinkTypes" xmlns:ns0="http://act.org/UserVerification" xmlns:ns1="http://act.org/BalanceVerification" xmlns:ns2="http://act.org/Deduction" xmlns:_1="http://schemas.xmlsoap.org/ws/2003/03/business-process/" name="bank" targetNamespace="http://xservice.act.buaa.edu.cn/bpel">
+  <partnerLinks>
+    <partnerLink myRole="manageAccountRole" name="user" partnerLinkType="ext:userPLT" />
+    <partnerLink name="userVerification" partnerLinkType="ext:userVerificationPLT" partnerRole="userVerificationRole" />
+    <partnerLink name="balanceVerification" partnerLinkType="ext:balanceVerificationPLT" partnerRole="balanceVerificationRole" />
+    <partnerLink name="balanceVerificationTwo" partnerLinkType="ext:balanceVerificationPLT2" partnerRole="balanceVerificationRole" />
+    <partnerLink name="balanceVerificationThree" partnerLinkType="ext:balanceVerificationPLT3" partnerRole="balanceVerificationRole" />
+    <partnerLink name="deduction" partnerLinkType="ext:deductionPLT" partnerRole="deductionRole" />
+    <partnerLink name="deductionTwo" partnerLinkType="ext:deductionPLT2" partnerRole="deductionRole" />
+
+  </partnerLinks>
+  <variables>
+    <variable messageType="bank:manageAccountRequest" name="userIn" />
+    <variable messageType="bank:manageAccountResponse" name="userOut" />
+    <variable messageType="ns0:verifyRequest" name="userVerificationIn" />
+    <variable messageType="ns0:verifyResponse" name="userVerificationOut" />
+    <variable messageType="ns1:verifyRequest" name="balanceVerificationIn" />
+    <variable messageType="ns1:verifyResponse" name="balanceVerificationOut" />
+    <variable messageType="ns2:deductRequest" name="deductionIn" />
+    <variable messageType="ns2:deductResponse" name="deductionOut" />
+  </variables>
+  <sequence ID="">
+    <receive name="userRequest" ID="" createInstance="yes" operation="manageAccount" partnerLink="user" portType="bank:manageAccountPT" variable="userIn" />
+    <assign joinCondition="" name="assignToUserVerification" ID="">
+      <copy>
+        <from part="accountNumber" variable="userIn" />
+        <to part="param0" variable="userVerificationIn" />
+      </copy>
+      <copy>
+        <from part="password" variable="userIn" />
+        <to part="param1" variable="userVerificationIn" />
+      </copy>
+    </assign>
+    <invoke joinCondition="" name="userVerification" ID="" inputVariable="userVerificationIn" operation="verify" outputVariable="userVerificationOut" partnerLink="userVerification" portType="ns0:UserVerification" />
+    <switch ID="">
+      <case joinCondition="" ID="" condition="'bpws:getVariableData('verifyReturn')'=200">
+        <sequence ID="">
+          <assign name="assignToBalanceVerification" ID="">
+            <copy>
+              <from part="accountNumber" variable="userIn" />
+              <to part="param0" variable="balanceVerificationIn" />
+            </copy>
+            <copy>
+              <from part="amount" variable="userIn" />
+              <to part="param1" variable="balanceVerificationIn" />
+            </copy>
+          </assign>
+          <invoke name="balanceVerification" ID="" inputVariable="balanceVerificationIn" operation="verify" outputVariable="balanceVerificationOut" partnerLink="balanceVerification" portType="BalanceVerification" />
+          <switch ID="">
+            <case ID="" condition="'bpws:getVariableData('balanceVerificationOut','verifyReturn')'='true'">
+              <sequence ID="">
+                <assign name="assignToDeduction" ID="">
+                  <copy>
+                    <from part="accountNumber" variable="userIn" />
+                    <to part="param0" variable="deductionIn" />
+                  </copy>
+                  <copy>
+                    <from part="amount" variable="userIn" />
+                    <to part="param1" variable="deductionIn" />
+                  </copy>
+                </assign>
+                <invoke name="Deduction" ID="" inputVariable="deductionIn" operation="deduct" outputVariable="deductionOut" partnerLink="deduction" portType="Deduction" />
+                <switch ID="">
+                  <case ID="" condition="'bpws:getVariableData('deductionOut','deductReturn')'='true'">
+                    <assign ID="">
+                      <copy>
+                        <from expression="true()" />
+                        <to part="result" variable="userOut" />
+                      </copy>
+                    </assign>
+                  </case>
+                  <otherwise ID="">
+                    <assign ID="">
+                      <copy>
+                        <from expression="false()" />
+                        <to part="result" variable="userOut" />
+                      </copy>
+                    </assign>
+                  </otherwise>
+                </switch>
+              </sequence>
+            </case>
+            <otherwise ID="">
+              <assign ID="">
+                <copy>
+                  <from expression="false()" />
+                  <to part="result" variable="userOut" />
+                </copy>
+              </assign>
+            </otherwise>
+          </switch>
+        </sequence>
+      </case>
+      <case ID="" condition="'bpws:getVariableData('deductReturn')'=301">
+                    <assign ID="">
+                      <copy>
+                        <from expression="true()" />
+                        <to part="result" variable="userOut" />
+                      </copy>
+                    </assign>
+                    <invoke name="balanceVerification2" ID="" inputVariable="balanceVerificationIn" operation="verify" outputVariable="balanceVerificationOut" partnerLink="balanceVerificationTwo" portType="BalanceVerificationTwo" />
+                  </case>
+      <otherwise ID="">
+        <assign ID="">
+          <copy>
+            <from expression="false()" />
+            <to part="result" variable="userOut" />
+          </copy>
+        </assign>
+        <invoke name="balanceVerification3" ID="" inputVariable="balanceVerificationIn" operation="verify" outputVariable="balanceVerificationOut" partnerLink="balanceVerificationThree" portType="BalanceVerificationThree" />
+                <invoke name="Deduction2" ID="" inputVariable="deductionIn" operation="deduct" outputVariable="deductionOut" partnerLink="deductionTwo" portType="DeductionTwo" />
+      </otherwise>
+    </switch>
+    <reply name="userReply" ID="" operation="manageAccount" partnerLink="user" portType="bank:manageAccountPT" variable="userOut" />
+  </sequence>
+</process>
+

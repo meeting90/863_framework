@@ -1,0 +1,11 @@
+1.workflow.relation?query=getAllRrelation
+
+2.workflow.relation?query=getTrustValue&trustorId=1&trusteeId=50
+0
+
+3.workflow.relation?query=getTrustRelation&uid=316&threshold=0.9
+{"other":[{"nid":73,"trusteeId":199,"trustValue":1,"trustorId":250},{"nid":224,"trusteeId":401,"trustValue":1,"trustorId":130}],"relation":[{"rate":1,"fullrate":0,"trustee":237},{"rate":1,"fullrate":0,"trustee":101},{"rate":1,"fullrate":0,"trustee":250},{"rate":1,"fullrate":0,"trustee":197},{"rate":1,"fullrate":0,"trustee":244},{"rate":1,"fullrate":0,"trustee":199},{"rate":1,"fullrate":0,"trustee":401},{"rate":1,"fullrate":0,"trustee":130}]}
+
+4.workflow.relation?query=addRelation&trustorId=1&trusteeId=316
+
+5.workflow.relation?query=removeRelation&trustorId=1&trusteeId=316
