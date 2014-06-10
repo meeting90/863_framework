@@ -3,108 +3,67 @@
 
 function showWorkflowList(){
 	
-	selectPanel('#relationTab',"工作流列表",'workflowList','refreshWorkflowView()');
+	drawWorkflowListLayout();
+	loadWorkflowList();
 	
 		
 }
-function refreshWorkflowView(){
-	drawWorkflowListLayout('#workflowList','workflowLists','workflowDetail');
-//	  $.ajax({
-//		  	type: 'POST',
-//	        url: getFocusWfURL+uid,
-//	        dataType: 'json',
-//	        success: function(data) {
-//	        	
-//	        	
-//	        	drawFocusedWorkflowListView(data);
-//	        	//loadOtherWorkflow();
-//	        },
-//			error:function(XMLHttpRequest, textStatus, errorThrown){
-//				
-//				alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-//			}
-//	      });
-//	
-	$.ajax({
-		type: 'POST',
-        url: getWorkflowInfoURL+1,
-        dataType: 'json',
-        success: function(data) {
-        	drawWorkflowInterfaceView(data);
-        	
-        	//drawFocusedWorkflowListView(data);
-        	//loadOtherWorkflow();
-        },
-		error:function(){
-			
-			alert("error get workflow Info");
-		}
-	});
-	  
+
+function evaluateService(){
+	
+}
+function analysisService(){
+	
+}
+function showUploadDialog(){
+	
 }
 
-function searchWorkflow(value,name){
-	
-	serviceOffset=0;
-	console.info(searchServiceURL);
-	  $.ajax({
-		  	type: 'POST',
-	        url: searchWorkflowURL+value,
-	        dataType: 'json',
-	        success: function(data) {
-	        	drawSearchWorkflowListView(data);
-	        },
-			error:function(){
-				alert("get search User error");
-			}
-	      });
+function loadWorkflowList(){
+	 $.ajax({
+  	type: 'POST',
+    url: getFocusedWfURL+uid,
+    dataType: 'json',
+    success: function(data) {
+    	
+    	
+    	drawFocusedWorkflowListView(data);
+    	
+    },
+	error:function(XMLHttpRequest, textStatus, errorThrown){
+		
+		alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+	}
+  });
+
 }
-function loadOtherWorkflow(){
-	workflowOffset=0;
-	$.ajax({
-		type:'POST',
-		url:getAllWfURL+serviceOffset,
-		dataType:'json',
-		success:function(data){
-			drawOtherWorkflowView(data);
-			workflowOffset+=data.length;
-		},error:function(){
-			console.info("get all service error");
-		}
-	});
-}
-function loadMoreWorkflow(){
-	$.ajax({
-		type:'POST',
-		url:getAllWfURL+workflowOffset,
-		dataType:'json',
-		success:function(data){
-			drawMoreWfView(data);
-			workflowOffset+=data.length;
-		},error:function(){
-			console.info("get all service error");
-		}
-	});
-}
+
 function loadWorkflowDetail(wfid){
-//	$('#workflowDetail').empty();
-//	$.ajax({
-//		type:'POST',
-//		dataType:'json',
-//		url:getWorkflowURL+wsid,
-//		success:function(data){
-//			drawWorkflowDetailView(data);
-//		},
-//		error:function(){
-//			alert('get Service error');
-//		}
-//	});
+	
+	drawWorkflowDetailView();
+	loadWfBaseInfo(wfid);
+	loadWfInfo(wfid);
 }
-function loadWfInfo(wsid){
+function loadWfBaseInfo(wfid){
+	
+	
 	$.ajax({
 		type:'POST',
 		dataType:'json',
-		url:getWorkflowInfoURL+wsid,
+		url:getWorkflowURL+wfid,
+		success:function(data){
+			drawWfBaseInfoView(data);
+		},
+		error:function(){
+			alert('get Service error');
+		}
+	});
+}
+function loadWfInfo(wfid){
+	$.ajax({
+		type:'POST',
+		dataType:'json',
+		url:getWorkflowInfoURL+wfid,
 		success:function(data){
 			drawWorkflowInterfaceView(data);
 		},error:function(){
@@ -116,33 +75,11 @@ function loadWfInfo(wsid){
 
 
 function drawWorkflowListLayout(divId,newId1,newId2){
-	$(divId).layout();
-	  $(divId).layout("add",{
-		  region:'west',
-		  title:"工作流列表",
-		  width:300,
-		  minWidth:300,
-		  maxWidth:300,
-		  border:true, 
-		  fit: false,
-		  collapsible:false,
-		  split:true,
-		  id: newId1
-	  });
-	  $(divId).layout("add",{
-		  region: 'center',
-		  title:'工作流详细信息',
-		  border:true,
-		  split:true,
-		  fit:false,
-		  id:newId2	  
-	  });
+	
 	 
 	  var focusedlist=$('<div>').attr('id','list4');
-	  focusedlist.appendTo(document.getElementById(newId1));
-	  
-	  var focusedHeader=$('<p>').html('关注的工作流');
-	  focusedHeader.appendTo(focusedlist);
+	  focusedlist.appendTo($('#workflowList'));
+	
 	  
 	  var focusedul=$('<ul>').attr('id','focusedWorkflowList');
 	  focusedul.appendTo(focusedlist);
@@ -151,18 +88,18 @@ function drawWorkflowListLayout(divId,newId1,newId2){
 
 function drawFocusedWorkflowListView(data){
 	$('#focusedWorkflowList').empty();
-	drawServiceListCore(data,'#focusedWorkflowList',false);
+	drawWorkflowListCore(data,'#focusedWorkflowList',false);
 	
 	
 }
 function drawWorkflowListCore(data,div,filter){
-	
+	console.info(data);
 	  data.forEach(function (d){
 		  if(!filter){
 			  focusedWorkflow.push(d.wfId);
 		  }
 		  if(!filter || $.inArray(d.wfId,focusedWorkflow)==-1){
-			 var href_tag = $('<a>').attr('href', '#').attr('id',d.wfId).attr('onclick', 'loadWorkflowDetail(this.id);').html(d.wsName);
+			 var href_tag = $('<a>').attr('href', '#').attr('id',d.wfId).attr('onclick', 'loadWorkflowDetail(this.id);').html(d.wfName);
 	    	 var span_tag=$('<span>');
 	    	 var  li_tag = $('<li>');
 			 span_tag.appendTo($(div));
@@ -173,56 +110,60 @@ function drawWorkflowListCore(data,div,filter){
 		 
 }
 
-function drawWorkflowDetailView(data){
-
-	var detailAccordion=$('<div>').attr('class','easyui-accordion').attr('id','fwAccordion');
-	detailAccordion.appendTo($('#workflowDetail'));
-
+function drawWorkflowDetailView(){
+	$('#mainView').empty();
+	var detailAccordion=$('<div>').attr('id','fwAccordion');
+	detailAccordion.appendTo($('#mainView'));
 	$('#fwAccordion').accordion({
 		fit:false,
 		multiple:true
 	});
 	$('#fwAccordion').accordion('add',{
 		title:'基本信息',	
+		
 		selected:true,
+		collapsed:false,
+		collapsible:false,
 		id:'fwfBaseInfo'
 		
 	});
 	$('#fwAccordion').accordion('add',{
 		title:'服务接口',
+		
 		id:'fwfInterface',
+		collapsed:false,
+		collapsible:false,
 		selected:true,
-		height:300
+		height:500
 		
 
 	});
-
-	//drawWfBaseInfoView(data);
 	
-	loadWfInfo(data.wsId);
+
 	
 }
 function drawWfBaseInfoView(data){
+	console.info('drawWFBaseInfoVIew');
 	var fwInfoContainer=$('<div>').attr('id','fwInfoContainer');
 	fwInfoContainer.appendTo($('#fwfBaseInfo'));
-	fwProperty=$('<div>').attr('id','fwProperty');
-	fwProperty.appendTo(fwInfoContainer);
+	fwfProperty=$('<div>').attr('id','fwfProperty');
+	fwfProperty.appendTo(fwInfoContainer);
 
 	
-	$('#fwProperty').propertygrid({
+	$('#fwfProperty').propertygrid({
 		showGroup:false,
 		showHeader:false,
 		width:500,
 		
 	});
 
-	var wsId={name:'服务ID',value:data.wsId};
-	var wsName={name:'服务名',value:data.wsName};
-	var wsPath={name:'服务连接',value:'<a href=".'+data.wsPath+'">.'+data.wsPath+'</a>'};
+	var wfId={name:'工作流ID',value:data.wfId};
+	var wfName={name:'工作流名',value:data.wfName};
+	var wfPath={name:'工作流连接',value:'<a href=".'+data.wfPath+'">.'+data.wfPath+'</a>'};
 
-	$('#fsProperty').propertygrid('appendRow',wsId);
-	$('#fsProperty').propertygrid('appendRow',wsName);
-	$('#fsProperty').propertygrid('appendRow',wsPath);
+	$('#fwfProperty').propertygrid('appendRow',wfId);
+	$('#fwfProperty').propertygrid('appendRow',wfName);
+	$('#fwfProperty').propertygrid('appendRow',wfPath);
 	
 	
 }
@@ -231,9 +172,9 @@ function drawWfBaseInfoView(data){
 
 function drawWorkflowInterfaceView(data){
 	calculateDimension(data);
-	var width=Math.max($('#workflowDetail').width(),data.width+20);
-	var height=Math.max($('#workflowDetail').height(),data.height+20);
-	var paper=Raphael('workflowDetail',width,height);
+	var width=Math.max($('#fwfInterface').width(),data.width+20);
+	var height=Math.max($('#fwfInterface').height(),data.height+20);
+	var paper=Raphael('fwfInterface',width,height);
 	drawBPELActivity(paper,data,width/2,height/2);
 }
 
@@ -303,7 +244,7 @@ function drawBPELActivity(paper,activity,cx,cy){
 			if(text.length>32)
 				short=text.substr(0,13)+"...";
 			var textNode=paper.text(textX,textY,short).attr({cursor: "move"});
-			var icon;
+			
 		
 			textNode.full=text;
 			textNode.short=short;

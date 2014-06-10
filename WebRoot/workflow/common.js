@@ -117,11 +117,13 @@ var reconnection= function(obj){
 },
 //****************拖拽节点响应事件，显示节点信息 ****************//
 dragger = function () {
-	
+	console.info('dragger');
     this.ox = this.type == "rect" ? this.attr("x") : this.attr("cx");
     this.oy = this.type == "rect" ? this.attr("y") : this.attr("cy");
-    this.r=this.type=="rect"? this.attr("width"):this.attr("r");
-    if(this.txt==null){
+    this.r=    this.type=="rect"? this.attr("width") : this.attr("r");
+    console.info(this.txt);
+    if(this.txt){
+    	
     	
     	this.txt=this.paper.text(this.ox,this.oy,"...");
         var txt=this.txt,
@@ -158,27 +160,29 @@ dragger = function () {
     	        		
     	        }
     	      });
+        }
     	 
         }else{
-        	console.info('else');
+        	
         	if(this.data('fullrate')!=undefined)
         		this.txt.attr("text",this.name+':'+this.data('fullrate'));
         	else
         		this.txt.attr('text',this.name);
-        	this.txt.show();
+        	
         	if(this.type=='rect'){
-        		appendNormalMessage("Web服务名:"+name);
+        		appendNormalMessage("Web服务名:"+this.name);
         		appendNormalMessage("Web服务ID:"+this.data('name'));
         		appendNormalMessage("**********");
         	}else{
-        		appendNormalMessage("用户名:"+name);
+        		appendNormalMessage("用户名:"+this.name);
         		appendNormalMessage("用户ID:"+this.data('name'));
         		appendNormalMessage("**********");
         	
         	}	
         	
         }
-    }
+    
+    
     
     this.animate({"fill-opacity": .2}, 500);
 },

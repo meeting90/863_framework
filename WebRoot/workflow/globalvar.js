@@ -31,7 +31,8 @@ var updateRatingURL=baseServiceURL+"updateRating";
 var searchServiceURL=baseServiceURL+"searchService&name=";
 var getServiceRatingURL=baseServiceURL+"getRating&wsid=";
 
-var getFocusedWfURL=baseWorkflowURL+"getWorkflow&uid=";
+var getWorkflowURL=baseWorkflowURL+'getWorkflow&wfid=';
+var getFocusedWfURL=baseWorkflowURL+'getFoucsedWf&uid=';
 var getAllWfURL=baseWorkflowURL+"getAllWorkflow";
 var getWorkflowInfoURL=baseWorkflowURL+"getWorkflowInfo&wfid=";
 

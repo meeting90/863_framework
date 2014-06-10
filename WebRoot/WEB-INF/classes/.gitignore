@@ -1,0 +1,7 @@
+/.DS_Store
+/db
+/hibernate.cfg.xml
+/phpconfig.properties
+/servlet
+/util
+/workflow

@@ -1,15 +1,42 @@
-
-function showSericeList(){
+var selectedServiceId=null;
+function showServiceList(){
 	
-	selectPanel('#relationTab',"服务列表",'serviceList','refreshServiceView()');
+	drawServiceListLayout();
 	
+	loadFocusService();
+	loadOtherService();
 		
 }
-function refreshServiceView(){
-	$('#serviceLists').empty();
-	$('#serviceDetail').empty();
-	drawServiceListLayout('#serviceList','serviceLists','serviceDetail');
-	  $.ajax({
+//************ 评估选中工作流 ***********//
+function evaluateService(){
+	if(selectedServiceId==null){
+		alert('请选择一个服务!');
+		return;
+	}
+	
+		
+	
+}
+//*************** 显示文件上传对话 ***********//、
+function showUploadDialog(){
+	$('#uploadDialog').dialog({
+		title:'上传Web服务',
+		width:300,
+		closed:false,
+		cache:false,
+		buttons: [{
+	      
+		        text:'关闭',
+		        iconCls:'icon-no',
+		        handler:function(){
+		        	$('#uploadDialog').dialog('close');
+		        }
+	    }]
+	});
+	
+}
+function loadFocusService(){
+	 $.ajax({
 		  	type: 'POST',
 	        url: getFocusWsURL+uid,
 	        dataType: 'json',
@@ -17,7 +44,7 @@ function refreshServiceView(){
 	        	
 	        	
 	        	drawFocusedListView(data);
-	        	loadOtherService();
+	        	
 	        },
 			error:function(XMLHttpRequest, textStatus, errorThrown){
 				
@@ -73,10 +100,8 @@ function loadMoreService(){
 function loadServiceDetail(wsid){
 	$('#serviceDetail').empty();
 	drawServiceDetailView();
-	loadWsInfo(wsid);
-	loadWsRating(wsid);
 	loadWsBaseInfo(wsid);
-	
+	loadWsInfo(wsid);
 }
 function loadWsBaseInfo(wsid){
 	
@@ -119,43 +144,29 @@ function loadWsRating(wsid){
 }
 
 
-function drawServiceListLayout(divId,newId1,newId2){
+function drawServiceListLayout(){
 	
-	$(divId).layout();
-	  $(divId).layout("add",{
-		  region:'west',
-		  title:"服务列表",
-		  width:300,
-		  minWidth:300,
-		  maxWidth:300,
-		  border:true, 
-		  fit: false,
-		  collapsible:false,
-		  split:true,
-		  id: newId1
-	  });
-	  $(divId).layout("add",{
-		  region: 'center',
-		  title:'服务详细信息',
-		  border:true,
-		  split:true,
-		  fit:false,
-		  id:newId2	  
-	  });
-	 
+
 	  var focusedlist=$('<div>').attr('id','list4');
-	  focusedlist.appendTo(document.getElementById(newId1));
+	  focusedlist.appendTo($('#serviceList'));
 	  
-	  var focusedHeader=$('<p>').html('关注的服务');
+	  var focusedHeader=$('<h3>');
+	  
+	  var b=$('<b>').html('关注的服务');
+	  b.appendTo(focusedHeader);
 	  focusedHeader.appendTo(focusedlist);
 	  
 	  var focusedul=$('<ul>').attr('id','focusedServiceList');
 	  focusedul.appendTo(focusedlist);
 	  
 	  var otherlist=$('<div>').attr('id','list4');
-	  otherlist.appendTo(document.getElementById(newId1));
+	  otherlist.appendTo($('#serviceList'));
+	 
+	  var otherHeader=$('<h3>');
 	  
-	  var otherHeader=$('<p>').html('其他服务');
+	  var b=$('<b>').html('其他服务');
+	  b.appendTo(otherHeader);
+	 
 	  otherHeader.appendTo(otherlist);
 	  
 	  var searchdiv=$('<div>').attr('id','searchServiceDiv').attr('style','width:200px;padding:10px;margin-left:auto;margin-right:auto');
@@ -230,9 +241,10 @@ function drawServiceListCore(data,div,filter){
 }
 
 function drawServiceDetailView(){
-
+   
+	$('#mainView').empty();
 	var detailAccordion=$('<div>').attr('class','easyui-accordion').attr('id','fdAccordion');
-	detailAccordion.appendTo($('#serviceDetail'));
+	detailAccordion.appendTo($('#mainView'));
 
 	$('#fdAccordion').accordion({
 		fit:false,
@@ -246,16 +258,12 @@ function drawServiceDetailView(){
 		id:'fsBaseInfo'
 		
 	});
-	$('#fdAccordion').accordion('add',{
-		title:'服务评价信息',
-		selected:false,
-		height:500,
-		id:'fsRatingInfo'
-	
-	});
+
 	$('#fdAccordion').accordion('add',{
 		title:'服务接口',
 		id:'fsInterface',
+		collapsed:false,
+		collapsible:false,
 		selected:true,
 		height:500
 		
@@ -302,7 +310,7 @@ function drawBaseInfoView(data){
 		
 	});
 	
-	var rateButton=$('<a>').attr('id','rateButton');
+	var rateButton=$('<a>').attr('id','rateButton').attr('style','margin-right:10px');
 	rateButton.appendTo($('#fsInfoContainer'));
 	$('#rateButton').linkbutton({
 		text:'评价该服务',
@@ -311,7 +319,6 @@ function drawBaseInfoView(data){
 			updateRating(uid,data.wsId,value);
 		}
 	});
-	
 	
 	if($.inArray(data.wsId,focusedService)!=-1){
 		buttontext='取消关注';
@@ -334,12 +341,6 @@ function drawBaseInfoView(data){
 		}
 	});
 	
-	
-	
-	
-	
-	
-	
 }
 
 function updateRating(uid,wsid,rateValue){
@@ -350,7 +351,7 @@ function updateRating(uid,wsid,rateValue){
 		url:updateRatingURL+"&uid="+uid+"&wsid="+wsid+"&ratevalue="+rateValue,
 		success:function(){
 			alert("评价服务成功");
-			loadWsRating(wsid);
+		
 		},error:function(){
 			alert("评价服务失败");
 		}
@@ -537,10 +538,10 @@ function drawServiceInterfaceView(data){
 	
 }
 function drawServiceRatingView(data){
-	console.info('drawServiceRatingView');
-	$('#fRatingInfo').empty();
-	var width=$('#fsRatingInfo').width(),
-	height=Math.max(300,$('#fsRatingInfo').height()),
+
+	$('#mainView').empty();
+	var width=$('#mainView').width(),
+	height=Math.max(300,$('#mainView').height()),
 	cx=width/2,
 	cy=height/2,
 	r=Math.min(cx,cy)/2;
