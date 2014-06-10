@@ -20,6 +20,7 @@ public class TaskTimerListner  implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent event) {
 		timer=new Timer(true);
 		event.getServletContext().log("timer started!");
+		//System.out.printf("timer running!");
 		timer.schedule(new UpdateDataBaseTask(event.getServletContext()), 0,1*60*60*1000);
 	}
 	
