@@ -87,6 +87,7 @@ Raphael.fn.connection =
 	    } else {
 	    	
 	    	var pathLine=this.path(path);
+	    	pathLine.insertBefore(obj2);
 	    	
 	    	if(weight==undefined || weight==0)
 	    		weight=0.2;
@@ -117,42 +118,32 @@ var reconnection= function(obj){
 },
 //****************拖拽节点响应事件，显示节点信息 ****************//
 dragger = function () {
-	console.info('dragger');
+
     this.ox = this.type == "rect" ? this.attr("x") : this.attr("cx");
     this.oy = this.type == "rect" ? this.attr("y") : this.attr("cy");
     this.r=    this.type=="rect"? this.attr("width") : this.attr("r");
-    console.info(this.txt);
-    if(this.txt){
-    	
-    	
+    
+    if(this.txt==undefined){
     	this.txt=this.paper.text(this.ox,this.oy,"...");
-        var txt=this.txt,
-        	name=this.name,
-        	id=this.data('name'),
-        	type=this.type,
+    	var node=this;
+        var id=this.data('name'),
         	fullrate=this.data('fullrate');
-       
-        if(this.name==null){
-    	    var url;
-    	    if(this.type=="rect")
-    	    	url=getWsNameURL+id;
-    	    else 
-    	    	url=getUserNameURL+id;
-    	    $.ajax({
+    	 var url=this.type=='rect'?getWsNameURL+id:getUserNameURL+id;
+    	 $.ajax({
     	        url:url,
     	        success: function(data) {
-    	        	name=data;
+    	        	node.name=data;
     	        	if(fullrate!=undefined)
-    	        		txt.attr("text",name+':'+fullrate);
+    	        		node.txt.attr("text",node.name+':'+fullrate);
     	        	else
-    	        		txt.attr('text',name);
-    	        	if(type=='rect'){
-    	        		appendNormalMessage("Web服务名:"+name);
-    	        		appendNormalMessage("Web服务ID:"+id);
+    	        		node.txt.attr('text',node.name);
+    	        	if(node.type=='rect'){
+    	        		appendNormalMessage("Web服务名:"+node.name);
+    	        		appendNormalMessage("Web服务ID:"+node.id);
     	        		appendNormalMessage("**********");
     	        	}else{
-    	        		appendNormalMessage("用户名:"+name);
-    	        		appendNormalMessage("用户ID:"+id);
+    	        		appendNormalMessage("用户名:"+node.name);
+    	        		appendNormalMessage("用户ID:"+node.id);
     	        		appendNormalMessage("**********");
     	        		
     	        	}
@@ -160,14 +151,10 @@ dragger = function () {
     	        		
     	        }
     	      });
-        }
-    	 
         }else{
         	
-        	if(this.data('fullrate')!=undefined)
-        		this.txt.attr("text",this.name+':'+this.data('fullrate'));
-        	else
-        		this.txt.attr('text',this.name);
+        	
+        	this.txt.show();
         	
         	if(this.type=='rect'){
         		appendNormalMessage("Web服务名:"+this.name);

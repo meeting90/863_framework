@@ -82,7 +82,7 @@ public class BPELLazyParser {
 	    	Transaction tx=null;
 	    	try{
 	    		tx=hiberSession.beginTransaction();
-	    		hiberSession.save(nodes);
+	    		hiberSession.saveOrUpdate(nodes);
 	    		tx.commit();
 	    	}catch(Exception e){
 	    		e.printStackTrace();
@@ -94,7 +94,6 @@ public class BPELLazyParser {
 		return new String(nodes.getWfNodes());
 		
 	}
-
 	public String coreParse(String wfPath) throws IOException, SAXException{
 		BpelObjectFactory bof = new BpelObjectFactory();
 		
@@ -245,8 +244,6 @@ public class BPELLazyParser {
 		return act;
 		
 	}
-	
-	
 	private String getWSDLFileByVar(String var){
 		if(var==null) return null;
 		if(var2Wsdl==null){
@@ -270,8 +267,6 @@ public class BPELLazyParser {
 			return var2Wsdl.get(var);
 		return NO_SOURCE;
 	}
-	
-
 	private void addActivity(BPELActivity ba, Activity activity){
 		if(activity instanceof AssignActivity){
 			return;

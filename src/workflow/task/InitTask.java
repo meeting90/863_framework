@@ -3,12 +3,16 @@ package workflow.task;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.json.JSONObject;
 
 import servlet.MD5;
 import workflow.db.Rating;
@@ -254,6 +258,149 @@ public class InitTask {
 		
 	}
 	
+	
+	
+	
+	public static void updateTrust(){
+		RelationnetDAO rnDAO=new RelationnetDAO();
+		UserDAO uDAO=new UserDAO();
+		
+		List<User> users= uDAO.findAll();
+		Random random=new Random();
+		User[] userList=users.toArray(new User[users.size()]);
+		System.out.println(userList.length);
+		Session session=rnDAO.getSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			for(User u:userList){
+				
+				Collections.shuffle(users);
+				int count=random.nextInt(2);
+				System.out.println(count);
+				for(int i=0;i<count;i++){
+					List<Relationnet> result= rnDAO.findByTrustorAndTrusteeId(u.getId(), users.get(i).getId());
+					if(result==null||result.isEmpty()){
+						Relationnet newR=new Relationnet();
+						newR.setTrustorId(u.getId());
+						newR.setTrusteeId(users.get(i).getId());
+						newR.setTrustValue(1.0f);
+						JSONObject ob=new JSONObject(newR);
+						System.out.println(ob.toString());
+						session.save(newR);
+					}
+					
+				}
+			}
+			tx.commit();
+		}catch(Exception e){
+			
+		}finally{
+			session.close();
+		}
+		
+	}
+	public static float ratingValue(double r){
+		if(r<=0.1)
+			return 0.3f;
+		else if(r<=0.3)
+			return 0.5f;
+		else if(r<=0.5)
+			return 0.7f;
+		else if(r<=0.8)
+			return 0.9f;
+		else 
+			return 1.0f;
+	}
+	public static void updateRating(){
+		RatingDAO rDAO=new RatingDAO();
+		UserDAO uDAO=new UserDAO();
+		WebservicesDAO wsDAO=new WebservicesDAO();
+		
+		List<User> users= uDAO.findAll();
+		List<Webservices> services=wsDAO.findAll();
+		Random random=new Random();
+		
+		Session session=rDAO.getSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			for(Webservices ws: services){
+				
+				Collections.shuffle(users);
+				int count=random.nextInt(3);
+				
+				System.out.println(count);
+				for(int i=0;i<count;i++){
+					List<Rating> result= rDAO.findByUserAndWsId(users.get(i).getId(), ws.getWsId());
+					if(result==null||result.isEmpty()){
+						double r=random.nextDouble();
+					
+						Rating rating=new Rating();
+						rating.setRateValue(ratingValue(r));
+						rating.setUserId(users.get(i).getId());
+						rating.setWsId(ws.getWsId());
+						JSONObject ob=new JSONObject(rating);
+						System.out.println(ob.toString());
+						session.save(rating);
+						
+					}
+					
+				}
+			}
+			tx.commit();
+		}catch(Exception e){
+			
+		}finally{
+			session.close();
+		}
+	}
+	
+	
+	public static void updateWs(){
+		WebservicesDAO wsDAO=new WebservicesDAO();
+		RatingDAO rDAO=new RatingDAO();
+		UserDAO uDAO=new UserDAO();
+		List<User> users=uDAO.findAll();
+		Session session = wsDAO.getSession();
+		Transaction tx = null;
+		Random random=new Random();
+		try{
+		      tx = session.beginTransaction();	// 开启session 
+		     
+		      File folder=new File("./wsdls/");
+		      File []files=folder.listFiles();
+		      for(File file: files){
+		    	 int count= random.nextInt(10);
+		    	 Collections.shuffle(users);
+		    	  Webservices ws=new Webservices();
+		    	  ws.setWsName(file.getName());
+		    	  ws.setWsPath("/wsdls/"+file.getName());
+		    	  session.save(ws);
+		    	  for(int i=0;i<count;i++){
+						double r=random.nextDouble()+0.3;
+					
+						Rating rating=new Rating();
+						rating.setRateValue(ratingValue(r));
+						rating.setUserId(users.get(i).getId());
+						rating.setWsId(ws.getWsId());
+						JSONObject ob=new JSONObject(rating);
+						System.out.println(ob.toString());
+						session.save(rating);
+							
+						
+						
+		    	  }
+		      }  
+		      tx.commit();
+		     
+		}catch(Exception e){
+		    e.printStackTrace();
+		}finally{
+			 
+		     session.close( );	// 关闭session
+		}
+	}
 	public static void main(String []args) throws FileNotFoundException{
 		//InitTask.initWorkflow();
 		//InitTask.initUsers();
@@ -262,7 +409,9 @@ public class InitTask {
 		//InitTask.initWsMap();
 		//InitTask.initRating();
 		//InitTask.initTrust();
-		
+		//InitTask.updateTrust();
+		//InitTask.updateRating();
+		//InitTask.updateWs();
 	}
 
 }

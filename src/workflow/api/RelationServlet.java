@@ -60,7 +60,7 @@ public class RelationServlet extends HttpServlet {
 		}
 		else if(query.equals("getTrustRelation")){//get realtion where user.trustvalue > threshold
 			long uid=Long.parseLong(req.getParameter("uid"));
-			float threshold=Float.parseFloat(req.getParameter("threshold"));
+			int threshold=Integer.parseInt(req.getParameter("threshold"));
 			resp.getWriter().append(getTrustRelation(uid,threshold));
 		}else if(query.equals("addRelation")){
 			long trustorId=Long.parseLong(req.getParameter("trustorId"));
@@ -177,7 +177,7 @@ public class RelationServlet extends HttpServlet {
 		
 	}
 
-	private String getTrustRelation(long uid, float threshold) {
+	private String getTrustRelation(long uid, int threshold) {
 		RelationnetfullDAO rnfDAO=new RelationnetfullDAO();
 		RelationnetDAO rnDAO=new RelationnetDAO();
 		List<Relationnet> rns=rnDAO.findByTrustorId(uid);

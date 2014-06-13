@@ -29,7 +29,7 @@ var removeFocusServiceURL=baseServiceURL+"removeFocusService";
 var updateRatingURL=baseServiceURL+"updateRating";
 
 var searchServiceURL=baseServiceURL+"searchService&name=";
-var getServiceRatingURL=baseServiceURL+"getRating&wsid=";
+var getServiceRatingURL=baseServiceURL+"getRating";
 
 var getWorkflowURL=baseWorkflowURL+'getWorkflow&wfid=';
 var getFocusedWfURL=baseWorkflowURL+'getFoucsedWf&uid=';

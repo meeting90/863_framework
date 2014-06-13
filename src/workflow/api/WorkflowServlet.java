@@ -50,9 +50,9 @@ public class WorkflowServlet extends HttpServlet {
 		resp.setContentType("text/html;charset=UTF-8");
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		String query=req.getParameter("query");
-		Long uid=(Long)req.getSession().getAttribute("userid");
+		Long loginId=(Long)req.getSession().getAttribute("userid");
 		
-//		if(uid==null){
+//		if(loginId==null){
 //			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
 //			return;
 //		}

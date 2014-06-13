@@ -14,10 +14,13 @@ import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import workflow.api.data.UserRatingNode;
 import workflow.db.Focusws;
 import workflow.db.FocuswsDAO;
 import workflow.db.Rating;
 import workflow.db.RatingDAO;
+import workflow.db.Ratingfull;
+import workflow.db.RatingfullDAO;
 import workflow.db.Webservices;
 import workflow.db.WebservicesDAO;
 import workflow.parser.WSDLazyParser;
@@ -71,14 +74,21 @@ public class ServiceServlet extends HttpServlet {
 			long wsId=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(removeFocusService(uid,wsId));
 		}else if(query.equals("getRating")){
+			long uid=Long.parseLong(req.getParameter("uid"));
 			long wsId=Long.parseLong(req.getParameter("wsid"));
-			resp.getWriter().append(getRating(wsId));
+			resp.getWriter().append(getRating(uid,wsId));
 		}else if(query.equals("updateRating")){
 			long uid=Long.parseLong(req.getParameter("uid"));
+			
 			long wsId=Long.parseLong(req.getParameter("wsid"));
 			float rateValue=Float.parseFloat(req.getParameter("ratevalue"));
 			resp.getWriter().append(updateRating(uid,wsId,rateValue));
-		}else if(query.equals("uploadService")){
+		}else if(query.equals("getfullRating")){
+			long uid=Long.parseLong(req.getParameter("uid"));
+			long wsId=Long.parseLong(req.getParameter("wsid"));
+			resp.getWriter().append(getfullRating(uid,wsId));
+		}
+		else if(query.equals("uploadService")){
 			
 		}
 		else{
@@ -89,6 +99,12 @@ public class ServiceServlet extends HttpServlet {
 		
 	}
 	
+	private String getfullRating(long uid, long wsId) {
+		RatingfullDAO rfDAO=new RatingfullDAO();
+		List<Ratingfull> rateful=rfDAO.findByUserAndWsId(uid, wsId);
+		JSONArray json=new JSONArray(rateful);
+		return json.toString();
+	}
 	private String searchWebService(String name) {
 		WebservicesDAO wsDAO=new WebservicesDAO();
 		List<?> result=wsDAO.searchService(name);
@@ -116,13 +132,11 @@ public class ServiceServlet extends HttpServlet {
 		
 	}
 	
-	
 	private String getWsNameById(long wsid) {
 		WebservicesDAO wsDAO=new WebservicesDAO();
 		Webservices ws=wsDAO.findById(wsid);
 		return ws.getWsName();
 	}
-
 	private String getFocusedWS(long uid) {
 		FocuswsDAO fDAO=new FocuswsDAO();
 		WebservicesDAO wsDAO=new WebservicesDAO();
@@ -164,7 +178,6 @@ public class ServiceServlet extends HttpServlet {
 		
 		return ServletConstants.SUCCESS_MSG;
 	}
-
 	private String addFocusService(long uid, long wsId) {
 		FocuswsDAO fDAO=new FocuswsDAO();	
 		try{
@@ -193,9 +206,6 @@ public class ServiceServlet extends HttpServlet {
 		}
 		return  ServletConstants.SUCCESS_MSG;
 	}
-
-
-
 	private String updateRating(long uid, long wsId, float rateValue) {
 		RatingDAO rDAO=new RatingDAO();
 		try{
@@ -214,7 +224,7 @@ public class ServiceServlet extends HttpServlet {
 			Transaction tx=null;
 			try{
 				tx=session.beginTransaction();
-				session.save(rating);
+				session.saveOrUpdate(rating);
 				tx.commit();
 			}catch(Exception e){
 				e.printStackTrace();
@@ -228,11 +238,19 @@ public class ServiceServlet extends HttpServlet {
 		return  ServletConstants.SUCCESS_MSG;
 	}
 
-	private String getRating(long wsId) {
+	private String getRating(long userId,long wsId) {
 		RatingDAO rDAO=new RatingDAO();
-		List<Rating> result=rDAO.findByWsId(wsId);
-		JSONArray jsonArray = new JSONArray(result);
-		return jsonArray.toString();
+		RatingfullDAO rfDAO=new RatingfullDAO();
+		UserRatingNode rNode=new UserRatingNode();
+		List<Ratingfull> rateful=rfDAO.findByUserAndWsId(userId, wsId);
+		List<Rating> rates=rDAO.findByWsId(wsId);
+		rNode.setRatings(rates);
+		if(rateful==null||rateful.isEmpty())
+			rNode.setFulRateValue(0);
+		else
+			rNode.setFulRateValue(rateful.get(0).getRateValue());
+		JSONObject json=new JSONObject(rNode);
+		return json.toString();
 
 	}
 

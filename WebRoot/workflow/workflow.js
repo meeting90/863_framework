@@ -134,7 +134,7 @@ function drawWorkflowDetailView(){
 		collapsed:false,
 		collapsible:false,
 		selected:true,
-		height:500
+		height:600
 		
 
 	});
@@ -326,3 +326,8 @@ function drawBPELActivity(paper,activity,cx,cy){
 	
 }
 
+
+//根据体系结构计算工作流的可信度
+function calculateProcessTrust(activity){
+
+}

@@ -21,7 +21,7 @@ public class NmfTrust
 	
 	private Matrix getFullMatrix()
 	{
-		double[] para = {0.1, 10, 500};   //lambda, rank, maxIte
+		double[] para = {0.001, 10, 500};   //lambda, rank, maxIte
 				
 		Matrix rNormMatrix = MyMatrix.getRowNormalizedMatrix(this.oriMatrix);
 		Matrix rSumMatrix = MyMatrix.getRowSumMatrix(this.oriMatrix);

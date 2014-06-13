@@ -13,6 +13,19 @@ function evaluateService(){
 		alert('请选择一个服务!');
 		return;
 	}
+	$.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
+	$.ajax({
+		type:'POST',
+		url:getTrustRelationURL+'&uid='+uid+'&threshold=100', //top 100 信任的用户对该服务的评价
+		dataType:'json',
+		success: function(data){
+			loadWsRating(data,selectedServiceId);
+		},
+		error:function(){
+			$.unblockUI();
+		}
+	});
+	
 	
 		
 	
@@ -100,6 +113,7 @@ function loadMoreService(){
 function loadServiceDetail(wsid){
 	$('#serviceDetail').empty();
 	drawServiceDetailView();
+	selectedServiceId=wsid;
 	loadWsBaseInfo(wsid);
 	loadWsInfo(wsid);
 }
@@ -129,16 +143,19 @@ function loadWsInfo(wsid){
 		}
 	});
 }
-function loadWsRating(wsid){
+function loadWsRating(relationData,wsid){
 	console.info("loadWSRating");
 	$.ajax({
 		type:'POST',
 		dataType:'json',
-		url:getServiceRatingURL+wsid,
-		success:function(data){
-			drawServiceRatingView(data);
+		url:getServiceRatingURL+"&wsid="+wsid+"&uid="+uid,
+		success:function(ratingData){
+			$.unblockUI();
+			drawServiceRatingView(relationData,ratingData);
 		},error:function(){
+			$.unblockUI();;
 			alert('load Ws Rating error');
+			
 		}
 	});
 }
@@ -537,37 +554,153 @@ function drawServiceInterfaceView(data){
 	paper.relations=relations;
 	
 }
-function drawServiceRatingView(data){
+function drawServiceRatingView(relationData,ratingData){
 
+	
+	//处理获取的数据
+	
+	var directTrustUser=[];
+	var hiddenTrustUser=[];
+	
+	
+	relationData.relation.forEach(function(trust){
+		if(trust.rate==1)
+			directTrustUser.push(trust.trustee);
+		else 
+			hiddenTrustUser.push(trust.trustee);
+	});
+	console.info(directTrustUser);
+	console.info(hiddenTrustUser);
+	var histogram=[new Object(),new Object(),new Object(),new Object(),new Object()];
+	var map={'0.3':0,'0.5':1,'0.7':2,'0.9':3,'1':4};
+	
+	var max=0;
+	
+	ratingData.ratings.forEach(function(rate){
+		console.info(map[rate.rateValue]);
+		
+		if(!histogram[map[rate.rateValue]].all){
+			histogram[map[rate.rateValue]].all=0;
+			histogram[map[rate.rateValue]].direct=0;
+			histogram[map[rate.rateValue]].hidden=0;
+			histogram[map[rate.rateValue]].other=0;
+		}
+		histogram[map[rate.rateValue]].all++;
+		
+		max=Math.max(max,histogram[map[rate.rateValue]].all);
+		if($.inArray(rate.userId,directTrustUser)!=-1||rate.userId==uid)
+			histogram[map[rate.rateValue]].direct++;
+		else if($.inArray(rate.userId,hiddenTrustUser)!=-1)
+			histogram[map[rate.rateValue]].hidden++;
+		else
+			histogram[map[rate.rateValue]].other++;
+		
+	});
+	
+	
+	
 	$('#mainView').empty();
 	var width=$('#mainView').width(),
-	height=Math.max(300,$('#mainView').height()),
-	cx=width/2,
-	cy=height/2,
-	r=Math.min(cx,cy)/2;
+	height=Math.max(300,$('#mainView').height());
+
+	var paper=Raphael('mainView', width,height);
 	
-	var length=data.length+4;
-	var labels=[1,0.9,0.7,0.5,0.3];
-	var values=[1.0,1.0,1.0,1.0,1.0];
+	var elementRefer=(max/10+1).toFixed(0);
 	
-	data.forEach(function(rating){
-		if(rating.rateValue==1)
-			values[0]++;
-		else if(rating.rateValue==0.9)
-			values[1]++;
-		else if(rating.rateValue==0.7)
-			values[2]++;
-		else if(rating.rateValue==0.5)
-			values[3]++;
-		else if(rating.rateValue==0.3)
-			values[4]++;
-	});
-	values.forEach(function (v,i){
-		labels[i]='评价值为'+labels[i]+'的用户有:'+(v-1)+'个';
-		values[i]=v/length;
+	var allCount=20;
+	
+	var histogramCount=12;
+	var otherCount=8;
+	
+	var eLength=width/allCount;
+	
+	var eHeight=height/allCount;
+	
+		
+	var 
+ 	histogramH=eHeight*histogramCount,
+ 	histogramW=eLength*histogramCount,
+	histogramY=eHeight*histogramCount;
+	histogramX=eLength*otherCount;
+
+	//画横坐标,纵坐标
+	 var h = ["M", histogramX, histogramY, "H", histogramX+histogramW].join(","),
+	 v=["M", histogramX, histogramY, "V", histogramY-histogramH].join(",");
+	 paper.path(h).attr({stroke: '#000',fill: "none", "opacity":1,"arrow-end" :'block-wide-long'});
+	 paper.path(v).attr({stroke: '#000',fill: "none", "opacity":1,"arrow-end" :'block-wide-long'});
+	 paper.text(histogramX+histogramW-eLength,histogramY+eLength/2,"评价值");
+	 paper.text(histogramX-32,histogramY-histogramH+eHeight,"评价用户数");
+	//画数据网格
+	var label=['0.3','0.5','0.7','0.9','1.0'];
+	for(var i=1;i<=10;i++){
+		v=["M", histogramX+eLength*i, histogramY, "V", histogramY-histogramH].join(",");
+		paper.path(v);
+		
+		if(i%2==1){
+			var textX=histogramX+eLength*i+eLength/2;
+			var textY=histogramY+eLength/2;
+			paper.text(textX,textY,label[(i-1)/2]);
+		}
+		h=["M", histogramX, histogramY-eHeight*i, "H", histogramX+histogramW].join(","),
+		paper.path(h);	
+		paper.text(histogramX-eLength/2, histogramY-eHeight*i, elementRefer*i);
+		
+	}
+	//画说明文文字
+	var directColor="#F0F";
+	var hiddenColor="#0FF";
+	var otherColor="#FF0";
+	var directRect=paper.rect(eLength*2.5,eHeight,eLength,eHeight);
+    directRect.attr({color:directColor,fill:directColor});
+	paper.text(eLength*5,eHeight/2*3,"直接信任用户的评价");
+	
+	var hiddentRect=paper.rect(eLength*2.5,eHeight*5,eLength,eHeight);
+	hiddentRect.attr({color:hiddenColor,fill:hiddenColor});
+	paper.text(eLength*5,eHeight/2*11,"前100个信任用户的评价");
+	
+	var otherRect=paper.rect(eLength*2.5,eHeight*9,eLength,eHeight);
+	otherRect.attr({color:otherColor,fill:otherColor});
+	paper.text(eLength*5,eHeight/2*19,"其他用户的评价");
+	
+	
+	//画评价直方图
+	histogram.forEach(function(data,i){
+		var elementX=histogramX+eLength*(2*i+1),
+		elementY=histogramY-eHeight*data.all/elementRefer;
+		var allRect=paper.rect(elementX,elementY,eLength,eHeight*data.all/elementRefer);
+		allRect.attr({color: Raphael.getColor()});
+		
+		var currentY=elementY;
+		var otherRect=paper.rect(elementX,currentY,eLength,eHeight*data.other/elementRefer);
+		otherRect.attr({fill:otherColor,color:otherColor});
+		
+		currentY=currentY+eHeight*data.other/elementRefer;
+		var hiddentRect=paper.rect(elementX,currentY,eLength,eHeight*data.hidden/elementRefer);
+		hiddentRect.attr({fill:hiddenColor,color:hiddenColor});
+		
+		currentY=currentY+eHeight*data.hidden/elementRefer;
+		var directRect=paper.rect(elementX,currentY,eLength,eHeight*data.direct/elementRefer);
+		directRect.attr({fill:directColor,color:directColor});
+			
 	});
 
-	Raphael("fsRatingInfo", width, height).pieChart(cx, cy, r,values ,labels , "#ff0");
+	//画服务可信度
+	var trustText=paper.text(eLength*otherCount,eHeight*(histogramCount+2.5),"服务可信度:");
+	
+	var trustResultRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+2),eLength*otherCount,eHeight);
+	trustResultRect.attr({color:"#F00"});
+	var rateValue=ratingData.fulRateValue<1?ratingData.fulRateValue:1;
+	var fillRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+2),0,eHeight);
+	fillRect.attr({fill:"#F00",color:"#F00"});
+	var bbox=trustResultRect.getBBox();
+	
+	
+	var rateText=paper.text(bbox.x+bbox.width/2,bbox.y+bbox.height/2,(rateValue*100).toFixed(3)+"%");
+	rateText.hide();
+	fillRect.animate({"width": eLength*otherCount*rateValue}, 1000,'linear',function(){
+		rateText.show();
+	});
+	
 	
 }
 

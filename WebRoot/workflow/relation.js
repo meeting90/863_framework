@@ -282,7 +282,6 @@ function drawRelationView(holderid,width,height,data){
 
 function drawUserRelationView(holderid,width,height,uid,data){
 	var 
-	 relations=[],
 	 shapes={},
 	 cx=width/2,
 	 cy=height/2,
@@ -294,12 +293,16 @@ function drawUserRelationView(holderid,width,height,uid,data){
 	 else
 		 paper.clear();
 	 
+	 
+	 paper.relations=[];
+	 
 	 var trustorNode=paper.circle(cx,cy,20);
 	 trustorNode.attr({fill:"#f00",stroke: "#f00","fill-opacity":0.7,"stroke-width": 2,cursor:"move",id:uid});
 	 trustorNode.data("name",uid);
 	 trustorNode.drag(move,dragger,up);
 	 shapes[uid]=trustorNode;
-	// showTrustValue(trustorNode);
+	
+	 
 	 
 	 data.relation.forEach(function(d,i) {
 		 var color=Raphael.getColor(),
@@ -315,20 +318,22 @@ function drawUserRelationView(holderid,width,height,uid,data){
 		 node.data("rate",d.rate);
 		 node.data("fullrate",d.fullrate);
 		 node.drag(move,dragger,up);
-		// showTrustValue(node);
+		
 		 shapes[d.trustee]=node;
 		 var color=Raphael.getColor();
-		 relations.push(paper.connection(trustorNode,node,color,node.data("rate")));
+		 paper.relations.push(paper.connection(trustorNode,node,color,node.data("rate")));
 		});
+
 
 	 data.other.forEach(function(d,i){
 		 var color=Raphael.getColor();
-		
-		 relations.push(paper.connection(shapes[d.trustorId],shapes[d.trusteeId],color,d.trustValue));
+		 paper.relations.push(paper.connection(shapes[d.trustorId],shapes[d.trusteeId],color,d.trustValue));
+		 
 	 });
 	 
 
-	 paper.relations=relations;
+	 
+	 
 	
 
 }
