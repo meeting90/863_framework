@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://airticketquery2.nju" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://airticketquery2.nju" xmlns:intf="http://airticketquery2.nju" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://airticketquery2.nju" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="queryAirTicket">
+    <complexType>
+     <sequence>
+      <element name="cityfrom" type="xsd:string"/>
+      <element name="cityto" type="xsd:string"/>
+      <element name="time" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="queryAirTicketResponse">
+    <complexType>
+     <sequence>
+      <element name="queryAirTicketReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="queryAirTicketRequest">
+
+      <wsdl:part element="impl:queryAirTicket" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="queryAirTicketResponse">
+
+      <wsdl:part element="impl:queryAirTicketResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="AirTicketQuery2">
+
+      <wsdl:operation name="queryAirTicket">
+
+         <wsdl:input message="impl:queryAirTicketRequest" name="queryAirTicketRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:queryAirTicketResponse" name="queryAirTicketResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AirTicketQuery2SoapBinding" type="impl:AirTicketQuery2">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="queryAirTicket">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="queryAirTicketRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="queryAirTicketResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AirTicketQuery2Service">
+
+      <wsdl:port binding="impl:AirTicketQuery2SoapBinding" name="AirTicketQuery2">
+
+         <wsdlsoap:address location="http://localhost:80/Airticketquery2/services/AirTicketQuery2"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
