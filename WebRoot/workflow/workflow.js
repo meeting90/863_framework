@@ -1,5 +1,6 @@
 
-
+var selectedWorkflow=null;
+var invokedServices = [];
 
 function showWorkflowList(){
 	
@@ -9,15 +10,30 @@ function showWorkflowList(){
 		
 }
 
-function evaluateService(){
+function evaluateWorkflow(){
+	if(selectedWorkflow==null){
+		alert("请选择一个工作流");
+		return;
+	}
 	
+		
 }
-function analysisService(){
+function analysisWorkflow(){
+	if(selectedWorkflow==null){
+		alert("请选择一个工作流");
+		return;
+	}
 	
+	
+	
+
 }
+
+
 function showUploadDialog(){
 	
 }
+
 
 function loadWorkflowList(){
 	 $.ajax({
@@ -39,7 +55,7 @@ function loadWorkflowList(){
 }
 
 function loadWorkflowDetail(wfid){
-	
+	selectedWorkflow=wfid;
 	drawWorkflowDetailView();
 	loadWfBaseInfo(wfid);
 	loadWfInfo(wfid);
@@ -142,6 +158,9 @@ function drawWorkflowDetailView(){
 
 	
 }
+function showBackupDialog(wsName){
+	
+}
 function drawWfBaseInfoView(data){
 	console.info('drawWFBaseInfoVIew');
 	var fwInfoContainer=$('<div>').attr('id','fwInfoContainer');
@@ -238,7 +257,17 @@ function drawBPELActivity(paper,activity,cx,cy){
 	var gap=16,
 		oHeight=16,
 		iconPx=16;
-
+	function addToInvokedList(name){
+		
+		 var href_tag = $('<a>').attr('href', '#').attr('id',name).attr('onclick', 'showBackupDialog(this.id);').html(name);
+    	 var span_tag=$('<span>');
+    	 var  li_tag = $('<li>');
+    	 
+		 span_tag.appendTo($('#invokedServices'));
+    	 li_tag.appendTo(span_tag);
+    	 href_tag.appendTo(li_tag);
+		
+	}
 	function drawTextNodeWithIcon(text,iconPath,textX,textY,showWapper){
 			var short=text;
 			if(text.length>32)
@@ -285,6 +314,9 @@ function drawBPELActivity(paper,activity,cx,cy){
 			nextY+=(gap+oHeight);
 			sourceNode=drawTextNodeWithIcon(activity.extra[1],'./icons/service_obj.gif',cx,nextY,false);
 			nextY+=(gap+oHeight);
+			
+			addToInvokedList(activity.extra[1]);
+			
 	};
 	switch(activity.nodeType){
 		case 'sequence':case 'repeatUtil':case 'while':case 'Scope':

@@ -25,10 +25,6 @@ function evaluateService(){
 			$.unblockUI();
 		}
 	});
-	
-	
-		
-	
 }
 //*************** 显示文件上传对话 ***********//、
 function showUploadDialog(){

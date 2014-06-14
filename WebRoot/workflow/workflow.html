@@ -191,8 +191,8 @@
 	      	    <div id='toolbar' class="easyui-panel"   >
 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="openConsole();">打开控制台</a> |
 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="closeConsole();">关闭控制台</a> |
-	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="evaluateService();">评估工作流</a> |
-	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="analysisService();">分析工作流</a> |
+	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="evaluateWorkflow();">评估工作流</a> |
+	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="analysisWorkflow();">分析工作流</a> |
 	  				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showUploadDialog();">上传工作流</a> 
 			 	</div>
 	          </div>
@@ -203,7 +203,11 @@
 	
       
    
-    
+    <div  data-options="region:'east',split:true,width:300,maxtWidth:400,title:'服务列表',collapsed:true" >
+   		<div id="list4">
+   			<ul id="invokedServices"></ul>
+   		</div>
+    </div>
  
 	
 	
