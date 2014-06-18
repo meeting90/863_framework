@@ -15,6 +15,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xml.sax.SAXException;
@@ -90,24 +92,20 @@ public class WorkflowServlet extends HttpServlet {
 	        
 	        try {
 	            List<FileItem> list = upload.parseRequest(req);
-	            //System.out.printf("listsize:%d\n",list.size());
+	      
 	            
 	            FileItem item = getUploadFileItem(list);
 	            String filename = getUploadFileName(item);
 	            
-	            System.out.println("存放目录:" + path);
-	            System.out.println("文件名:" + filename);
-	  
+	        
 	            item.write(new File(path, filename));
 	              
-	            resp.getWriter().append("{err:0,");
-	            resp.getWriter().append("msg:\"size:"+item.getSize()+",name:"+filename+"\"");
-	            resp.getWriter().append("}");
+	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
 	          
 	        } catch (FileUploadException e) {  
-	            e.printStackTrace();  
+	        	  resp.getWriter().append(ServletConstants.ERROR_MSG);
 	        } catch (Exception e) {  
-	            e.printStackTrace();  
+	        	 resp.getWriter().append(ServletConstants.ERROR_MSG);
 	        }
 		}
 		else{
@@ -168,5 +166,42 @@ public class WorkflowServlet extends HttpServlet {
 		return jsonArray.toString();
 		
 	}
+	
+	public  void  insertWfRecord(String wfName,String wfPath,long uid){
+		/**
+		 * wfName: eg "travel.bpel"
+		 * wfPath: eg:"/bpels/travel.xml"
+		 * uid: eg: 316 
+		 */
+		
+		WorkflowsDAO wfDAO=new WorkflowsDAO();
+		UserwokflowDAO uwfDAO=new UserwokflowDAO();
+		
+		Session session = wfDAO.getSession();
+		Transaction tx = null;
+		try{
+			tx=session.beginTransaction();
+			Workflows wf=new Workflows();
+			wf.setWfName(wfName);
+			wf.setWfPath(wfPath);
+			session.save(wf);
+			
+			Userwokflow uwf=new Userwokflow();
+			uwf.setWfId(wf.getWfId());
+			uwf.setUserId(uid);
+			session.save(uwf);
+			
+			tx.commit();
+		}catch(Exception e){
+		    e.printStackTrace();
+		}finally{
+			
+		     session.close( );	// 关闭session
+		}
+		
+	
+		
+	}
+	
 
 }

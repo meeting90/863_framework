@@ -258,9 +258,6 @@ public class InitTask {
 		
 	}
 	
-	
-	
-	
 	public static void updateTrust(){
 		RelationnetDAO rnDAO=new RelationnetDAO();
 		UserDAO uDAO=new UserDAO();
@@ -401,6 +398,41 @@ public class InitTask {
 		     session.close( );	// 关闭session
 		}
 	}
+	
+	public static void updateWorkflow(){
+		WorkflowsDAO wfDAO=new WorkflowsDAO();
+		UserwokflowDAO uwfDAO=new UserwokflowDAO();
+		
+		Session session = wfDAO.getSession();
+		Transaction tx = null;
+		File folder=new File("./bpels/");
+		File [] files=folder.listFiles();
+	
+			try{
+				tx=session.beginTransaction();
+				for(File file :files){
+					Workflows wf=new Workflows();
+					
+					wf.setWfName(file.getName());
+					wf.setWfPath("/bpels/"+file.getName().replace("bpel", "xml"));
+					session.save(wf);
+					
+					Userwokflow uwf=new Userwokflow();
+					uwf.setUserId(316);
+					uwf.setWfId(wf.getWfId());
+					session.save(uwf);
+					
+				}
+			
+			tx.commit();
+		}catch(Exception e){
+		    e.printStackTrace();
+		}finally{
+			
+		     session.close( );	// 关闭session
+		}
+		
+	}
 	public static void main(String []args) throws FileNotFoundException{
 		//InitTask.initWorkflow();
 		//InitTask.initUsers();
@@ -412,6 +444,7 @@ public class InitTask {
 		//InitTask.updateTrust();
 		//InitTask.updateRating();
 		//InitTask.updateWs();
+		//InitTask.updateWorkflow();
 	}
 
 }

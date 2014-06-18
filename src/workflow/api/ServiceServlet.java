@@ -26,8 +26,12 @@ import workflow.db.Rating;
 import workflow.db.RatingDAO;
 import workflow.db.Ratingfull;
 import workflow.db.RatingfullDAO;
+import workflow.db.Userwokflow;
+import workflow.db.UserwokflowDAO;
 import workflow.db.Webservices;
 import workflow.db.WebservicesDAO;
+import workflow.db.Workflows;
+import workflow.db.WorkflowsDAO;
 import workflow.parser.WSDLazyParser;
 
 @SuppressWarnings("unchecked")
@@ -98,8 +102,8 @@ public class ServiceServlet extends HttpServlet {
 			resp.getWriter().append(getfullRating(uid,wsId));
 		}
 		else if(query.equals("uploadService")){
-			String temppath = getServletContext().getRealPath("\\workflow")+"\\bpels\\temp\\";
-			String path = getServletContext().getRealPath("\\workflow")+"\\bpels\\";
+			String temppath = getServletContext().getRealPath("./workflow")+"/wsdls/temp/";
+			String path = getServletContext().getRealPath("./workflow")+"/wsdls/";
 	        DiskFileItemFactory factory = new DiskFileItemFactory();  
 	        factory.setRepository(new File(temppath));
 	        factory.setSizeThreshold(1024 * 1024);
@@ -107,24 +111,22 @@ public class ServiceServlet extends HttpServlet {
 	        
 	        try {
 	            List<FileItem> list = upload.parseRequest(req);
-	            //System.out.printf("listsize:%d\n",list.size());
-	            
 	            FileItem item = getUploadFileItem(list);
 	            String filename = getUploadFileName(item);
-	            
-	            System.out.println("存放目录:" + path);
-	            System.out.println("文件名:" + filename);
-	  
+
 	            item.write(new File(path, filename));
+	            
+	            
+	            
+	            
+	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
 	              
-	            resp.getWriter().append("{err:0,");
-	            resp.getWriter().append("msg:\"size:"+item.getSize()+",name:"+filename+"\"");
-	            resp.getWriter().append("}");
+	      
 	          
 	        } catch (FileUploadException e) {  
-	            e.printStackTrace();  
+	        	  resp.getWriter().append(ServletConstants.ERROR_MSG); 
 	        } catch (Exception e) {  
-	            e.printStackTrace();  
+	        	 resp.getWriter().append(ServletConstants.ERROR_MSG); 
 	        }
 		}
 		else{
@@ -311,6 +313,38 @@ public class ServiceServlet extends HttpServlet {
 		return json.toString();
 
 	}
-
+	
+	
+	public  void  insertWsRecord(String wsName,String wsPath,long uid){
+		/**
+		 * wsName: eg "account.wsdl"
+		 * wsPath: eg:"/wsdls/account.wsdl"
+		 * uid: eg: 316 
+		 */
+		
+		WebservicesDAO wsDAO=new WebservicesDAO();
+	
+		
+		Session session = wsDAO.getSession();
+		Transaction tx = null;
+		try{
+			tx=session.beginTransaction();
+			Webservices ws=new Webservices();
+			ws.setWsName(wsName);
+			ws.setWsPath(wsPath);
+			session.save(ws);
+			Focusws fws=new Focusws();
+			fws.setUserid(uid);
+			fws.setWsid(ws.getWsId());
+			session.save(fws);
+			
+			tx.commit();
+		}catch(Exception e){
+		    e.printStackTrace();
+		}finally{
+			
+		     session.close( );	// 关闭session
+		}
+	}
 
 }
