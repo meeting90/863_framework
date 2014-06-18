@@ -75,6 +75,7 @@ function analysisWorkflow(){
 	}	
 	
 	drawAnalysisView(selectedWorkflow);	
+	console.info(selectedWorkflow);
 
 	//模拟点击事件，打开colorbox
 	$('a.analysisGallery').click();
@@ -151,6 +152,7 @@ function loadWorkflowDetail(wfid){
 	selectedWorkflow=null;
 	selectedBaseInfo=null;
 	invokedServices = [];
+	$('#invokedServices').empty();
 	drawWorkflowDetailView();
 	loadWfBaseInfo(wfid);
 	loadWfInfo(wfid);
@@ -305,9 +307,9 @@ function calculateDimension(activity){
 
 	var width=0;
 	var height=0;
-
+	
 	switch(activity.nodeType){
-		case 'sequence':case 'repeatUtil':case 'while':case 'Scope':
+		case 'sequence':case 'repeatUtil':case 'while':case 'scope':
 		//计算其子Activity需要的画布大小，子Activity纵向排列，高度求和，宽度取最大
 			
 			activity.BPELActivity.forEach(function(a) {
@@ -315,8 +317,10 @@ function calculateDimension(activity){
 				width=Math.max(width,a.width);
 				height+=(a.height+gap+oHeight*2);
 			});
-			width+=padding;
-			height+=(gap+padding);
+			if(width==0)
+				width=oWidth;
+			width+=padding*2;
+			height+=(oHeight+gap);
 			activity.width=width;
 			activity.height=height;
 			break;
@@ -337,10 +341,10 @@ function calculateDimension(activity){
 			activity.height=height;
 			break;
 
-		case 'wait': case 'throw': case 'terminate': case 'rethrow': case 'empty':
+		case 'wait': case 'throw': case 'terminate': case 'rethrow': case 'empty':case 'assign':
 			//基本activity图元的大小
 			activity.width=oWidth;
-			activity.height=oHeight;
+			activity.height=oHeight+gap;
 			break;
 		case 'receive':case 'reply':case 'invoke':	
 			//带操作的activity图元大小	
@@ -357,14 +361,16 @@ function drawBPELActivity(paper,activity,cx,cy){
 		oHeight=12,
 		iconPx=16;
 	function addToInvokedList(name){
-		invokedServices.push(name);
-		 var href_tag = $('<a>').attr('href', '#').attr('id',name).attr('onclick', 'showBackupDialog(this.id);').html(name);
-    	 var span_tag=$('<span>');
-    	 var  li_tag = $('<li>');
-    	 
-		 span_tag.appendTo($('#invokedServices'));
-    	 li_tag.appendTo(span_tag);
-    	 href_tag.appendTo(li_tag);
+		if($.inArray(name,invokedServices)==-1){
+			invokedServices.push(name);
+			 var href_tag = $('<a>').attr('href', '#').attr('id',name).attr('onclick', 'showBackupDialog(this.id);').html(name);
+	    	 var span_tag=$('<span>');
+	    	 var  li_tag = $('<li>');
+	    	 
+			 span_tag.appendTo($('#invokedServices'));
+	    	 li_tag.appendTo(span_tag);
+	    	 href_tag.appendTo(li_tag);
+		}
 		
 	}
 	function drawTextNodeWithIcon(text,iconPath,textX,textY,showWapper){
@@ -429,7 +435,7 @@ function drawBPELActivity(paper,activity,cx,cy){
 	nextY+=(gap+oHeight);
 	
 	switch(activity.nodeType){
-		case 'sequence':case 'repeatUtil':case 'while':case 'Scope':
+		case 'sequence':case 'repeatUtil':case 'while':case 'scope':
 			var newCx=cx;
 			var lastObj=nameNode;
 			activity.BPELActivity.forEach(function(a){
@@ -456,7 +462,7 @@ function drawBPELActivity(paper,activity,cx,cy){
 					paper.connection(nameNode,header,'#000',0.5);
 					paper.connection(header,aNode,'#000',0.5);
 				}else{
-					paper.connection(nameNode,aNode,'#000',0.5);
+					//paper.connection(nameNode,aNode,'#F00',0.5);
 				}
 				nextX+=a.width+gap;
 			});
@@ -502,7 +508,7 @@ function calculateAndShowProcessTrust(activity){
 	}
 	
 	switch(activity.nodeType){
-	case 'sequence':case 'repeatUtil':case 'while':case 'Scope':case 'flow': case 'forEach':
+	case 'sequence':case 'repeatUtil':case 'while':case 'scope':case 'flow': case 'forEach':
 		var multiply=1;
 		activity.BPELActivity.forEach(function  (a) {
 			calculateAndShowProcessTrust(a);
@@ -521,10 +527,9 @@ function calculateAndShowProcessTrust(activity){
 		
 		break;
 
-	case 'wait': case 'throw': case 'terminate': case 'rethrow': case 'empty': case 'receive':case 'reply':
+	case 'wait': case 'throw': case 'terminate': case 'rethrow': case 'empty': case 'receive':case 'reply':case 'assign':
 		//内部原子操作，trustValue 为1
 		activity.trustValue=1;
-		
 		break;
 	case 'invoke':	
 		//调用其他的web 服务获取其 trust值.
@@ -553,7 +558,7 @@ function calculateAndShowProcessTrust(activity){
 		if(!rateful.responseJSON){
 			activity.trustValue=0;
 		}else{
-			activity.trustValue=rateful.responseJSON[0].rateValue<1?rateful.responseJSON[0].rateValue:1;
+			activity.trustValue=rateful.responseJSON[0].rateValue<0.999?rateful.responseJSON[0].rateValue:0.999;
 		}
 		break;
 
@@ -656,7 +661,6 @@ function drawAnalysisView(activity){
 			});
 
 		}else{//basic node
-			console.info("draw basic node");
 			var cy=height-activity.depth*oHeight+oHeight/2;
 			
 			var cx=oWidth*block-oWidth/2;

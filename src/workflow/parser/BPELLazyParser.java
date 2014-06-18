@@ -3,6 +3,7 @@
  */
 package workflow.parser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,8 @@ import org.apache.ode.bpel.compiler.bom.WhileActivity;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONObject;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -52,7 +55,7 @@ import workflow.db.Workflows;
  */
 public class BPELLazyParser {
 	private static final String ERROR_MSSAGE="error:cannot parse bpel to nodes";
-	private static final String NO_SOURCE="cannot find bpel source";
+	private static final String NO_SOURCE="cannot find wsdl source";
 	
 	private Process bpelProcess;
 	private Map<String,String> var2Wsdl;
@@ -82,7 +85,7 @@ public class BPELLazyParser {
 	    	Transaction tx=null;
 	    	try{
 	    		tx=hiberSession.beginTransaction();
-	    		hiberSession.saveOrUpdate(nodes);
+	    		hiberSession.save(nodes);
 	    		tx.commit();
 	    	}catch(Exception e){
 	    		e.printStackTrace();
@@ -99,8 +102,10 @@ public class BPELLazyParser {
 		
 		InputSource is = new InputSource(wfPath);
 	    this.bpelProcess = bof.parse(is, null);
+	   
 	    
 	    Activity rootActivity=bpelProcess.getRootActivity();
+	    initVar2Wsdl(bpelProcess.getVariables(),bpelProcess.getName());
 	    
 	    BPELActivity bact=parseActivity(rootActivity);
 	    JSONObject json=new JSONObject(bact);
@@ -117,7 +122,6 @@ public class BPELLazyParser {
 			List<Activity> children=sequence.getActivities();
 			for(Activity child : children){
 			    addActivity(act, child);
-			//	act.getBPELActivity().add(parseActivity(child));
 			}
 		}else if(activity instanceof FlowActivity){
 			act.setNodeType("flow");
@@ -125,7 +129,6 @@ public class BPELLazyParser {
 			List<Activity> children=flow.getActivities();
 			for(Activity child: children){
 				addActivity(act,child);
-			//	act.getBPELActivity().add(parseActivity(child));
 			}
 		}else if(activity instanceof ForEachActivity){
 			act.setNodeType("forEach");
@@ -133,19 +136,19 @@ public class BPELLazyParser {
 			List<Activity> children=foreach.getActivities();
 			for(Activity child : children){
 				addActivity(act,child);
-				//act.getBPELActivity().add(parseActivity(child));
 			}
 		}else if(activity instanceof PickActivity){
 			act.setNodeType("pick");
 			PickActivity pick=(PickActivity)activity;
 			List<OnMessage> onMsgs=pick.getOnMessages();
 			for(OnMessage onMsg: onMsgs){
-				act.getHeader().add(onMsg.getTextValue());
+				act.getHeader().add(onMsg.getOperation());
 				act.getBPELActivity().add(parseActivity(onMsg.getActivity()));
 			}
 			List<OnAlarm> onAlarms=pick.getOnAlarms();
 			for(OnAlarm onAlarm: onAlarms){
-				act.getHeader().add(onAlarm.getTextValue());
+				act.getHeader().add("onAlarm");
+				
 				act.getBPELActivity().add(parseActivity(onAlarm.getActivity()));
 			}
 			
@@ -181,8 +184,9 @@ public class BPELLazyParser {
 			WhileActivity _while=(WhileActivity)activity;
 			act.getBPELActivity().add(parseActivity(_while.getActivity()));
 		}else if(activity instanceof ScopeActivity){
-			act.setNodeType("Scope");
+			act.setNodeType("scope");
 			ScopeActivity scope=(ScopeActivity)activity;
+			initVar2Wsdl(scope.getScope().getVariables(),scope.getName());
 			act.getBPELActivity().add(parseActivity(scope.getChildActivity()));
 		}else if(activity instanceof WaitActivity){  // atomic activity
 			act.setNodeType("wait");
@@ -200,13 +204,12 @@ public class BPELLazyParser {
 			act.setNodeType("receive");
 			ReceiveActivity receive=(ReceiveActivity)activity;
 			String var=receive.getVariable();
-			
-			
-		
+					
 			String operation=receive.getOperation();
 			act.getExtra().add(operation);
 			try {
-				String wsdlName=getWSDLFileByVar(var);
+				
+				String wsdlName=getWSDLFileByVar(activity,var);
 				act.getExtra().add(wsdlName);
 			} catch (Exception e) {
 				act.getExtra().add(NO_SOURCE);
@@ -218,7 +221,7 @@ public class BPELLazyParser {
 			String operation=reply.getOperation();
 			act.getExtra().add(operation);
 			try {
-				String wsdlName=getWSDLFileByVar(var);
+				String wsdlName=getWSDLFileByVar(activity,var);
 				
 				act.getExtra().add(wsdlName);
 			} catch (Exception e) {
@@ -234,7 +237,7 @@ public class BPELLazyParser {
 			String operation=invoke.getOperation();
 			act.getExtra().add(operation);
 			try {
-				String wsdlName=getWSDLFileByVar(var);
+				String wsdlName=getWSDLFileByVar(activity,var);
 				
 				act.getExtra().add(wsdlName);
 			} catch (Exception e) {
@@ -244,28 +247,47 @@ public class BPELLazyParser {
 		return act;
 		
 	}
-	private String getWSDLFileByVar(String var){
-		if(var==null) return null;
-		if(var2Wsdl==null){
+	
+	private void initVar2Wsdl(List<Variable> variables,String scopeName){
+		if(var2Wsdl==null)
 			var2Wsdl=new HashMap<String,String>();
-			List<Variable> variables=bpelProcess.getVariables();
-			for(Variable v: variables){
-				String namespace=v.getTypeName().getNamespaceURI();
-				
-				List<Import> imports=bpelProcess.getImports();
-				for(Import _import: imports){
-					String wsdlName=_import.getLocation().toString();
-					
-					if(namespace.equals(_import.getNamespace())){
-							var2Wsdl.put(v.getName(), wsdlName);
-					}
-				
-				}
+		for(Variable v: variables){
+			String namespace=v.getTypeName().getNamespaceURI();
+			List<Import> imports=bpelProcess.getImports();
+			for(Import _import: imports){
+				String wsdlName=_import.getLocation().toString();
+				if(namespace.equals(_import.getNamespace()))
+						var2Wsdl.put(scopeName+"_"+v.getName(), wsdlName);			
 			}
 		}
-		if(var2Wsdl.containsKey(var))
-			return var2Wsdl.get(var);
+		
+		
+	}
+	private String getWSDLFileByVar(Activity activity,String var){
+		
+		if(var==null) return null;
+		String scope=getActivityScopeName(activity);
+		String identify=scope+"_"+var;
+		String gobalidentify=this.bpelProcess.getName()+"_"+var;
+		System.out.println(identify);
+		if(var2Wsdl.containsKey(identify)){
+		
+			return var2Wsdl.get(identify);
+		}else if(var2Wsdl.containsKey(gobalidentify)){
+			return var2Wsdl.get(gobalidentify);
+		}
+		
 		return NO_SOURCE;
+	}
+	private String getActivityScopeName(Activity activity){
+		Element element=activity.getElement();
+		while(!element.getLocalName().equals("scope")&&!element.getLocalName().equals("process")){
+			element=(Element)element.getParentNode();
+		}
+		return element.getAttribute("name");
+			
+		
+	
 	}
 	private void addActivity(BPELActivity ba, Activity activity){
 		if(activity instanceof AssignActivity){
@@ -279,6 +301,13 @@ public class BPELLazyParser {
 	
 	public static void main(String []args) throws IOException, SAXException{
 		BPELLazyParser parser=new BPELLazyParser();
-		System.out.println(parser.coreParse("./bpels/travel.bpel"));
+		File folder=new File("./bpels/");
+		File []files=folder.listFiles();
+		for(File file: files){
+			System.out.println(file.getName());
+			System.out.println(parser.coreParse(file.getAbsolutePath()));
+			
+		}
+		
 	}
 }
