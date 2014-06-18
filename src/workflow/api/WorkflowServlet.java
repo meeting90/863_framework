@@ -1,7 +1,9 @@
 package workflow.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,11 +11,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xml.sax.SAXException;
 
+import workflow.db.Focusws;
 import workflow.db.Userwokflow;
 import workflow.db.UserwokflowDAO;
+import workflow.db.Webservices;
 import workflow.db.Workflows;
 import workflow.db.WorkflowsDAO;
 import workflow.parser.BPELLazyParser;
@@ -55,27 +64,51 @@ public class WorkflowServlet extends HttpServlet {
 		
 	
 		
-		if(query.equals("getWorkflow")){
-			resp.getWriter().append(getWorkflow(uid));
+		if(query.equals("getFoucsedWf")){
+			long userId=Long.parseLong(req.getParameter("uid"));
+			resp.getWriter().append(getFoucsedWf(userId));
+		}
+		else if(query.equals("getWorkflow")){
+			long userId=Long.parseLong(req.getParameter("wfid"));
+			resp.getWriter().append(getWorkflow(userId));
 		}
 		else if(query.equals("getWorkflowInfo")){
 			long wfId=Long.parseLong(req.getParameter("wfid"));
-			//resp.getWriter().append(getWorkflowInfo(wfId));
+			resp.getWriter().append(getWorkflowInfo(wfId));
 
-			InputStream stream=WorkflowServlet.class.getResourceAsStream("getWorkflowInfo.json");
-
-	        final byte data[] = new byte[1024];
-	        int count;
-	        while ((count = stream.read(data, 0, 1024)) != -1) {
-	            resp.getOutputStream().write(data, 0, count);
-	        }
-	        resp.flushBuffer();
-	        
-	        return;
+		
 		}
 		
 		else if(query.equals("uploadWorkflow")){
 			
+			String temppath = getServletContext().getRealPath("\\workflow")+"\\bpels\\temp\\";
+			String path = getServletContext().getRealPath("\\workflow")+"\\bpels\\";
+	        DiskFileItemFactory factory = new DiskFileItemFactory();  
+	        factory.setRepository(new File(temppath));
+	        factory.setSizeThreshold(1024 * 1024);
+	        ServletFileUpload upload = new ServletFileUpload(factory);
+	        
+	        try {
+	            List<FileItem> list = upload.parseRequest(req);
+	            //System.out.printf("listsize:%d\n",list.size());
+	            
+	            FileItem item = getUploadFileItem(list);
+	            String filename = getUploadFileName(item);
+	            
+	            System.out.println("存放目录:" + path);
+	            System.out.println("文件名:" + filename);
+	  
+	            item.write(new File(path, filename));
+	              
+	            resp.getWriter().append("{err:0,");
+	            resp.getWriter().append("msg:\"size:"+item.getSize()+",name:"+filename+"\"");
+	            resp.getWriter().append("}");
+	          
+	        } catch (FileUploadException e) {  
+	            e.printStackTrace();  
+	        } catch (Exception e) {  
+	            e.printStackTrace();  
+	        }
 		}
 		else{
 			resp.getWriter().append(ServletConstants.UNKOWN_REQUEST_ERROR);
@@ -83,9 +116,33 @@ public class WorkflowServlet extends HttpServlet {
 		 resp.getWriter().flush();
 		 resp.getWriter().close();
 	}
-
+	
+	private FileItem getUploadFileItem(List<FileItem> list) {
+		for (FileItem fileItem : list) {
+			if(!fileItem.isFormField()) {
+				return fileItem;
+			}
+		}
+		return null;
+	}
+	private String getUploadFileName(FileItem item) {
+		String value = item.getName();
+		int start = value.lastIndexOf("/");
+		String filename = value.substring(start + 1);
+		int point = filename.lastIndexOf(".");
+		filename = filename.substring(0, point)+".xml";
+		return filename;
+	}
 
 	
+
+	private String getWorkflow(long wfId) {
+		WorkflowsDAO wfDAO=new WorkflowsDAO();
+		Workflows wf=wfDAO.findById(wfId);
+		JSONObject json=new JSONObject(wf);
+		return json.toString();
+	  
+	}
 
 	private String getWorkflowInfo(long wfId) {
 		WorkflowsDAO wfDAO=new WorkflowsDAO();
@@ -97,11 +154,19 @@ public class WorkflowServlet extends HttpServlet {
 		
 	}
 
-	private String getWorkflow(long uid) {
+	private String getFoucsedWf(long uid) {
 		UserwokflowDAO  uwfDAO=new UserwokflowDAO();
+		WorkflowsDAO wfDAO=new WorkflowsDAO();
 		List<Userwokflow> result=uwfDAO.findByUserId(uid);
-		JSONArray jsonArray = new JSONArray(result);
+		List<Workflows> wfList=new ArrayList<Workflows>();
+		for(Userwokflow fwf: result){
+			Workflows wf=wfDAO.findById(fwf.getWfId());
+			if(wf!=null)
+				wfList.add(wf);
+		}
+		JSONArray jsonArray = new JSONArray(wfList);
 		return jsonArray.toString();
+		
 	}
 
 

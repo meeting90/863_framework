@@ -41,6 +41,7 @@
 		<mapping resource="workflow/db/Focusws.hbm.xml"/>
 		<mapping resource="workflow/db/Webservicenodes.hbm.xml"/>
 		<mapping resource="workflow/db/Workflownodes.hbm.xml"/>
+		<mapping resource="workflow/db/Userwokflow.hbm.xml"/>
 		
 		
 

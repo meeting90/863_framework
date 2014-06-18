@@ -71,8 +71,9 @@ public class BPELLazyParser {
 			nodes=new Workflownodes();
 			nodes.setWfId(wf.getWfId());
 			try {
-				String nodeJSon = coreParse(servletContext.getRealPath("/")+wf.getWfPath());
-				nodes.setWfNodes(nodeJSon.getBytes());
+				String realPath=servletContext.getRealPath("/workflow")+wf.getWfPath();
+				String nodeJson=coreParse(realPath);
+				nodes.setWfNodes(nodeJson.getBytes());
 			} catch (Exception e1) {
 				
 				nodes.setWfNodes(ERROR_MSSAGE.getBytes());

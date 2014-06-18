@@ -15,8 +15,12 @@ import workflow.db.Rating;
 import workflow.db.RatingDAO;
 import workflow.db.Relationnet;
 import workflow.db.RelationnetDAO;
+import workflow.db.Userwokflow;
+import workflow.db.UserwokflowDAO;
 import workflow.db.Webservices;
 import workflow.db.WebservicesDAO;
+import workflow.db.Workflows;
+import workflow.db.WorkflowsDAO;
 
 import db.User;
 import db.UserDAO;
@@ -210,7 +214,48 @@ public class InitTask {
 		     session.close( );	// 关闭session
 		}
 	}
+	public static void initWorkflow(){
+		WorkflowsDAO wfDAO=new WorkflowsDAO();
+		UserwokflowDAO uwfDAO=new UserwokflowDAO();
+		
+		Session session = wfDAO.getSession();
+		Transaction tx = null;
+		try{
+			tx=session.beginTransaction();
+			Workflows wf=new Workflows();
+			wf.setWfId(1L);
+			wf.setWfName("travel.bpel");
+			wf.setWfPath("/bpels/travel.bpel");
+			session.save(wf);
+			
+			tx.commit();
+		}catch(Exception e){
+		    e.printStackTrace();
+		}finally{
+			
+		     session.close( );	// 关闭session
+		}
+		
+		session= uwfDAO.getSession();
+		tx=null;
+		try{
+			tx=session.beginTransaction();
+			Userwokflow uwf=new Userwokflow();
+			uwf.setUserId(316);
+			uwf.setWfId(1L);
+			session.save(uwf);
+			tx.commit();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			session.close();
+		}
+		
+	}
+	
 	public static void main(String []args) throws FileNotFoundException{
+		//InitTask.initWorkflow();
 		//InitTask.initUsers();
 		//InitTask.initWebService();
 		//InitTask.initUserMap();
