@@ -38,17 +38,21 @@ public class ServiceServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html;charset=UTF-8");
-		resp.setHeader("Access-Control-Allow-Origin", "*");
+//		resp.setHeader("Access-Control-Allow-Origin", "*");
 		String query=req.getParameter("query");
 		Long loginId=(Long)req.getSession().getAttribute("userid");
-//		if(loginId==null){
-//			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
-//			return;
-//		}
+		if(loginId==null){
+			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
+			return;
+		}
 		 if(query.equals("getServiceName")){
 			long wsid=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(getWsNameById(wsid));
-		}else if(query.equals("getService")){
+		}else if(query.equals("getServiceId")){
+			String wsName=req.getParameter("wsName");
+			resp.getWriter().append(getServiceId(wsName));
+		}
+		 else if(query.equals("getService")){
 			long wsid=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(getWebServiceById(wsid));
 		}else if(query.equals("searchService")){
@@ -99,6 +103,12 @@ public class ServiceServlet extends HttpServlet {
 		
 	}
 	
+	private String getServiceId(String wsName) {
+		WebservicesDAO wsDAO=new WebservicesDAO();
+		List<Webservices> services=wsDAO.findByWsName(wsName);
+		JSONArray json=new JSONArray(services);
+		return json.toString();
+	}
 	private String getfullRating(long uid, long wsId) {
 		RatingfullDAO rfDAO=new RatingfullDAO();
 		List<Ratingfull> rateful=rfDAO.findByUserAndWsId(uid, wsId);

@@ -1,3 +1,23 @@
+//***********检测用户是否登录，如果没有等陆 重定向到登录页面****************//
+
+function checkLogin() {
+	 username = $.cookie('name');
+	 uid = $.cookie('uid');
+	 console.info(username);
+	 console.info(uid);
+	 //console.info(username);
+	 //console.info(uid);
+	 if (uid==null || username==null) {
+	 
+		 window.location = loginURL;
+	 } else {
+		 return true;
+	 }
+}
+
+
+
+
 
 //************控制台相关操作，打开关闭控制台，在控制台中添加不同类型的消息,清空控制台*****************//
 function openConsole(){

@@ -1,28 +1,57 @@
-var selectedServiceId=null;
+var selectedService=null;
 function showServiceList(){
-	
+	 $.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
 	drawServiceListLayout();
 	
 	loadFocusService();
-	loadOtherService();
+	
 		
 }
-//************ 评估选中工作流 ***********//
-function evaluateService(){
-	if(selectedServiceId==null){
+function showEvaluateDialog(){
+	if(selectedService==null){
 		alert('请选择一个服务!');
 		return;
 	}
+	$('#evaluateDialog').dialog({
+		title:'评估服务',
+		width:300,
+		closed:false,
+		cache:false,
+		buttons: [
+		          {
+		        	  text:'评估',
+		        	  iconCls:'icon-ok',
+		        	  handler:function(){
+		        		  evaluateService();
+		        		  $('#evaluateDialog').dialog('close');
+		        	  }
+			
+		          },
+		          {
+		        	text:'关闭',
+		        	iconCls:'icon-no',
+		        	handler:function(){
+		        		$('#evaluateDialog').dialog('close');
+		        	}
+		          }
+		          ]
+	});
+}
+
+//************ 评估选中服务 ***********//
+function evaluateService(){
+	
 	$.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
 	$.ajax({
 		type:'POST',
 		url:getTrustRelationURL+'&uid='+uid+'&threshold=100', //top 100 信任的用户对该服务的评价
 		dataType:'json',
 		success: function(data){
-			loadWsRating(data,selectedServiceId);
+			loadWsRating(data,selectedService);
 		},
 		error:function(){
-			$.unblockUI();
+			alert("评估服务失败!");
+			window.location = loginURL;
 		}
 	});
 }
@@ -53,11 +82,12 @@ function loadFocusService(){
 	        	
 	        	
 	        	drawFocusedListView(data);
+	        	loadOtherService();
 	        	
 	        },
-			error:function(XMLHttpRequest, textStatus, errorThrown){
-				
-				alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+			error:function(){
+				 alert("获取用户关注的服务失败!");
+				 window.location = loginURL;
 			}
 	      });
 	  
@@ -88,8 +118,11 @@ function loadOtherService(){
 		success:function(data){
 			drawOtherServiceView(data);
 			serviceOffset+=data.length;
+			$.unblockUI();
 		},error:function(){
-			console.info("get all service error");
+			
+			alert("获取其他服务失败！");
+			window.location = loginURL;
 		}
 	});
 }
@@ -102,16 +135,18 @@ function loadMoreService(){
 			drawMoreServiceView(data);
 			serviceOffset+=data.length;
 		},error:function(){
-			console.info("get all service error");
+			alert("获取更多服务失败！");
+			window.location = loginURL;
 		}
 	});
 }
 function loadServiceDetail(wsid){
+	$.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
 	$('#serviceDetail').empty();
 	drawServiceDetailView();
-	selectedServiceId=wsid;
+	
 	loadWsBaseInfo(wsid);
-	loadWsInfo(wsid);
+	
 }
 function loadWsBaseInfo(wsid){
 	
@@ -120,10 +155,13 @@ function loadWsBaseInfo(wsid){
 		dataType:'json',
 		url:getServiceURL+wsid,
 		success:function(data){
+			selectedService=data;
 			drawBaseInfoView(data);
+			loadWsInfo(wsid);
 		},
 		error:function(){
-			alert('get Service error');
+			alert('获取服务信息失败!');
+			window.location = loginURL;
 		}
 	});
 }
@@ -134,23 +172,27 @@ function loadWsInfo(wsid){
 		url:getServiceInfoURL+wsid,
 		success:function(data){
 			drawServiceInterfaceView(data);
+			$.unblockUI();
 		},error:function(){
+			alert('获取服务接口信息!');
+			window.location = loginURL;
 			
 		}
 	});
 }
-function loadWsRating(relationData,wsid){
+function loadWsRating(relationData,service){
 	console.info("loadWSRating");
 	$.ajax({
 		type:'POST',
 		dataType:'json',
-		url:getServiceRatingURL+"&wsid="+wsid+"&uid="+uid,
+		url:getServiceRatingURL+"&wsid="+service.wsId+"&uid="+uid,
 		success:function(ratingData){
 			$.unblockUI();
 			drawServiceRatingView(relationData,ratingData);
 		},error:function(){
-			$.unblockUI();;
-			alert('load Ws Rating error');
+			
+			alert('评估服务失败!');
+			window.location = loginURL;
 			
 		}
 	});
@@ -315,6 +357,7 @@ function drawBaseInfoView(data){
 	$('#rateInput').combobox({
 		valueField:'label',
 		textField:'value',
+		editable:false,
 		data:[{label:'1.0',value:'1.0',selected:true},
 		      {label:'0.9',value:'0.9'},
 		      {label:'0.7',value:'0.7'},
@@ -329,6 +372,7 @@ function drawBaseInfoView(data){
 		text:'评价该服务',
 		onClick:function(){
 			var value=$('#rateInput').combobox('getValue');
+
 			updateRating(uid,data.wsId,value);
 		}
 	});
@@ -643,9 +687,9 @@ function drawServiceRatingView(relationData,ratingData){
 		
 	}
 	//画说明文文字
-	var directColor="#F0F";
-	var hiddenColor="#0FF";
-	var otherColor="#FF0";
+	var directColor="#483D8B";
+	var hiddenColor="#228B22";
+	var otherColor="#20B2AA";
 	var directRect=paper.rect(eLength*2.5,eHeight,eLength,eHeight);
     directRect.attr({color:directColor,fill:directColor});
 	paper.text(eLength*5,eHeight/2*3,"直接信任用户的评价");
@@ -680,22 +724,47 @@ function drawServiceRatingView(relationData,ratingData){
 			
 	});
 
-	//画服务可信度
-	var trustText=paper.text(eLength*otherCount,eHeight*(histogramCount+2.5),"服务可信度:");
 	
-	var trustResultRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+2),eLength*otherCount,eHeight);
+	var requirement=$('#trust_requirement').val();
+	//画服务可信度
+	var trustText=paper.text(eLength*otherCount,eHeight*(histogramCount+3.5),"服务可信度:");
+	
+	var trustResultRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+3),eLength*otherCount,eHeight);
 	trustResultRect.attr({color:"#F00"});
 	var rateValue=ratingData.fulRateValue<1?ratingData.fulRateValue:1;
-	var fillRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+2),0,eHeight);
-	fillRect.attr({fill:"#F00",color:"#F00"});
+	var fillRect=paper.rect(eLength*(otherCount+1),eHeight*(histogramCount+3),0,eHeight);
+	if(rateValue>=requirement)
+		fillRect.attr({fill:"#228B22",color:"#228B22"});
+	else
+		fillRect.attr({fill:"#F00",color:"#F00"});
+	
 	var bbox=trustResultRect.getBBox();
-	
-	
+
 	var rateText=paper.text(bbox.x+bbox.width/2,bbox.y+bbox.height/2,(rateValue*100).toFixed(3)+"%");
 	rateText.hide();
 	fillRect.animate({"width": eLength*otherCount*rateValue}, 1000,'linear',function(){
 		rateText.show();
 	});
+	
+	
+	
+
+	//在console中添加服务评估信息
+	
+	if(rateValue>=requirement){
+		appendSuccessMessage("服务评估成功!");
+		appendSuccessMessage(selectedService.wsName+" 可信度:"+ rateValue);
+		appendSuccessMessage("***************");
+	}else{
+		appendErrorMessage("服务评估失败!");
+		appendErrorMessage(selectedService.wsName+" 可信度:"+ rateValue);
+		appendErrorMessage("***************");
+	}
+	openConsole();
+		
+	
+	
+	
 	
 	
 }

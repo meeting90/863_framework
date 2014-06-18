@@ -144,7 +144,7 @@
 		 $(document).ready( function() {
 		
 		  $(document.body).layout();
-		 
+		  checkLogin();
 		  showServiceList();
 		
 		  
@@ -192,7 +192,7 @@
             	    <div id='toolbar' class="easyui-panel" >
 	 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="openConsole();">打开控制台</a> |
 	 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="closeConsole();">关闭控制台</a> |
-       					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="evaluateService();">评估服务可信度</a> |
+       					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showEvaluateDialog();">评估服务可信度</a> |
         				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showUploadDialog();">上传服务</a> 
    					 </div>
                 </div>
@@ -222,7 +222,13 @@
 
 	
 	
-	
+	<div id="evaluateDialog">
+		<div style="padding:20px;margin-left:auto;margin-right:auto">
+      	  	<label for="name">评估信任度需求>:(输入0.0-1.0之间的小数)</label>
+      	  	<br></br>
+       		<input id='trust_requirement' class="easyui-numberbox" type="text" name="name" data-options="min:0,max:1,precision:2" style="width:250px" />
+    	</div>
+    </div>
 	<div id="uploadDialog">
 		<!-- 上传文件对话框 -->
 	<p> 在这里添加上传服务的相关内容</p>

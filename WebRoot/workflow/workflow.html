@@ -6,7 +6,7 @@
 <link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/default/easyui.css">
 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/themes/icon.css">
 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.3.6/demo/demo.css">
-	
+	<link rel="stylesheet" type="text/css" href="js/colorbox/colorbox.css"/>
 <style type="text/css">
 .normal_message {
 	margin: 0px;
@@ -135,20 +135,38 @@
 	
 	<script type="text/javascript" src="js/jquery.blockUI.js"></script>
 	<script type="text/javascript" src="js/jquery.cookie.js"></script>
-	
+	<script type="text/javascript" src="js/jquery.colorbox.js"></script>
 	<script type="text/javascript" src="js/raphael.js"></script>
 	<script type="text/javascript" src="globalvar.js"></script>
 	<script type="text/javascript" src="common.js"></script>
 	<script type="text/javascript" src="workflow.js"></script>
+	
 	<script type="text/javascript">
 		 $(document).ready( function() {
 		
 		  $(document.body).layout();
 		 
-		  showWorkflowList();
-		
 		  
-		}); 
+
+			//注册 1个colorbox 用于显示分析工作流信息，等待加载
+			
+			 $('a.analysisGallery').colorbox({
+				 	inline:true,	
+					href:'#analysisGallery',
+					scrolling:true, 
+					onClosed:function(){
+						$('#analysisGallery').empty();
+						
+					}
+				});
+
+			 checkLogin();
+			 showWorkflowList();
+		 
+		
+		 });
+
+		
 	
 	</script>
 
@@ -191,7 +209,7 @@
 	      	    <div id='toolbar' class="easyui-panel"   >
 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="openConsole();">打开控制台</a> |
 					<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="closeConsole();">关闭控制台</a> |
-	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="evaluateWorkflow();">评估工作流</a> |
+	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showEvaluateDialog();">评估工作流</a> |
 	 				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="analysisWorkflow();">分析工作流</a> |
 	  				<a href="#" class="easyui-linkbutton" data-options="plain:true" onclick="showUploadDialog();">上传工作流</a> 
 			 	</div>
@@ -225,7 +243,22 @@
 
 
 	
+	<div id='evaluateDialog'>
+		<div style="padding:20px;margin-left:auto;margin-right:auto">
+      	  	<label for="name">评估信任度需求>:(输入0.0-1.0之间的小数)</label>
+      	  	<br></br>
+       		<input id='trust_requirement' class="easyui-numberbox" type="text" name="name" data-options="min:0,max:1,precision:2" style="width:250px" />
+    	</div>
+	</div>
 	
+
+	<div id="analysisGallery" style="width:1000px;height:600px">
+	</div>
+	
+	
+	<a class='analysisGallery' href='#analysisGallery' ></a>
+	
+
 	
 	<div id="uploadDialog">
 		<!-- 上传文件对话框 -->

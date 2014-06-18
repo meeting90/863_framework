@@ -1,6 +1,7 @@
 var paper;
 
 function showAllRelation(){
+	 
 	 $.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
 	 $.ajax({
 		  	type: 'POST',
@@ -14,8 +15,9 @@ function showAllRelation(){
 	        },
 			error:function(){
 				console.info("getAllRelation error");
-				$.unblockUI();
-				alert("getAllRelation error");
+				
+				alert("获取社会网络信息失败！");
+				//window.location = loginURL;
 				
 			}
 	      });
@@ -80,6 +82,7 @@ function extraSubRelation(){
 }
 
 function loadUserData(){
+	
 	drawUserListLayout();
 	loadFocusedUser();
 	
@@ -87,8 +90,11 @@ function loadUserData(){
 }
 
 function showUserList(){
+	$.blockUI({ message: '<h1><img src="./images/spinner.gif" /> 加载中...</h1>' }); 
 	$(document.body).layout('collapse','east');
 	$(document.body).layout('expand','east');
+	
+	loadUserData();
 	
 }
 
@@ -97,6 +103,7 @@ function showUserList(){
 
 
 function loadFocusedUser(){
+	console.info(uid);
 	  $.ajax({
 		  	type: 'POST',
 	        url: getFocusedUserURL+uid,
@@ -106,10 +113,11 @@ function loadFocusedUser(){
 	        	drawFocusedUserListView(data);
 	        	loadUser();
 	        	
+	        	
 	        },
 			error:function(){
-				console.info("get Focused User error");
-				alert("get Focused User error");
+				alert("获取关注用户列表失败！");
+				//window.location = loginURL;
 			}
 	      });
 }
@@ -124,11 +132,12 @@ function loadUser(){
 	        	
 	        	drawUserListView(data);
 	        	userOffset+=data.length;
-	        	
+	        	$.unblockUI();
 	        },
 			error:function(){
 				console.info("get All User error");
-				alert("get All User error");
+				alert("获取其他用户列表失败！");
+				//window.location = loginURL;
 			}
 	      });
 }
@@ -145,8 +154,8 @@ function loadMoreUser(){
 	        	userOffset+=data.length;
 	        },
 			error:function(){
-				console.info("get All User error");
-				alert("get All User error");
+				alert("获取更多用户列表失败！");
+				//window.location = loginURL;
 			}
 	      });
 }
@@ -162,7 +171,8 @@ function searchUser(value,name){
 	        	drawSearchUserListView(data);
 	        },
 			error:function(){
-				alert("get All User error");
+				alert("搜索用户失败！");
+				window.location = loginURL;
 			}
 	      });
 }
@@ -178,7 +188,9 @@ function loadUserDetail(userid){
 			
 		},
 		eror:function(){
-			alert('get user detail error');
+			alert("获取用户详细信息失败！");
+			window.location = loginURL;
+			
 		}
 	});
 	
@@ -196,6 +208,7 @@ function addRelation(trustorId,trusteeId){
         	loadUser();
 		},error:function(){
 			alert('取消信任用户失败');
+			window.location = loginURL;
 		}
 		
 	});
