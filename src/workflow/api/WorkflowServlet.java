@@ -167,7 +167,7 @@ public class WorkflowServlet extends HttpServlet {
 		
 	}
 	
-	public  void  insertWfRecord(String wfName,String wfPath,long uid){
+	public  String  insertWfRecord(String wfName,String wfPath,long uid){
 		/**
 		 * wfName: eg "travel.bpel"
 		 * wfPath: eg:"/bpels/travel.xml"
@@ -192,12 +192,14 @@ public class WorkflowServlet extends HttpServlet {
 			session.save(uwf);
 			
 			tx.commit();
+			return getFoucsedWf(uid);
 		}catch(Exception e){
 		    e.printStackTrace();
 		}finally{
 			
 		     session.close( );	// 关闭session
 		}
+		return ServletConstants.ERROR_MSG;
 		
 	
 		

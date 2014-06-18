@@ -317,7 +317,7 @@ public class ServiceServlet extends HttpServlet {
 	}
 	
 	
-	public  void  insertWsRecord(String wsName,String wsPath,long uid){
+	public  String  insertWsRecord(String wsName,String wsPath,long uid){
 		/**
 		 * wsName: eg "account.wsdl"
 		 * wsPath: eg:"/wsdls/account.wsdl"
@@ -340,13 +340,17 @@ public class ServiceServlet extends HttpServlet {
 			fws.setWsid(ws.getWsId());
 			session.save(fws);
 			
+			
 			tx.commit();
+			return getFocusedWS(uid);
 		}catch(Exception e){
 		    e.printStackTrace();
 		}finally{
 			
 		     session.close( );	// 关闭session
 		}
+		
+		return ServletConstants.ERROR_MSG;
 	}
 
 }
