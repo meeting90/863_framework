@@ -232,6 +232,8 @@ public class ServiceServlet extends HttpServlet {
 					tx=session.beginTransaction();
 					session.delete(item);
 					tx.commit();
+					return getFocusedWS(uid);
+					
 				}catch(Exception e){
 					e.printStackTrace();
 				    throw e;
@@ -243,9 +245,9 @@ public class ServiceServlet extends HttpServlet {
 		}catch(Exception e){
 			return ServletConstants.ERROR_MSG;
 		}
-			
+		return ServletConstants.ERROR_MSG;
 		
-		return ServletConstants.SUCCESS_MSG;
+		
 	}
 	private String addFocusService(long uid, long wsId) {
 		FocuswsDAO fDAO=new FocuswsDAO();	
@@ -261,8 +263,8 @@ public class ServiceServlet extends HttpServlet {
 				try{
 					tx=session.beginTransaction();
 					session.save(item);
-					
 					tx.commit();
+					return getFocusedWS(uid);
 				}catch(Exception e){
 					e.printStackTrace();
 				    throw e;
@@ -273,7 +275,7 @@ public class ServiceServlet extends HttpServlet {
 		}catch(Exception e){
 			return ServletConstants.ERROR_MSG;
 		}
-		return  ServletConstants.SUCCESS_MSG;
+		return  ServletConstants.ERROR_MSG;
 	}
 	private String updateRating(long uid, long wsId, float rateValue) {
 		RatingDAO rDAO=new RatingDAO();
@@ -324,7 +326,7 @@ public class ServiceServlet extends HttpServlet {
 	}
 	
 	
-	public  void  insertWsRecord(String wsName,String wsPath,long uid){
+	public  String  insertWsRecord(String wsName,String wsPath,long uid){
 		/**
 		 * wsName: eg "account.wsdl"
 		 * wsPath: eg:"/wsdls/account.wsdl"
@@ -347,13 +349,17 @@ public class ServiceServlet extends HttpServlet {
 			fws.setWsid(ws.getWsId());
 			session.save(fws);
 			
+			
 			tx.commit();
+			return getFocusedWS(uid);
 		}catch(Exception e){
 		    e.printStackTrace();
 		}finally{
 			
 		     session.close( );	// 关闭session
 		}
+		
+		return ServletConstants.ERROR_MSG;
 	}
 
 }

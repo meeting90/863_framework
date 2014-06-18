@@ -421,8 +421,10 @@ function updateRating(uid,wsid,rateValue){
 		type:'POST',
 		dataType:'json',
 		url:updateRatingURL+"&uid="+uid+"&wsid="+wsid+"&ratevalue="+rateValue,
-		success:function(){
+		success:function(data){
 			alert("评价服务成功");
+			
+			
 		
 		},error:function(){
 			alert("评价服务失败");
@@ -437,9 +439,9 @@ function addfollowService(uid,wsid){
 		type:'POST',
 		dataType: 'json',
 		url:addFocusServiceURL+"&uid="+uid+"&wsid="+wsid,
-		success:function(){
+		success:function(data){
 			alert('服务关注成功');
-			refreshServiceView();
+			drawFocusedListView(data);
 			loadServiceDetail(wsid);
 		},error:function(){
 			alert('服务关注失败');
@@ -451,9 +453,9 @@ function removefollowService(uid,wsid){
 		type:'POST',
 		dataType:'json',
 		url:removeFocusServiceURL+"&uid="+uid+"&wsid="+wsid,
-		success:function(){
+		success:function(data){
 			alert('服务取消关注成功');
-			refreshServiceView();
+			drawFocusedListView(data);
 			loadServiceDetail(wsid);
 		},error:function(){
 			alert('服务取消关注失败');
