@@ -261,17 +261,41 @@
 	<a class='analysisGallery' href='#analysisGallery' ></a>
 	
 
-	
+	<style>
+    #fileupload{
+    	padding:3px;
+    }
+    #uploadfileinput{
+    	position:absolute;
+    	top:0;
+    	right:80px;
+    	height:24px;
+    	filter:alpha(opacity:0);
+    	opacity: 0;
+    }
+    .txt{
+    	height:20px;
+    	border:1px solid #cdcdcd;
+    	width:160px;
+    	background:white;
+    } 
+	.btn{
+		background-color:#FFF;
+		border:1px solid #CDCDCD;
+		height:24px;
+		width:50px;
+	} 
+    </style>
 	<div id="uploadDialog">
 		<!-- 上传文件对话框 -->
 		<form id="fileupload" name="uploadform" method="post" enctype="multipart/form-data">
-			<div>
-				<label>选择文件上传</label>
-			</div>
+			
 			<div>
 				<label>
-					<input type="file" id="uploadfileinput" name="uploadfileinput"/>
-					<input type="button" id="uploadsubmit" value="上传" />
+					<input type="text" name="textfield" id="textfield" class="txt" disabled/>
+					<input type="button" class="btn" value="浏览..." onclick="$('#uploadfileinput').click();"/>
+					<input type="file" id="uploadfileinput" name="uploadfileinput" onchange="document.getElementById('textfield').value=this.value;"/>
+					<button class="btn" type="button" id="uploadsubmit">上传</button>
 				</label>
 			</div>
 		</form>

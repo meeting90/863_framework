@@ -98,7 +98,17 @@ public class WorkflowServlet extends HttpServlet {
 	            String filename = getUploadFileName(item);
 	            
 	        
-	            item.write(new File(path, filename));
+	            File f = new File(path,filename);
+	            int p = filename.indexOf(".");
+	            String firstname = filename.substring(0, p);
+	            String lastname = filename.substring(p);
+	            int fileIndex = 1;
+	            while(f.exists()){
+	            	f = new File(path,firstname+"_"+fileIndex+lastname);
+	            	fileIndex++;
+	            }
+	            item.write(f);
+	            
 	              
 	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
 	          

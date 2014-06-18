@@ -113,8 +113,17 @@ public class ServiceServlet extends HttpServlet {
 	            List<FileItem> list = upload.parseRequest(req);
 	            FileItem item = getUploadFileItem(list);
 	            String filename = getUploadFileName(item);
-
-	            item.write(new File(path, filename));
+	            
+	            File f = new File(path,filename);
+	            int p = filename.indexOf(".");
+	            String firstname = filename.substring(0, p);
+	            String lastname = filename.substring(p);
+	            int fileIndex = 1;
+	            while(f.exists()){
+	            	f = new File(path,firstname+"_"+fileIndex+lastname);
+	            	fileIndex++;
+	            }
+	            item.write(f);
 	            
 	            
 	            
@@ -149,7 +158,7 @@ public class ServiceServlet extends HttpServlet {
 		String value = item.getName();
 		int start = value.lastIndexOf("/");
 		String filename = value.substring(start + 1);
-
+		
 		return filename;
 	}
 	
