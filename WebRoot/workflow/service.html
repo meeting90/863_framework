@@ -232,15 +232,30 @@
        		<input id='trust_requirement' class="easyui-numberbox" type="text" name="name" data-options="min:0,max:1,precision:2" style="width:250px" />
     	</div>
     </div>
+    <style>
+    #fileupload{
+    	padding:3px;
+    }
+    #uploadfileinput{
+    	width:70%;
+    	font-size:13px;
+    	float:left;
+    	border-radius:3px;
+    }
+    #uploadsubmit{
+    	width:25%;
+    	font-size:13px;
+    	float:right;
+    	border-radius:3px;
+    }
+    </style>
 	<div id="uploadDialog">
 		<form id="fileupload" name="uploadform" method="post" enctype="multipart/form-data">
-			<div>
-				<label>选择文件上传</label>
-			</div>
+			
 			<div>
 				<label>
-					<input type="file" id="uploadfileinput" name="uploadfileinput"/>
-					<input type="button" id="uploadsubmit" value="上传" />
+					<input type="file" id="uploadfileinput" name="uploadfileinput" />
+					<button type="button" id="uploadsubmit">上传</button>
 				</label>
 			</div>
 		</form>

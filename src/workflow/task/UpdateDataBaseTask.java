@@ -24,7 +24,7 @@ public class UpdateDataBaseTask extends TimerTask{
 	public void run() {
 		context.log("start update database");
 		
-		//updateDataBase();
+		updateDataBase();
 		
 		context.log("update ended");
 		
