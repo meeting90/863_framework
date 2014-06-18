@@ -71,7 +71,22 @@ function showUploadDialog(){
 		        }
 	    }]
 	});
-	
+	$('#uploadsubmit').click(function(){
+		$.ajaxFileUpload({
+			url:uploadFileServiceURL,
+			secureuri:false,
+			fileElementId:"uploadfileinput",
+			dataType:"json",
+			success:function(data,status){
+				if(data.err!=1){
+					alert(data.msg);
+				}
+			},
+			error:function(data,status,e){
+				alert("上传出错");
+			}
+		});
+	});
 }
 function loadFocusService(){
 	 $.ajax({

@@ -1,5 +1,6 @@
 package workflow.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
@@ -93,7 +98,34 @@ public class ServiceServlet extends HttpServlet {
 			resp.getWriter().append(getfullRating(uid,wsId));
 		}
 		else if(query.equals("uploadService")){
-			
+			String temppath = getServletContext().getRealPath("\\workflow")+"\\bpels\\temp\\";
+			String path = getServletContext().getRealPath("\\workflow")+"\\bpels\\";
+	        DiskFileItemFactory factory = new DiskFileItemFactory();  
+	        factory.setRepository(new File(temppath));
+	        factory.setSizeThreshold(1024 * 1024);
+	        ServletFileUpload upload = new ServletFileUpload(factory);
+	        
+	        try {
+	            List<FileItem> list = upload.parseRequest(req);
+	            //System.out.printf("listsize:%d\n",list.size());
+	            
+	            FileItem item = getUploadFileItem(list);
+	            String filename = getUploadFileName(item);
+	            
+	            System.out.println("存放目录:" + path);
+	            System.out.println("文件名:" + filename);
+	  
+	            item.write(new File(path, filename));
+	              
+	            resp.getWriter().append("{err:0,");
+	            resp.getWriter().append("msg:\"size:"+item.getSize()+",name:"+filename+"\"");
+	            resp.getWriter().append("}");
+	          
+	        } catch (FileUploadException e) {  
+	            e.printStackTrace();  
+	        } catch (Exception e) {  
+	            e.printStackTrace();  
+	        }
 		}
 		else{
 			resp.getWriter().append(ServletConstants.UNKOWN_REQUEST_ERROR);
@@ -101,6 +133,22 @@ public class ServiceServlet extends HttpServlet {
 		 resp.getWriter().flush();
 		 resp.getWriter().close();
 		
+	}
+	
+	private FileItem getUploadFileItem(List<FileItem> list) {
+		for (FileItem fileItem : list) {
+			if(!fileItem.isFormField()) {
+				return fileItem;
+			}
+		}
+		return null;
+	}
+	private String getUploadFileName(FileItem item) {
+		String value = item.getName();
+		int start = value.lastIndexOf("/");
+		String filename = value.substring(start + 1);
+
+		return filename;
 	}
 	
 	private String getServiceId(String wsName) {

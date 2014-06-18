@@ -90,7 +90,38 @@ function analysisWorkflow(){
 
 
 function showUploadDialog(){
+	$('#uploadDialog').dialog({
+		title:'上传Web服务',
+		width:300,
+		closed:false,
+		cache:false,
+		buttons: [
+		          {
+		        	  text:'关闭',
+		        	  iconCls:'icon-no',
+		        	  handler:function(){
+		        		  $('#uploadDialog').dialog('close');
+		        	  }
+		          }
+		         ]
+	});
 	
+	$('#uploadsubmit').click(function(){
+		$.ajaxFileUpload({
+			url:uploadFileWorkflowURL,
+			secureuri:false,
+			fileElementId:"uploadfileinput",
+			dataType:"json",
+			success:function(data,status){
+				if(data.err!=1){
+					alert(data.msg);
+				}
+			},
+			error:function(data,status,e){
+				alert("上传出错");
+			}
+		});
+	});
 }
 
 
