@@ -178,15 +178,15 @@ public class RelationnetfullDAO extends BaseHibernateDAO{
 			throw re;
 		}
 	}
-	public List findByTrustorAndThreshold(Object trustorId,Object threshold){
+	public List findByTrustorAndThreshold(Object trustorId,int threshold){
 		log.debug("finding Relationnetfull instance with property: " + TRUSTOR_ID
 				+ ", value: " + trustorId + ";"+TRUST_VALUE+",value: " +threshold);
 		try {
 			String queryString = "from Relationnetfull as model where model."
-					+ TRUSTOR_ID + "= ?"+ " and model."+TRUST_VALUE +">?";
+					+ TRUSTOR_ID + "= ? order by model.trustValue desc";
 			Query queryObject = getSession().createQuery(queryString);
 			queryObject.setParameter(0, trustorId);
-			queryObject.setParameter(1, threshold);
+			queryObject.setMaxResults(threshold);
 			return queryObject.list();
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);

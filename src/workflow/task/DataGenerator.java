@@ -106,11 +106,13 @@ public class DataGenerator
 		Session session = rnfDAO.getSession();
 		Transaction tx = null;
 		
-		rnfDAO.deleteAll();
-		int count=0;
+		
+		long count=0;
 		try{
 			tx = session.beginTransaction();	// open session 
-		    
+			rnfDAO.deleteAll();
+			tx.commit();
+			tx=session.beginTransaction();
 			for (int index1=0; index1<userSize; index1++){
 				for (int index2=0; index2<userSize; index2++)
 				{
@@ -120,7 +122,7 @@ public class DataGenerator
 					
 					if(trustValue!=0){
 						Relationnetfull rnf=new Relationnetfull();
-						rnf.setNid((long) count);
+						rnf.setNid(count);
 						rnf.setTrustorId(trustorId);
 						rnf.setTrusteeId(trusteeId);
 						rnf.setTrustValue(trustValue);
@@ -150,12 +152,14 @@ public class DataGenerator
 		Session session = rfDAO.getSession();
 		Transaction tx = null;
 		
-		rfDAO.deleteAll();
-		int count=0;
+		
+		long count=0;
 	
 		try{
 			tx = session.beginTransaction();	// open session 
-			
+			rfDAO.deleteAll();
+			tx.commit();
+			tx=session.beginTransaction();
 			for (int index1=0; index1<userSize; index1++){
 				for (int index2=0; index2<wsSize; index2++)
 				{
@@ -165,7 +169,7 @@ public class DataGenerator
 					if(rateValue!=0 ){
 						
 						Ratingfull rf=new Ratingfull();
-						rf.setRid((long) count);
+						rf.setRid(count);
 						rf.setUserId(userId);
 						rf.setWsId(wsId);
 						rf.setRateValue(rateValue);

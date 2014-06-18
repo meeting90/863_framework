@@ -53,14 +53,14 @@ public class WorkflowServlet extends HttpServlet {
 		
 		req.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html;charset=UTF-8");
-		resp.setHeader("Access-Control-Allow-Origin", "*");
+//		resp.setHeader("Access-Control-Allow-Origin", "*");
 		String query=req.getParameter("query");
-		Long uid=(Long)req.getSession().getAttribute("userid");
+		Long loginId=(Long)req.getSession().getAttribute("userid");
 		
-//		if(uid==null){
-//			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
-//			return;
-//		}
+		if(loginId==null){
+			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
+			return;
+		}
 		
 	
 		
@@ -168,12 +168,5 @@ public class WorkflowServlet extends HttpServlet {
 		return jsonArray.toString();
 		
 	}
-
-
-
-
-
-
-
 
 }

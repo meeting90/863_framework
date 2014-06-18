@@ -63,10 +63,10 @@ public class WSDLazyParser {
 	    	Transaction tx=null;
 	    	try{
 	    		tx=hiberSession.beginTransaction();
-	    		hiberSession.save(nodes);
+	    		hiberSession.saveOrUpdate(nodes);
 	    		tx.commit();
 	    	}catch(Exception e){
-	    		e.printStackTrace();
+	    		//e.printStackTrace();
 	    	
 	    	}finally{
 	    		hiberSession.close();

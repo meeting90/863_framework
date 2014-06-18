@@ -147,8 +147,12 @@
 		 $(document).ready( function() {
 		
 		  $(document.body).layout();
-		 
+		  
+		
+		  checkLogin();
+		  
 		  showAllRelation();
+		  showUserList();
 		
 		  $("#toolbar").css("width","100%");
 		}); 
@@ -180,7 +184,7 @@
 		</div>
 
     </div>
-    <div data-options="region:'west',split:true,width:0" ></div>
+    <div data-options="region:'west',split:true,width:0,maxWidth:0" ></div>
 
 	<div data-options="region:'center',split:true" >
 	 <div class="easyui-layout" data-options="fit:true">
@@ -206,7 +210,7 @@
       
    
     
-    <div id='userList' data-options="region:'east',split:true,minWidth:300,maxWidth:300,title:'用户列表',collapsed:true,onExpand:loadUserData()" >
+    <div id='userList' data-options="region:'east',split:true,minWidth:300,maxWidth:300,title:'用户列表',collapsed:true" >
 	
 	
     </div>
@@ -227,12 +231,12 @@
 	<div id="userDetail"></div>
 	<div id="extraDialog">
 		<div style="padding:20px;margin-left:auto;margin-right:auto">
-      	  	<label for="name">信任阈值:(输入0.0~1.0之间的小数)</label>
+      	  	<label for="name">子网用户阈值:(输入1~400之间的整数)</label>
       	  	<br></br>
-       		<input id='threshold_input' class="easyui-numberbox" type="text" name="name" data-options="min:0,max:1,precision:2" style="width:250px" />
+       		<input id='threshold_input' class="easyui-numberbox" type="text" name="name" data-options="min:1,max:400,precision:0" style="width:250px" />
     	</div>
 	</div>
-
+	
 </body>
 
 

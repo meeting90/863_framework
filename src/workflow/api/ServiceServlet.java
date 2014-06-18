@@ -1,31 +1,26 @@
 package workflow.api;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import workflow.api.data.UserRatingNode;
 import workflow.db.Focusws;
 import workflow.db.FocuswsDAO;
 import workflow.db.Rating;
 import workflow.db.RatingDAO;
+import workflow.db.Ratingfull;
+import workflow.db.RatingfullDAO;
 import workflow.db.Webservices;
 import workflow.db.WebservicesDAO;
 import workflow.parser.WSDLazyParser;
@@ -43,20 +38,21 @@ public class ServiceServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html;charset=UTF-8");
-		resp.setHeader("Access-Control-Allow-Origin", "*");
+//		resp.setHeader("Access-Control-Allow-Origin", "*");
 		String query=req.getParameter("query");
 		Long loginId=(Long)req.getSession().getAttribute("userid");
-//		if(loginId==null){
-//			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
-//			return;
-//		}
-		
-		//System.out.printf("%s\n",query);
-		
+		if(loginId==null){
+			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
+			return;
+		}
 		 if(query.equals("getServiceName")){
 			long wsid=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(getWsNameById(wsid));
-		}else if(query.equals("getService")){
+		}else if(query.equals("getServiceId")){
+			String wsName=req.getParameter("wsName");
+			resp.getWriter().append(getServiceId(wsName));
+		}
+		 else if(query.equals("getService")){
 			long wsid=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(getWebServiceById(wsid));
 		}else if(query.equals("searchService")){
@@ -82,45 +78,21 @@ public class ServiceServlet extends HttpServlet {
 			long wsId=Long.parseLong(req.getParameter("wsid"));
 			resp.getWriter().append(removeFocusService(uid,wsId));
 		}else if(query.equals("getRating")){
+			long uid=Long.parseLong(req.getParameter("uid"));
 			long wsId=Long.parseLong(req.getParameter("wsid"));
-			resp.getWriter().append(getRating(wsId));
+			resp.getWriter().append(getRating(uid,wsId));
 		}else if(query.equals("updateRating")){
 			long uid=Long.parseLong(req.getParameter("uid"));
+			
 			long wsId=Long.parseLong(req.getParameter("wsid"));
 			float rateValue=Float.parseFloat(req.getParameter("ratevalue"));
 			resp.getWriter().append(updateRating(uid,wsId,rateValue));
-		}else if(query.equals("uploadService")){
-			
-			String temppath = getServletContext().getRealPath("\\workflow")+"\\wsdls\\temp\\";
-			String path = getServletContext().getRealPath("\\workflow")+"\\wsdls\\";
-	        DiskFileItemFactory factory = new DiskFileItemFactory();  
-	        factory.setRepository(new File(temppath));
-	        factory.setSizeThreshold(1024 * 1024);
-	        ServletFileUpload upload = new ServletFileUpload(factory);
-	        
-	        try {
-	            List<FileItem> list = upload.parseRequest(req);
-	            //System.out.printf("listsize:%d\n",list.size());
-	            
-	            FileItem item = getUploadFileItem(list);
-	            String filename = getUploadFileName(item);
-	            
-	            System.out.println("存放目录:" + path);
-	            System.out.println("文件名:" + filename);
-	  
-	            item.write(new File(path, filename));
-	              
-	            resp.getWriter().append("{err:0,");
-	            resp.getWriter().append("msg:\"size:"+item.getSize()+",name:"+filename+"\"");
-	            resp.getWriter().append("}");
-	          
-	        } catch (FileUploadException e) {  
-	            e.printStackTrace();  
-	        } catch (Exception e) {  
-	            e.printStackTrace();  
-	        }
-	        
-			//resp.getWriter().append("1");
+		}else if(query.equals("getfullRating")){
+			long uid=Long.parseLong(req.getParameter("uid"));
+			long wsId=Long.parseLong(req.getParameter("wsid"));
+			resp.getWriter().append(getfullRating(uid,wsId));
+		}
+		else if(query.equals("uploadService")){
 			
 		}
 		else{
@@ -130,22 +102,19 @@ public class ServiceServlet extends HttpServlet {
 		 resp.getWriter().close();
 		
 	}
-	private FileItem getUploadFileItem(List<FileItem> list) {
-		for (FileItem fileItem : list) {
-			if(!fileItem.isFormField()) {
-				return fileItem;
-			}
-		}
-		return null;
-	}
-	private String getUploadFileName(FileItem item) {
-		String value = item.getName();
-		int start = value.lastIndexOf("/");
-		String filename = value.substring(start + 1);
-		
-		return filename;
-	}
 	
+	private String getServiceId(String wsName) {
+		WebservicesDAO wsDAO=new WebservicesDAO();
+		List<Webservices> services=wsDAO.findByWsName(wsName);
+		JSONArray json=new JSONArray(services);
+		return json.toString();
+	}
+	private String getfullRating(long uid, long wsId) {
+		RatingfullDAO rfDAO=new RatingfullDAO();
+		List<Ratingfull> rateful=rfDAO.findByUserAndWsId(uid, wsId);
+		JSONArray json=new JSONArray(rateful);
+		return json.toString();
+	}
 	private String searchWebService(String name) {
 		WebservicesDAO wsDAO=new WebservicesDAO();
 		List<?> result=wsDAO.searchService(name);
@@ -173,13 +142,11 @@ public class ServiceServlet extends HttpServlet {
 		
 	}
 	
-	
 	private String getWsNameById(long wsid) {
 		WebservicesDAO wsDAO=new WebservicesDAO();
 		Webservices ws=wsDAO.findById(wsid);
 		return ws.getWsName();
 	}
-
 	private String getFocusedWS(long uid) {
 		FocuswsDAO fDAO=new FocuswsDAO();
 		WebservicesDAO wsDAO=new WebservicesDAO();
@@ -221,7 +188,6 @@ public class ServiceServlet extends HttpServlet {
 		
 		return ServletConstants.SUCCESS_MSG;
 	}
-
 	private String addFocusService(long uid, long wsId) {
 		FocuswsDAO fDAO=new FocuswsDAO();	
 		try{
@@ -250,9 +216,6 @@ public class ServiceServlet extends HttpServlet {
 		}
 		return  ServletConstants.SUCCESS_MSG;
 	}
-
-
-
 	private String updateRating(long uid, long wsId, float rateValue) {
 		RatingDAO rDAO=new RatingDAO();
 		try{
@@ -271,7 +234,7 @@ public class ServiceServlet extends HttpServlet {
 			Transaction tx=null;
 			try{
 				tx=session.beginTransaction();
-				session.save(rating);
+				session.saveOrUpdate(rating);
 				tx.commit();
 			}catch(Exception e){
 				e.printStackTrace();
@@ -285,11 +248,19 @@ public class ServiceServlet extends HttpServlet {
 		return  ServletConstants.SUCCESS_MSG;
 	}
 
-	private String getRating(long wsId) {
+	private String getRating(long userId,long wsId) {
 		RatingDAO rDAO=new RatingDAO();
-		List<Rating> result=rDAO.findByWsId(wsId);
-		JSONArray jsonArray = new JSONArray(result);
-		return jsonArray.toString();
+		RatingfullDAO rfDAO=new RatingfullDAO();
+		UserRatingNode rNode=new UserRatingNode();
+		List<Ratingfull> rateful=rfDAO.findByUserAndWsId(userId, wsId);
+		List<Rating> rates=rDAO.findByWsId(wsId);
+		rNode.setRatings(rates);
+		if(rateful==null||rateful.isEmpty())
+			rNode.setFulRateValue(0);
+		else
+			rNode.setFulRateValue(rateful.get(0).getRateValue());
+		JSONObject json=new JSONObject(rNode);
+		return json.toString();
 
 	}
 

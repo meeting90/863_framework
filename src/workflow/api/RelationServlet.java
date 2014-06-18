@@ -44,13 +44,13 @@ public class RelationServlet extends HttpServlet {
 		
 		req.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html;charset=UTF-8");
-		resp.setHeader("Access-Control-Allow-Origin", "*");
+//		resp.setHeader("Access-Control-Allow-Origin", "*");
 		String query=req.getParameter("query");
 		Long loginId=(Long)req.getSession().getAttribute("userid");
-//		if(loginId==null){
-//			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
-//			return;
-//		}
+		if(loginId==null){
+			resp.getWriter().append(ServletConstants.SESSION_TIMEOUT_ERROR);
+			return;
+		}
 		if(query.equals("getAllRelation")){// get relation graph from database
 			resp.getWriter().append(getRelation());
 		}else if(query.equals("getTrustValue")){
@@ -60,7 +60,7 @@ public class RelationServlet extends HttpServlet {
 		}
 		else if(query.equals("getTrustRelation")){//get realtion where user.trustvalue > threshold
 			long uid=Long.parseLong(req.getParameter("uid"));
-			float threshold=Float.parseFloat(req.getParameter("threshold"));
+			int threshold=Integer.parseInt(req.getParameter("threshold"));
 			resp.getWriter().append(getTrustRelation(uid,threshold));
 		}else if(query.equals("addRelation")){
 			long trustorId=Long.parseLong(req.getParameter("trustorId"));
@@ -177,7 +177,7 @@ public class RelationServlet extends HttpServlet {
 		
 	}
 
-	private String getTrustRelation(long uid, float threshold) {
+	private String getTrustRelation(long uid, int threshold) {
 		RelationnetfullDAO rnfDAO=new RelationnetfullDAO();
 		RelationnetDAO rnDAO=new RelationnetDAO();
 		List<Relationnet> rns=rnDAO.findByTrustorId(uid);

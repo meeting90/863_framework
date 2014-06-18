@@ -1,3 +1,5 @@
+var loginURL="../index.jsp";
+
 var baseUserURL="../workflow.user?query=";
 var baseRelationURL="../workflow.relation?query=";
 var baseServiceURL="../workflow.service?query=";
@@ -19,6 +21,7 @@ var addRelationURL=baseRelationURL+'addRelation';
 var removeRelationURL=baseRelationURL+'removeRelation';
 
 var getWsNameURL=baseServiceURL+"getServiceName&wsid=";
+var getWsIdURL=baseServiceURL+"getServiceId&wsName=";
 var getFocusWsURL=baseServiceURL+"getFocusedService&uid=";
 var getAllWsURL=baseServiceURL+"getAllService&size=20&offset=";
 var getServiceURL=baseServiceURL+"getService&wsid=";
@@ -29,7 +32,8 @@ var removeFocusServiceURL=baseServiceURL+"removeFocusService";
 var updateRatingURL=baseServiceURL+"updateRating";
 
 var searchServiceURL=baseServiceURL+"searchService&name=";
-var getServiceRatingURL=baseServiceURL+"getRating&wsid=";
+var getServiceRatingURL=baseServiceURL+"getRating";
+var getServiceFullRatingURL=baseServiceURL+"getfullRating";
 
 var getWorkflowURL=baseWorkflowURL+'getWorkflow&wfid=';
 var getFocusedWfURL=baseWorkflowURL+'getFoucsedWf&uid=';
@@ -47,8 +51,5 @@ var focusedWorkflow=[];
 var userOffset=0;
 var serviceOffset=0;
 var workflowOffset=0;
-var uid=316;
-var username='Adamson';
-var threshold=0.98;
-
-var relationViewRemove;
+var uid=null;
+var username=null;
