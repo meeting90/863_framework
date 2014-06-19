@@ -119,15 +119,17 @@ public class ServiceServlet extends HttpServlet {
 	            String firstname = filename.substring(0, p);
 	            String lastname = filename.substring(p);
 	            int fileIndex = 1;
+	            String wsName = filename;
 	            while(f.exists()){
-	            	f = new File(path,firstname+"_"+fileIndex+lastname);
+	            	wsName = firstname+"_"+fileIndex+lastname;
+	            	f = new File(path,wsName);
 	            	fileIndex++;
 	            }
 	            item.write(f);
 	            
 	            
 	            
-	            
+	            insertWsRecord(wsName, path, Long.parseLong(req.getParameter("uid")));
 	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
 	              
 	      

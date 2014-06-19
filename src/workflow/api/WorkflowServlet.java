@@ -103,11 +103,17 @@ public class WorkflowServlet extends HttpServlet {
 	            String firstname = filename.substring(0, p);
 	            String lastname = filename.substring(p);
 	            int fileIndex = 1;
+	            String wfName = filename;
 	            while(f.exists()){
-	            	f = new File(path,firstname+"_"+fileIndex+lastname);
+	            	wfName = firstname+"_"+fileIndex+lastname;
+	            	f = new File(path,wfName);
 	            	fileIndex++;
 	            }
 	            item.write(f);
+	            
+	            
+	            
+	            insertWfRecord(wfName, path, Long.parseLong(req.getParameter("uid")));
 	            
 	              
 	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
