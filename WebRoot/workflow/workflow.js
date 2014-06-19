@@ -531,7 +531,7 @@ function calculateAndShowProcessTrust(activity){
 			type:'POST'
 		});
 		console.info(service.responseJSON);
-		if(!service.responseJSON) {
+		if(service.responseJSON.length==0) {
 			appendErrorMessage("服务评估失败");
 			appendErrorMessage(activity.extra[1]+'服务不在后台数据库中');
 			appendErrorMessage("***********");

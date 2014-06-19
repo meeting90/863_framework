@@ -375,7 +375,7 @@ public class InitTask {
 		    	  ws.setWsPath("/wsdls/"+file.getName());
 		    	  session.save(ws);
 		    	  for(int i=0;i<count;i++){
-						double r=random.nextDouble()+0.3;
+						double r=random.nextDouble();
 					
 						Rating rating=new Rating();
 						rating.setRateValue(ratingValue(r));
