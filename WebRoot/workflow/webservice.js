@@ -59,17 +59,10 @@ function evaluateService(){
 function showUploadDialog(){
 	$('#uploadDialog').dialog({
 		title:'上传Web服务',
-		width:300,
+		width:400,
 		closed:false,
-		cache:false,
-		buttons: [{
-	      
-		        text:'关闭',
-		        iconCls:'icon-no',
-		        handler:function(){
-		        	$('#uploadDialog').dialog('close');
-		        }
-	    }]
+		cache:false
+	
 	});
 	$('#uploadsubmit').click(function(){
 		$.ajaxFileUpload({
