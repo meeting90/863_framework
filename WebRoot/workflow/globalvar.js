@@ -40,8 +40,8 @@ var getFocusedWfURL=baseWorkflowURL+'getFoucsedWf&uid=';
 var getAllWfURL=baseWorkflowURL+"getAllWorkflow";
 var getWorkflowInfoURL=baseWorkflowURL+"getWorkflowInfo&wfid=";
 
-var uploadFileServiceURL = baseServiceURL + "uploadService";
-var uploadFileWorkflowURL = baseWorkflowURL + "uploadWorkflow";
+var uploadFileServiceURL = baseServiceURL + "uploadService&uid=";
+var uploadFileWorkflowURL = baseWorkflowURL + "uploadWorkflow&uid=";
 
 var focusedUser=[];
 var focusedService=[];

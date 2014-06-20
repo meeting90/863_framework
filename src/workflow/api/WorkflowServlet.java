@@ -113,7 +113,7 @@ public class WorkflowServlet extends HttpServlet {
 	            
 	            
 	            
-	            insertWfRecord(wfName, path, Long.parseLong(req.getParameter("uid")));
+	            insertWfRecord(wfName, path+"/"+wfName, Long.parseLong(req.getParameter("uid")));
 	            
 	              
 	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);

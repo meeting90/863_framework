@@ -66,10 +66,10 @@ function showUploadDialog(){
 	});
 	$('#uploadsubmit').click(function(){
 		$.ajaxFileUpload({
-			url:uploadFileServiceURL,
+			url:uploadFileServiceURL+uid,
 			secureuri:false,
 			fileElementId:"uploadfileinput",
-			//dataType:"json",
+			dataType:"json",
 			success:function(data,status){
 				alert("上传成功");
 			},

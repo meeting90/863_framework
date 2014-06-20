@@ -128,21 +128,24 @@ public class ServiceServlet extends HttpServlet {
 	            	f = new File(path,wsName);
 	            	fileIndex++;
 	            }
+	            
 	            item.write(f);
 	            
+	            //System.out.printf("add to database,%s\n",wsName);
+
+	            String ret = insertWsRecord(wsName, path+"/"+wsName, Long.parseLong(req.getParameter("uid")));
 	            
-	            
-	            String ret = insertWsRecord(wsName, path, Long.parseLong(req.getParameter("uid")));
-	            System.out.printf("%s\n", ret);
-	            
+	       
 	            resp.getWriter().append(ret);
 	            
 	      
 	          
-	        } catch (FileUploadException e) {  
-	        	  resp.getWriter().append(ServletConstants.ERROR_MSG); 
-	        } catch (Exception e) {  
-	        	 resp.getWriter().append(ServletConstants.ERROR_MSG); 
+	        } catch (FileUploadException e) {
+	        	//System.out.printf("error1\n");
+	        	resp.getWriter().append(ServletConstants.ERROR_MSG); 
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        	resp.getWriter().append(ServletConstants.ERROR_MSG); 
 	        }
 		}
 		else{
@@ -340,6 +343,9 @@ public class ServiceServlet extends HttpServlet {
 		 * uid: eg: 316 
 		 */
 		
+		
+		
+		
 		WebservicesDAO wsDAO=new WebservicesDAO();
 	
 		
@@ -356,13 +362,11 @@ public class ServiceServlet extends HttpServlet {
 			fws.setWsid(ws.getWsId());
 			session.save(fws);
 			
-			
 			tx.commit();
 			return getFocusedWS(uid);
 		}catch(Exception e){
 		    e.printStackTrace();
 		}finally{
-			
 		     session.close( );	// 关闭session
 		}
 		

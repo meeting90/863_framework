@@ -100,7 +100,7 @@ function showUploadDialog(){
 	
 	$('#uploadsubmit').click(function(){
 		$.ajaxFileUpload({
-			url:uploadFileWorkflowURL,
+			url:uploadFileWorkflowURL+uid,
 			secureuri:false,
 			fileElementId:"uploadfileinput",
 			dataType:"json",
