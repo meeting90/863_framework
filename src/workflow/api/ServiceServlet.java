@@ -135,7 +135,8 @@ public class ServiceServlet extends HttpServlet {
 
 	            String ret = insertWsRecord(wsName, path+"/"+wsName, Long.parseLong(req.getParameter("uid")));
 	            
-	       
+	            System.out.printf("%s\n",ret);
+	            
 	            resp.getWriter().append(ret);
 	            
 	      

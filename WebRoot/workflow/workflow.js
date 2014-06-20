@@ -106,6 +106,7 @@ function showUploadDialog(){
 			dataType:"json",
 			success:function(data,status){
 				alert("上传成功");
+				drawFocusedWorkflowListView(data);
 			},
 			error:function(data,status,e){
 				alert("上传出错");
