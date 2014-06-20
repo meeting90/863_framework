@@ -235,9 +235,6 @@
     </div>
     
     <style>
-    #fileupload{
-    	padding:3px;
-    }
     #uploadfileinput{
     	position:absolute;
     	top:0;
@@ -258,17 +255,22 @@
 		height:24px;
 		width:60px;
 	} 
+	#fileupload{
+		float:right;
+	}
+	#uploadDialog{
+		padding:4px;
+	}
     </style>
 	<div id="uploadDialog">
+		<input type="text" id="textfield" class="txt" disabled/>
+		<input type="button" class="btn" value="浏览..." onclick="$('#uploadfileinput').click();"/>
 		<form id="fileupload" name="uploadform" method="post" enctype="multipart/form-data">
 			
 			<div>
-				<label>
-					<input type="text" name="textfield" id="textfield" class="txt" disabled/>
-					<input type="button" class="btn" value="浏览..." onclick="$('#uploadfileinput').click();"/>
+					
 					<input type="file" id="uploadfileinput" name="uploadfileinput" onchange="document.getElementById('textfield').value=this.value;"/>
 					<button class="btn" type="button" id="uploadsubmit">上传</button>
-				</label>
 			</div>
 		</form>
 	

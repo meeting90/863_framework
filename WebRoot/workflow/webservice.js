@@ -69,11 +69,9 @@ function showUploadDialog(){
 			url:uploadFileServiceURL,
 			secureuri:false,
 			fileElementId:"uploadfileinput",
-			dataType:"json",
+			//dataType:"json",
 			success:function(data,status){
-				if(data.err!=1){
-					alert(data.msg);
-				}
+				alert("上传成功");
 			},
 			error:function(data,status,e){
 				alert("上传出错");

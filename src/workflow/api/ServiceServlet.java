@@ -102,6 +102,9 @@ public class ServiceServlet extends HttpServlet {
 			resp.getWriter().append(getfullRating(uid,wsId));
 		}
 		else if(query.equals("uploadService")){
+			
+			//System.out.printf("upload\n");
+			
 			String temppath = getServletContext().getRealPath("./workflow")+"/wsdls/temp/";
 			String path = getServletContext().getRealPath("./workflow")+"/wsdls/";
 	        DiskFileItemFactory factory = new DiskFileItemFactory();  
@@ -129,9 +132,11 @@ public class ServiceServlet extends HttpServlet {
 	            
 	            
 	            
-	            insertWsRecord(wsName, path, Long.parseLong(req.getParameter("uid")));
-	            resp.getWriter().append(ServletConstants.SUCCESS_MSG);
-	              
+	            String ret = insertWsRecord(wsName, path, Long.parseLong(req.getParameter("uid")));
+	            System.out.printf("%s\n", ret);
+	            
+	            resp.getWriter().append(ret);
+	            
 	      
 	          
 	        } catch (FileUploadException e) {  
