@@ -269,8 +269,8 @@
 			
 			<div>
 					
-					<input type="file" id="uploadfileinput" name="uploadfileinput" onchange="document.getElementById('textfield').value=this.value;"/>
-					<button class="btn" type="button" id="uploadsubmit"  onclick="$('#textfield').val('');">上传</button>
+					<input type="file" id="uploadfileinput" name="uploadfileinput" onchange="$('#textfield').val($(this).val());"/>
+					<button class="btn" type="button" id="uploadsubmit" >上传</button>
 			</div>
 		</form>
 	

@@ -99,6 +99,18 @@ function showUploadDialog(){
 	});
 	
 	$('#uploadsubmit').click(function(){
+		var filename = $("#textfield").val();
+		if(filename == ""){
+			alert("请先选择文件");
+			return;
+		}
+		var token = filename.split("\\");
+		var filetype = token[token.length-1];
+		if(filetype.split(".")[1] != "bpel"){
+			alert("文件格式错误，请选择bpel文件上传");
+			return;
+		}
+		$('#textfield').val('');
 		$.ajaxFileUpload({
 			url:uploadFileWorkflowURL+uid,
 			secureuri:false,
