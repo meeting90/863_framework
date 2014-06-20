@@ -22,57 +22,57 @@ public class UpdateDataBaseTask extends TimerTask{
 
 	@Override
 	public void run() {
-		context.log("start update database");
+		context.log("开始用户之间信任度预测以及服务的评价预测任务");
+		long startTime = System.currentTimeMillis();
 		
 		updateDataBase();
 		
-		context.log("update ended");
+		
+		long endTime = System.currentTimeMillis();
+		
+		context.log("预测任务耗时 " + (endTime-startTime)/1000 + "s");
+		
+		context.log("预测任务完成");
 		
 	}
 	
-	public static void updateDataBase(){
+	public  void updateDataBase(){
 		
 		//get all webservices ids
 		WebservicesDAO webservicesDAO=new WebservicesDAO();
 		List<Long> wsIds=webservicesDAO.getAllIds();
-		
-		System.out.println(wsIds.size());
+		context.log("Web服务数量："+wsIds.size());
+	
 		
 		//get all user ids
 		UserDAO userDAO=new UserDAO();
 		List<Long> userIds=userDAO.getAllIds();
+		context.log("用户数量："+userIds.size());
 		
-		System.out.println(userIds.size());
 		
 		//get rate
 		RatingDAO ratingDAO = new RatingDAO();
 		List<Rating> ratingOringal = ratingDAO.findAll();
 		
-		System.out.println(ratingOringal.size());
+		context.log("原始服务评价数量："+ratingOringal.size());
+		
+		
 		
 		//get relationship
 		RelationnetDAO relationnetDAO=new RelationnetDAO();
 		
 		List<Relationnet> relationOringal= relationnetDAO.findAll();
 		
-		System.out.println(relationOringal.size());
+		context.log("原始用户关系数量："+relationOringal.size());
 		
+	
 		///////////////update database using DataGenerator///////////////////
-		long startTime = System.currentTimeMillis();
+	
 		
 		DataGenerator dataGenerator = new DataGenerator(userIds, wsIds, ratingOringal, relationOringal);
 		dataGenerator.updateData();
 		
-		long endTime = System.currentTimeMillis();
-		System.out.println("Total update time is " + (endTime-startTime) + " millisecond");
-		
-	
-		
-
 	}
 	
-	public static void main(String []args){
-		UpdateDataBaseTask.updateDataBase();
-	}
-
+	
 }

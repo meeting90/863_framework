@@ -83,11 +83,11 @@
 												onclick="window.location='../internetware/SSCC'">SSCC</td>
 											 
 											 <td class="rootVoice {menu: 'empty'}"
-												onclick="window.location='./workflowevaluation/seti.html'">SETI</td>
+												onclick="window.location='./workflo/trust.html'">SETI</td>
 											<td class="rootVoice {menu: 'empty'}"
-												onclick="window.location='./workflowevaluation/ssa.html'">SSA</td>
+												onclick="window.location='./workflow/service.html'">SSA</td>
 											<td class="rootVoice {menu: 'empty'}"
-												onclick="window.location='./workflowevaluation/asa.html'">ASA</td>
+												onclick="window.location='./workflow/workflow.html'">ASA</td>
 										   
 											<!-- <td class="rootVoice {menu: 'empty'}"
 												onclick="window.location='about.jsp'">关于</td> -->

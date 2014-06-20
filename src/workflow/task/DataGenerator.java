@@ -132,7 +132,7 @@ public class DataGenerator
 					
 				}
 			}
-			System.out.println("relationnetfull:"+count);
+		
 			tx.commit();
 		}catch(Exception e){
 		    e.printStackTrace();
@@ -179,7 +179,7 @@ public class DataGenerator
 					
 				}
 			}
-			System.out.println("ratingfull:"+count);
+		
 			
 			tx.commit();
 		}catch(Exception e){
