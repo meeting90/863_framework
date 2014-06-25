@@ -1,0 +1,1353 @@
+<html>
+  <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	<script type="text/javascript" src="js/jquery-1.7.1.js"></script>
+  	<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+  	<script type="text/javascript" src="js/jquery.layout.js"></script>
+  	<script type="text/javascript" src="js/jquery.form.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.js"></script>
+  	<script type="text/javascript" src="js/jquery.blockUI.js"></script>
+  	<!--  <script type="text/javascript" src="js/load_data.js"></script>-->
+  	<script type="text/javascript" src="js/jquery.colorbox-min.js"></script>
+  	<script type="text/javascript" src="js/jquery.colorbar.min.js"></script>
+  	<script type="text/javascript" src="js/multiselect/jquery.multiselect.js"></script>
+  	<script type="text/javascript" src="js/multiselect/jquery.multiselect.filter.js"></script>
+  	<script src="raphael.js" type="text/javascript" charset="utf-8"></script>
+  	<script src="test5.js" type="text/javascript" charset="utf-8"></script>
+  	
+  	
+
+  	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
+  	<script language="javascript" type="text/javascript" src="flot/jquery.flot.js"></script>
+
+  	<link rel="stylesheet" type="text/css" href="css/jquery-ui/jquery-ui-1.8.17.custom.css">
+  	<link rel="stylesheet" type="text/css" href="css/jquery-ui-layout/layout-default-latest.css">
+  	<link rel="stylesheet" type="text/css" href="css/jquery-ui-layout/complex.css">
+  	<link rel="stylesheet" type="text/css" href="css/colorbox.css">
+  	<link rel="stylesheet" type="text/css" href="css/multiselect/jquery.multiselect.css">
+  	<link rel="stylesheet" type="text/css" href="css/multiselect/jquery.multiselect.filter.css">
+
+  	<style type="text/css"> 
+  	
+  	  #progress {
+    		position: absolute;
+    		left: 0px;
+    		top: 30px;
+    		width:200px;
+    		height:17px;
+    		margin-top:10px;
+    		margin-left:10%;
+    		border:1px solid #aaa;
+    		display:inline-block;
+    		vertical-align:top;
+    		border-radius: 1px;
+    		display: none;
+    	}
+    	
+    	.ss{ display: none;}
+    	
+    	.normal_message {
+  			margin: 0px;
+  			padding: 0px;
+  		}
+            	
+      .successful_message {
+        margin: 0px;
+        padding: 0px;
+        color: green;
+      }
+            	
+      .failed_message {
+        margin: 0px;
+        padding: 0px;
+        color: red;
+      }
+      
+      .ui-layout-north .content {
+        background-image:url('images/sky_bg.jpg');
+      }
+      
+      #login {
+        position: absolute;
+        right: 0px;
+  			top: 10px;
+  			width:200px;
+  			height:17px;
+  			display:inline-block;
+      }
+      
+      #list4 { width:280px; font-family:Georgia, Times, serif; font-size:15px; margin:5px; }
+      #list4 ul { list-style: none; margin-bottom:0px; padding-bottom:0px; margin-right:0px; border-style:solid; border-width:1px; border-color:#CCCCCC; }
+      #list4 ul li { margin:0px; padding:0px; }
+      #list4 ul li a { display:block; text-decoration:none; color:#000000; background-color:#FFFFFF; line-height:30px;
+        border-bottom-style:solid; border-bottom-width:1px; border-bottom-color:#CCCCCC; padding-left:0px; cursor:pointer;               }
+      #list4 ul li a:hover { color:#FFFFFF; background-image:url(images/hover.png); background-repeat:repeat-x; }
+      #list4 ul li a strong { margin-right:0px; }
+  	
+  	  #update_backup_service_button {
+  	    margin-left: 200px;
+  	    margin-top: 10px;
+  	  }
+  	</style>
+  	
+  	<script type="text/javascript" charset="utf-8">
+  	
+  	/*
+  	*********************Can Share Begin***************************
+  	*/
+  	var gUserName = null;
+    var gUID = null;
+    var gCurBpelName;
+    var gServiceListName = [];
+    var gAllServiceListName = [];
+    var gServiceListUserData = new Object();
+    var gServiceListEvaluateData = new Object();
+    var gUserDataFlag;
+    
+    var SERVER_URL = null;
+    var gEvaluateDataFlag;
+    var loginUrl = "./login.php";
+    var gIsFirstLoad = true;
+    var gCurBpelServiceList = [];
+
+    function checkLogin() {
+      gUserName = $.cookie('name');
+      
+      gUID = $.cookie('uid');
+      SERVER_URL=$.cookie('php_host');
+     
+      if (gUserName==null || gUID==null) {
+    	  
+
+    	  return false;
+      } else {
+    	 
+    	  return true;
+      }
+    }
+
+    function refreshLoginStatus() {
+      if (checkLogin()) {
+    	 // $('#login').html(gUserName);
+    	 // logout_tag =  $("<a href='#' onclick='logout();'>Logout</a>").html('[登出]');
+    	 // logout_tag.appendTo($('#login'));
+      } else {
+    	// $('#login').html('<a href="'+loginUrl+'">登录</a>');
+    	   window.location = loginUrl;
+      } 
+    }
+
+    function logout() {
+      gUserName = null;
+      gUID = null;
+      $.cookie('name', null);
+      $.cookie('uid', null);
+      $.cookie("php_host",null);
+      window.location.replace(loginUrl);
+    }
+
+    function getServiceListFinish() {
+      getAllServiceUserData();
+    }
+
+    function getServiceList(callback ) {
+      gServiceListName = [];
+      gIsFinishGetServiceListName = false;
+      var serviceListUrl = SERVER_URL+'/api.php?apiname=listworkflowservice&workflowname='+gCurBpelName;
+      //console.info(serviceListUrl);
+      $.ajax({
+        url: serviceListUrl,
+        dataType: 'json',
+        success: function(data) {
+		  //console.info("getServiceList:success");
+          $.each(data, function(key, val){
+            gServiceListName.push(val);
+          });
+          callback();
+        },
+		error:function(){
+			//console.info("getServiceList:error");
+			
+		}
+      });
+    }
+    
+    function getAllServiceList(didFinish) {
+      gAllServiceListName = [];
+      var serviceListUrl = SERVER_URL+"/api.php?apiname=listservice"+'&uid='+gUID;
+      $.ajax({
+        url: serviceListUrl,
+        dataType: 'json',
+        success: function(data) {
+          $.each(data, function(key, val){
+            gAllServiceListName.push(val);
+          });
+          if (!(typeof diddidFinish == "undefined")) diddidFinish();
+        }
+      });
+    }
+
+    function getAllServiceEvaluateData() {
+      gServiceListEvaluateData = new Object();
+      var length = gServiceListName.length;
+      for (var i=0; i<=length-1; i++) {
+    	  getServiceEvaluateData(gServiceListName[i]);
+      }
+      
+      
+    }
+
+    function getServiceEvaluateData(serviceName) {
+      initServiceEvaluateDataFlagArray();
+      var serviceListDataUrlBase = SERVER_URL+'/api.php?apiname=servforcast&uid='+gUID+'&servname=';
+      var serviceListDataUrl = serviceListDataUrlBase + serviceName;
+      $.ajax({
+        url: serviceListDataUrl,
+    	  dataType: 'json',
+        success: function(evaluateData) {
+    	    gEvaluateDataFlag[serviceName] = true;
+    	    gServiceListEvaluateData[serviceName] = evaluateData;
+          myDrawTrustGraph();
+    	    if (checkEvaluateDataFinish()) {
+    	    	var htmlCenter,htmlLeft,htmlRight,htmlBottom;
+            	htmlCenter=encodeURI($("#graph_holder").html());
+    			 htmlLeft=encodeURI($("#leftholder").html());
+           		 htmlRight=encodeURI($("#rightholder").html());
+            	 htmlBottom=encodeURI($("#console_holder").html());
+            	 
+            	
+            	 saveEvaluateResult(htmlLeft,htmlRight,htmlBottom,htmlCenter,"ASA:EVALUATE");
+          }
+        }
+      });
+    }
+
+    function getAllServiceUserData() {
+      gServiceListUserData = new Object();
+      var length = gServiceListName.length;
+      for (var i=0; i<=length-1; i++) {
+    	  getServiceUserData(gServiceListName[i]);
+      }
+    }
+
+    function getServiceUserData(serviceName) {
+      initServiceUserDataFlagArray();
+      var serviceListUserDataBase = SERVER_URL + '/api.php?apiname=evaparaminfo&uid='+gUID+'&sname=';
+      var serviceListUserDataUrl = serviceListUserDataBase+serviceName;
+      $.ajax({
+        url: serviceListUserDataUrl,
+    	  dataType: 'json',
+        success: function(userData) {
+    	    gServiceListUserData[serviceName] = userData;
+    		  gUserDataFlag[serviceName] = true;
+    		  if (checkUserDataFinish()) {
+    			  getAllServiceEvaluateData();
+    		  }
+    	  }
+      });
+    }
+
+    function initServiceUserDataFlagArray() {
+      gUserDataFlag = new Object();
+      for (var i=0; i<gServiceListName.length; i++) {
+    	  gUserDataFlag[gServiceListName[i]] = false;
+      }
+    }
+
+    function checkUserDataFinish() {
+      for (var i=0; i<gServiceListName.length; i++) {
+    	  if (!gUserDataFlag[gServiceListName[i]]) {
+    		  return false;
+    	  }
+      }
+      return true;
+    }
+
+    function initServiceEvaluateDataFlagArray() {
+      gEvaluateDataFlag = new Object();
+      for (var i=0; i<gServiceListName.length; i++) {
+        gEvaluateDataFlag[gServiceListName[i]] = false;
+      }
+    }
+
+    function checkEvaluateDataFinish() {
+      for (var i=0; i<gServiceListName.length; i++) {
+        if (!gEvaluateDataFlag[gServiceListName[i]]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function refreshServiceList() {
+      for (var i=0; i<gServiceListName.length; i++) {
+        href_tag = $('<a>').attr('href', '#').attr('onclick', "onClickServie('"+gServiceListName[i]+"')").html(""+gServiceListName[i]+"");
+    	  li_tag = $('<li>');
+    	  li_tag.appendTo($('#service_list'));
+    	  href_tag.appendTo(li_tag);
+      }
+      outerLayout.open('west');
+    }
+    
+    function showState (o_Settings, key) {
+    	alter( o_Settings.state[key], 'state.'+key );
+    }
+    
+    var gConsoleText = "";
+		function appendConsoleMessage(newMsg) {
+      gConsoleText = "<p class='normal_message'>" + newMsg + "</p>" + gConsoleText;
+			$("#console_holder").html(gConsoleText);
+		}
+          
+		function appendErrorMessage(newMsg) {
+      gConsoleText = "<p class='failed_message'>" + newMsg + "</p>" + gConsoleText;
+			$("#console_holder").html(gConsoleText);
+	  }
+	
+    function appendSuccMessage(newMsg) {
+      gConsoleText = "<p class='successful_message'>" + newMsg + "</p>" + gConsoleText;
+		  $("#console_holder").html(gConsoleText);
+    }
+    
+    function clearConsole() {
+      gConsoleText = "";
+      $("#console_holder").empty();
+    }
+    
+    function saveEvaluateResult(left,right,bottom,center,document)
+	{
+
+		var jsonData={
+			"left": left,
+			"right":right,
+			"bottom":bottom,
+			"center":center,
+			"serviceId":4,
+			"document":document
+	}
+	
+	 $.ajax({
+        url: "../SaveHistory",
+        type: 'POST',
+        dataType:"json",
+        data: jsonData,
+        success: function(){
+        //console.info("success");
+        }
+        
+      });
+}
+
+  	/*
+  	*********************Can Share End***************************
+  	*/
+  	
+    /*
+     * complex.html
+     *
+     * This is a demonstration page for the jQuery layout widget
+     *
+     *	NOTE: For best code readability, view this with a fixed-space font and tabs equal to 4-chars
+     */
+
+    	var outerLayout, innerLayout;
+
+    	/*
+    	*#######################
+    	*     ON PAGE LOAD
+    	*#######################
+    	*/
+    	$(document).ready( function() {
+    		// create the OUTER LAYOUT
+    		outerLayout = $("body").layout( layoutSettings_Outer );
+
+    		/*******************************
+    		 ***  CUSTOM LAYOUT BUTTONS  ***
+    		 *******************************
+    		 *
+    		 * Add SPANs to the east/west panes for customer "close" and "pin" buttons
+    		 *
+    		 * COULD have hard-coded span, div, button, image, or any element to use as a 'button'...
+    		 * ... but instead am adding SPANs via script - THEN attaching the layout-events to them
+    		 *
+    		 * CSS will size and position the spans, as well as set the background-images
+    		 */
+
+    		// BIND events to hard-coded buttons in the NORTH toolbar
+ //   		outerLayout.addToggleBtn( "#tbarToggleNorth", "north" );
+    		outerLayout.addOpenBtn( "#tbarOpenSouth", "south" );
+    		outerLayout.addCloseBtn( "#tbarCloseSouth", "south" );
+
+
+    		// save selector strings to vars so we don't have to repeat it
+    		// must prefix paneClass with "body > " to target ONLY the outerLayout panes
+    		var westSelector = "body > .ui-layout-west"; // outer-west pane
+    		var eastSelector = "body > .ui-layout-east"; // outer-east pane
+
+    		 // CREATE SPANs for pin-buttons - using a generic class as identifiers
+    		$("<span></span>").addClass("pin-button").prependTo( westSelector );
+    		$("<span></span>").addClass("pin-button").prependTo( eastSelector );
+    		// BIND events to pin-buttons to make them functional
+    		outerLayout.addPinBtn( westSelector +" .pin-button", "west");
+    		outerLayout.addPinBtn( eastSelector +" .pin-button", "east" );
+
+    		 // CREATE SPANs for close-buttons - using unique IDs as identifiers
+    		$("<span></span>").attr("id", "west-closer" ).prependTo( westSelector );
+    		$("<span></span>").attr("id", "east-closer").prependTo( eastSelector );
+    		// BIND layout events to close-buttons to make them functional
+    		outerLayout.addCloseBtn("#west-closer", "west");
+    		outerLayout.addCloseBtn("#east-closer", "east");
+
+        $('#tbarEvaluate').click(function() { clickWholeEvaluate() });
+        $('#tbarEvaluateDemo').click(function() { showEvaluateDemo() });
+        $('#tbarAddWorkflow').click(function() { clickAddWorkflow(); } )
+        $('#tbarDeploy').click(function() { clickDeploy(); } )
+
+    		/* Create the INNER LAYOUT - nested inside the 'center pane' of the outer layout
+    		 * Inner Layout is create by createInnerLayout() function - on demand
+    		 *
+    			innerLayout = $("div.pane-center").layout( layoutSettings_Inner );
+    		 *
+    		 */
+
+
+    		// DEMO HELPER: prevent hyperlinks from reloading page when a 'base.href' is set
+    		$("a").each(function () {
+    			var path = document.location.href;
+    			if (path.substr(path.length-1)=="#") path = path.substr(0,path.length-1);
+    			if (this.href.substr(this.href.length-1) == "#") this.href = path +"#";
+    		});
+    		
+    		$("#analysis_holder").colorbox({			
+    			onClosed:function() { 
+    				$("#analysis_holder").hide();
+    				$("#analysis_holder").empty();
+    				
+    			}
+    		});
+    		
+    		$("#progress").colorBar({
+    			topValue: 100,
+    			bottomBalue: 0,
+    			startValue: 0,
+    			animSpeed: 'slow',
+    			displayNumbers: true
+    		});
+    		$("#progress").hide();
+    		
+    		var options = { 
+  			       // target:        '#output2',   // target element(s) to be updated with server response 
+  			       // beforeSubmit:  showRequest,  // pre-submit callback 
+  			        success: function() { 	alert('上传成功!'); $('#upload_dlg').dialog('close'); getBpelList(); }  // post-submit callback 
+  			    }; 
+
+  			$('#upload_fm').ajaxForm(options);
+  			
+  			refreshLoginStatus();
+    		
+    		getBpelList();
+    		
+    		getAllServiceList();
+    		
+    		$("#update_backup_service_button").button().click( function() { selectBackupService(); } );
+    		
+    	});
+
+
+    	/*
+    	*#######################
+    	* INNER LAYOUT SETTINGS
+    	*#######################
+    	*
+    	* These settings are set in 'list format' - no nested data-structures
+    	* Default settings are specified with just their name, like: fxName:"slide"
+    	* Pane-specific settings are prefixed with the pane name + 2-underscores: north__fxName:"none"
+    	*/
+    	layoutSettings_Inner = {
+    		applyDefaultStyles:				true // basic styling for testing & demo purposes
+    	,	spacing_closed:					14
+    	,	north__spacing_closed:			8
+    	,	south__spacing_closed:			8
+    	,	north__togglerLength_closed:	-1 // = 100% - so cannot 'slide open'
+    	,	south__togglerLength_closed:	-1
+    	,	fxName:							"slide" // do not confuse with "slidable" option!
+    	,	fxSpeed_open:					1000
+    	,	fxSpeed_close:					2500
+    	,	fxSettings_open:				{ easing: "easeInQuint" }
+    	,	fxSettings_close:				{ easing: "easeOutQuint" }
+    	,	north__fxName:					"none"
+    	,	south__fxName:					"drop"
+    	,	south__fxSpeed_open:			500
+    	,	south__fxSpeed_close:			1000
+    	//,	initClosed:						true
+    	};
+
+
+    	/*
+    	*#######################
+    	* OUTER LAYOUT SETTINGS
+    	*#######################
+    	*
+    	* This configuration illustrates how extensively the layout can be customized
+    	* ALL SETTINGS ARE OPTIONAL - and there are more available than shown below
+    	*
+    	* These settings are set in 'sub-key format' - ALL data must be in a nested data-structures
+    	* All default settings (applied to all panes) go inside the defaults:{} key
+    	* Pane-specific settings go inside their keys: north:{}, south:{}, center:{}, etc
+    	*/
+    	var layoutSettings_Outer = {
+    		name: "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
+    		// options.defaults apply to ALL PANES - but overridden by pane-specific settings
+    	,	defaults: {
+    			size:					"auto"
+    		,	minSize:				50
+    		,	paneClass:				"pane" 		// default = 'ui-layout-pane'
+    		,	resizerClass:			"resizer"	// default = 'ui-layout-resizer'
+    		,	togglerClass:			"toggler"	// default = 'ui-layout-toggler'
+    		,	buttonClass:			"button"	// default = 'ui-layout-button'
+    		,	contentSelector:		".content"	// inner div to auto-size so only it scrolls, not the entire pane!
+    		,	contentIgnoreSelector:	"span"		// 'paneSelector' for content to 'ignore' when measuring room for content
+    		,	togglerLength_open:		35			// WIDTH of toggler on north/south edges - HEIGHT on east/west edges
+    		,	togglerLength_closed:	35			// "100%" OR -1 = full height
+    		,	hideTogglerOnSlide:		true		// hide the toggler when pane is 'slid open'
+    		,	togglerTip_open:		"关闭面板"
+    		,	togglerTip_closed:		"打开面板"
+    		,	resizerTip:				"调整面板大小"
+    		//	effect defaults - overridden on some panes
+    		,	fxName:					"slide"		// none, slide, drop, scale
+    		,	fxSpeed_open:			750
+    		,	fxSpeed_close:			1500
+    		,	fxSettings_open:		{ easing: "easeInQuint" }
+    		,	fxSettings_close:		{ easing: "easeOutQuint" }
+    	}
+    	,	north: {
+    	    size: 200
+    		,	spacing_open:			1			// cosmetic spacing
+    		,	togglerLength_open:		0			// HIDE the toggler button
+    		,	togglerLength_closed:	-1			// "100%" OR -1 = full width of pane
+    		,	resizable: 				false
+    		,	slidable:				false
+    		//	override default effect
+        ,	fxName:					"slide"		// none, slide, drop, scale
+    		}
+    	,	south: {
+    			size:				200
+    		,	spacing_closed:			21			// HIDE resizer & toggler when 'closed'
+    		,	slidable:				false		// REFERENCE - cannot slide if spacing_closed = 0
+    		,	togglerLength_closed:	21			// make toggler 'square' - 21x21
+    		,	togglerAlign_closed:	"center"		// align to top of resizer
+    		,	togglerLength_open:		0			// NONE - using custom togglers INSIDE west-pane
+    		,	togglerTip_open:		"关闭面板"
+    		, togglerAlign_open: "center"
+    		, togglerLength_close: 21
+    		,	togglerTip_closed:		"打开面板"
+    		,	resizerTip_open:		"调整面板大小"
+    		,	slideTrigger_open:		"click" 	// default
+    		,	initClosed:				true
+    		
+    		//	CALLBACK TESTING...
+//    		,	onhide_start:			function () { return confirm("START South pane hide \n\n onhide_start callback \n\n Allow pane to hide?"); }
+//    		,	onhide_end:				function () { alert("END South pane hide \n\n onhide_end callback"); }
+//    		,	onshow_start:			function () { return confirm("START South pane show \n\n onshow_start callback \n\n Allow pane to show?"); }
+//    		,	onshow_end:				function () { alert("END South pane show \n\n onshow_end callback"); }
+//    		,	onopen_start:			function () { return confirm("START South pane open \n\n onopen_start callback \n\n Allow pane to open?"); }
+//    		,	onopen_end:				function () { alert("END South pane open \n\n onopen_end callback"); }
+//    		,	onclose_start:			function () { return confirm("START South pane close \n\n onclose_start callback \n\n Allow pane to close?"); }
+//    		,	onclose_end:			function () { alert("END South pane close \n\n onclose_end callback"); }
+    		//,	onresize_start:			function () { return confirm("START South pane resize \n\n onresize_start callback \n\n Allow pane to be resized?)"); }
+//   		,	onresize_end:			function () { alert("END South pane resize \n\n onresize_end callback \n\n NOTE: onresize_start event was skipped."); }
+    		}
+    	,	west: {
+    			size:					300
+    		,	spacing_closed:			21			// wider space when closed
+    		,	togglerLength_closed:	21			// make toggler 'square' - 21x21
+    		,	togglerAlign_closed:	"top"		// align to top of resizer
+    		,	togglerLength_open:		0			// NONE - using custom togglers INSIDE west-pane
+    		,	togglerTip_open:		"关闭面板"
+    		,	togglerTip_closed:		"打开面板"
+    		,	resizerTip_open:		"调整面板大小"
+    		,	slideTrigger_open:		"click" 	// default
+    		,	initClosed:				true
+    		//	add 'bounce' option to default 'slide' effect
+    		,	fxName:					"drop"
+    		,	fxSpeed:				"slow"
+    		,	fxSettings:		{ easing: "easeOutBounce" }
+    		}
+    	,	east: {
+    			size:					300
+    		,	spacing_closed:			21			// wider space when closed
+    		,	togglerLength_closed:	21			// make toggler 'square' - 21x21
+    		,	togglerAlign_closed:	"top"		// align to top of resizer
+    		,	togglerLength_open:		0 			// NONE - using custom togglers INSIDE east-pane
+    		,	togglerTip_open:		"关闭面板"
+    		,	togglerTip_closed:		"打开面板"
+    		,	resizerTip_open:		"调整面板大小"
+    		,	slideTrigger_open:		"mouseover"
+    		,	initClosed:				true
+    		//	override default effect, speed, and settings
+    		,	fxName:					"drop"
+    		,	fxSpeed:				"slow"
+    		,	fxSettings:				{ easing: "easeOutBounce" } // nullify default easing
+ 
+    		}
+    	,	center: {
+    	    spacing_open:			1	
+    	  , togglerLength_open:		0			// HIDE the toggler button
+    		,	togglerLength_closed:	-1			// "100%" OR -1 = full width of pane
+    		,	resizable: 				true
+    		,	onresize_end:			function () { if (gCurBpelData) { if (gCurState == STATE_NORMAL) drawGraphBaseWindow(gCurBpelData); else drawTrustGraphWithRect(); } }
+
+        
+    		}
+    	};
+
+
+      function createInnerLayout () {
+
+      }
+      
+      
+      //*****************************Draw history begin********************
+      var observeData;
+  		var maxObservData;
+  		var maxObservCount;
+
+  		function refreshServiceObserveList(serviceName) {
+  		  gIsFirstLoad = false;
+  			var serviceObUrl = SERVER_URL + "/api.php?apiname=getservdata&servname="+serviceName+"&uid="+gUID;
+  			$('#tt').empty();
+  			$.ajax({
+  			  	url: serviceObUrl,
+  				  dataType: 'json',
+  			  	async: false,
+  			  	success: function(serviceObData) {
+  					  observeData = [];
+  					  maxObservData = -1;
+  					  maxObservCount = -1;
+  					  var i=0;
+  					  $.each(serviceObData, function(key, val){
+  						  observeData.push([i, val]);
+  						  i = i+1;
+  						  if (val > maxObservData) {
+  							  maxObservData = val;
+  						  }
+  					  });
+  					  maxObservCount = i;
+  					  drawHistoryGraph();
+  			  }
+  			});
+  		}
+  		
+  		function drawHistoryGraph(){	
+  		$(function () {
+  		    var plot = $.plot($("#placeholder"),
+  		           [ { data: observeData, label: "Observe Data"} ], {
+  		               series: {
+  		                   lines: { show: true },
+  		                   points: { show: true }
+  		               },
+  		               grid: { hoverable: true, clickable: true },
+  					   xaxis: { show: false },
+  		             });
+
+  		    function showTooltip(x, y, contents) {
+  		        $('<div id="tooltip">' + contents + '</div>').css( {
+  		            position: 'absolute',
+  		            display: 'none',
+  		            top: y-$('#placeholder').offset().top + 40,
+  		            left: x-$('#placeholder').offset().left + 5,
+  		            border: '1px solid #fdd',
+  		            padding: '2px',
+  		            'background-color': '#fee',
+  		            opacity: 0.80
+  		        }).appendTo("#history_tab").fadeIn(200);
+  		    }
+
+  		    var previousPoint = null;
+  		    $("#placeholder").bind("plothover", function (event, pos, item) {
+  		        $("#x").text(pos.x.toFixed(2));
+  		        $("#y").text(pos.y.toFixed(2));
+
+  		            if (item) {
+  		                if (previousPoint != item.dataIndex) {
+  		                    previousPoint = item.dataIndex;
+
+  		                    $("#tooltip").remove();
+  		                    var x = item.datapoint[0].toFixed(2),
+  		                        y = item.datapoint[1].toFixed(2);
+
+
+  		                    showTooltip(item.pageX, item.pageY,
+  		                                item.series.label + ": " + y + "ms");
+  		                }
+
+
+  		        }
+  		    });
+
+  		    $("#placeholder").bind("plotclick", function (event, pos, item) {
+  		        if (item) {
+  		            plot.highlight(item.series, item.datapoint);
+  		        }
+  		    });
+  		});
+  	}
+      //*****************************Draw history end********************
+      
+      var gCurServiceName;
+      function onClickServie(service_name) {
+        gCurServiceName = service_name;
+        outerLayout.close('east');
+        outerLayout.close('south');
+        refreshServiceObserveList(service_name);
+        fillForm(service_name);
+        outerLayout.open('east');
+      }
+      
+      //*****************************Update service parameter begin*****************************
+      
+      var kUpdateServiceParameterUrl = SERVER_URL + '/api.php?apiname=evaparamupdate&uid='+gUID+'&sname=';
+			
+      
+      function fillForm(service_name) {
+        $('#threshold').empty();
+        $('#lambda').empty();
+  			if (gServiceListUserData[service_name]!=null) {
+  				$("#fm input[name='threshold']").attr('value', gServiceListUserData[service_name]['threshold']);
+  				$("#fm input[name='lambda']").attr('value', gServiceListUserData[service_name]['lambda']);
+  			}
+      }
+      
+      function saveService(service_name) {
+        var options = { 
+  			      
+  			       beforeSubmit:  showRequest,  // pre-submit callback 
+  			       success:       showResponse,  // post-submit callback 
+
+  			        url:       kUpdateServiceParameterUrl+gCurServiceName         // override for form's 'action'
+  			    }; 
+
+  			$('#fm').ajaxSubmit(options);
+      }
+      		function showRequest(formData, jqForm, options) { 
+      		    
+      		    return true; 
+      		} 
+
+      		// post-submit callback 
+      		function showResponse(responseText, statusText, xhr, $form)  { 
+              alert("更新成功");
+     
+      		}
+      
+      //*****************************Update service parameter END*****************************
+      
+      //*****************************Update Evaluate BEGIN*****************************
+     /* function clickEvalute() {
+        if (!gCurServiceName) {
+          alert("请选择服务.");
+          return;
+        }
+        outerLayout.open('south');
+        appendConsoleMessage("评估服务: "+gServiceListEvaluateData[gCurServiceName]);
+     		appendConsoleMessage("服务可信值: "+gServiceListUserData[gCurServiceName]['lambda']);
+     		appendConsoleMessage("响应时间: "+gServiceListUserData[gCurServiceName]['threshold']);
+        appendConsoleMessage("服务名称: "+gCurServiceName);
+        if (gServiceListEvaluateData[gCurServiceName]>=gServiceListUserData[gCurServiceName]['lambda']) {
+          appendSuccMessage("服务: "+gCurServiceName+ " 评估成功");
+        } else {
+          appendErrorMessage("服务: "+gCurServiceName+" 评估失败");
+        }
+         var htmlCenter,htmlRight,htmlLeft,htmlBottom;
+         
+      }*/
+      
+      
+      //*****************************Update Evaluate END*****************************
+      
+      //*****************************Load BPEL List BEGIN*****************************
+      
+      var gBpelList;
+      function getBpelList() {
+        $.blockUI({ message: '<h1><img src="images/spinner.gif" /> 加载中...</h1>' }); 
+        gBpelList = [];
+    	  var bpelListUrl =  SERVER_URL + "/api.php?apiname=listworkflow&uid="+gUID;
+//    	  alert(bpelListUrl);
+  			$.ajax({
+  			  url: bpelListUrl,
+  				dataType: 'json',
+  			  async: false,
+  			  success: function(bpelListData) {
+  					$.each(bpelListData, function(key, val){
+  						gBpelList.push(val);
+  					});
+  					showBpelList();
+  			  },
+  			  error:function(){
+  				$.unblockUI();
+  			  }
+  			});
+      }
+      
+      function showBpelList() {
+        $.unblockUI();
+        $('#bpel_list').empty();
+        for (var i=0; i<gBpelList.length; i++) {
+          href_tag = $('<a>').attr('href', '#').attr('onclick', "onClickBpel('"+gBpelList[i]+"')").html(""+gBpelList[i]+"");
+      	  li_tag = $('<li>');
+      	  li_tag.appendTo($('#bpel_list'));
+      	  href_tag.appendTo(li_tag);
+        }
+        outerLayout.open('west');
+      }
+      
+
+      function onClickBpel(bpel) {
+		//console.info("select workflow")
+        initAllGloble();
+        initAllViews();
+        gCurBpelName = bpel;
+		//console.info("loadBpelData");
+        loadBpelData(bpel);
+      }
+      
+      //*****************************Load BPEL List END*******************************
+      
+      //*****************************Init Begin*******************************
+      
+      
+      var STATE_NORMAL = 0;
+      var STATE_ANALZE = 1;
+      var gCurState;
+      
+      function initAllGloble() {
+        gCurBpelData = null;
+        gCurBpelName = null;
+        gCurBpelData = null;
+        gCurTrustObject = null;
+        gCurEvaluateObject = null;
+        gEvaluateResult = false;
+        gServiceListName = null;
+        gServiceListEvaluateData = null;
+        gServiceListUserData = null;
+        gConsoleText = "";
+        gIsFinishGetServiceListName = false;
+        gCurState = STATE_NORMAL;
+//        getAllServiceUserData();
+      }
+      
+      function initAllViews() {
+        
+        $('#progress').hide();
+        outerLayout.close('south');
+        outerLayout.close('east');
+      }
+      
+      //*****************************Init End*********************************
+      
+      
+      //*****************************Draw trust graph Begin*******************************
+      
+      var gCurBpelData;
+      var gCurTrustObject;
+      var gCurEvaluateObject;
+      var gEvaluateResult;
+      function loadBpelData(bpelFileName) {
+        outerLayout.open('east');
+  			var bpelFileUrl =  SERVER_URL + '/api.php?apiname=workflow2json&workflowname='+bpelFileName+"&uid="+gUID;
+  			$.getJSON(bpelFileUrl, function(data) {
+  				gCurBpelData = data;
+  				if (r) {
+  					doclean();
+  				}
+				//console.info("getJSON:BPEL");
+  				loadBpelService(gCurBpelName);
+  				drawGraphBaseWindow(gCurBpelData);
+  			});
+  		}
+  		
+  		function drawGraphBaseWindow(data) {
+			//console.info("drawGraphBaseWindow");
+  		    gCurState = STATE_NORMAL;
+  		    $('#graph_holder').empty();
+  		    if (r) {
+					doclean();
+		    }
+  			var myWidth = $('#graph_holder').width();
+  			var myHeight = $('#graph_holder').height();
+  			var myLeft = $('#graph_holder').position().left;
+  			var myTop = $('#graph_holder').position().top;
+  			//console.info("set Graph parameter over");
+  			drawGraphWithRect(data, myWidth, myHeight, myLeft, myTop);
+			//console.info("drawGraphBaseWindow over");
+  		}
+  		
+      
+      function drawGraphWithRect(data, width, height, x, y) {
+  			drawgraph("graph_holder",data,width,height,x,y);
+  		}
+  		
+  		function myDrawTrustGraph(){
+  		  outerLayout.open('south');
+      	gEvaluateResult = true;
+      	isFinishEvaluate = true;
+      	var trustObj = new Array();
+      	var evaluateObj = new Array();
+      	var length = gServiceListName.length;
+        appendConsoleMessage("开始评估服务 ");
+        for (var i=0; i<=length-1; i++) {
+      	  if (!(typeof gServiceListEvaluateData[gServiceListName[i]] == "undefined")) {
+            appendConsoleMessage("<br/>");
+            appendConsoleMessage("评估服务: "+gServiceListEvaluateData[gServiceListName[i]]);
+            appendConsoleMessage("服务可信值: "+gServiceListUserData[gServiceListName[i]]['lambda']);
+            appendConsoleMessage("响应时间: "+gServiceListUserData[gServiceListName[i]]['threshold']);
+            appendConsoleMessage("服务名称: "+gServiceListName[i]);
+          }
+      		var tempObj = new Object();
+          if (gServiceListUserData[gServiceListName[i]]==null) {
+            alert("请编辑服务: "+gServiceListName[i]);
+            return;
+            tempObj[gServiceListName[i]]=true;
+          } else {
+      			if (typeof(gServiceListEvaluateData[gServiceListName[i]]) == "undefined") {
+      				tempObj[gServiceListName[i]] = 3;
+      				isFinishEvaluate = false;
+      			} else if (gServiceListEvaluateData[gServiceListName[i]]>=gServiceListUserData[gServiceListName[i]]['lambda']) {
+      			  tempObj[gServiceListName[i]] = 2;
+      		  } else {
+      				tempObj[gServiceListName[i]] = 1;
+      				gEvaluateResult = false;
+      			}
+
+      			if (tempObj[gServiceListName[i]]==2) {
+      				appendSuccMessage("服务: "+gServiceListName[i]+ " 评估成功");
+      			} else if (tempObj[gServiceListName[i]]==3) {
+      				appendErrorMessage("服务: "+gServiceListName[i]+" 评估失败");
+      			}
+          }
+      	  trustObj.push(tempObj);
+      		var evaluateTempObj = new Object();
+      		if (typeof gServiceListEvaluateData[gServiceListName[i]] == "undefined") {
+      //					evaluateTempObj[gServiceListName[i]] = 0;
+      		}
+      		evaluateTempObj[gServiceListName[i]] = gServiceListEvaluateData[gServiceListName[i]];
+      		evaluateObj.push(evaluateTempObj);
+      	}
+      	gCurTrustObject = trustObj;
+      	gCurEvaluateObject = evaluateObj;
+      	drawTrustGraphWithRect();
+      	if (isFinishEvaluate) {
+      	  gCurBpelValue = null;
+      	  showEvaluateValue();
+      	  if (gEvaluateResult) {
+      	    appendConsoleMessage("<br/>");
+      	    appendSuccMessage("工作流 "+gCurBpelName+" 评估成功!");
+      	  } else {
+      	    appendConsoleMessage("<br/>");
+      	    appendErrorMessage("工作流 "+gCurBpelName+" 评估失败...");
+      	  }
+      	} else {
+      	  clearConsole();
+      	}
+      	/*   var htmlCenter,htmlLeft,htmlRight,htmlBottom;
+        	htmlCenter=encodeURI($("#graph_holder").html());
+			 htmlLeft=encodeURI($("#leftholder").html());
+       		 htmlRight=encodeURI($("#rightholder").html());
+        	 htmlBottom=encodeURI($("#console_holder").html());
+        	 
+        	
+        	 saveEvaluateResult(htmlLeft,htmlRight,htmlBottom,htmlCenter,"ASA:EVALUATE");
+        	 */
+      	
+      }
+      
+      function drawTrustGraphWithRect() {
+        gCurState = STATE_ANALZE;
+        $("#graph_holder").empty();
+        if (r) {
+					doclean();
+		}
+        var myWidth = $('#graph_holder').width();
+      	var myHeight = $('#graph_holder').height();
+      	var myLeft = $('#graph_holder').position().left;
+      	var myTop = $('#graph_holder').position().top;
+        drawtrustgraph("graph_holder", gCurBpelData, gCurTrustObject , gCurEvaluateObject, myWidth, myHeight, myLeft, myTop);
+      }
+  		
+      //*****************************Draw trust graph End*********************************
+      
+      //*****************************Draw trust graph Begin*********************************
+      
+      function startWholeEvaluate() {
+        getServiceList(getServiceListFinish);
+      }
+      
+      function clickWholeEvaluate() {
+        if (!gCurBpelName) {
+          alert("请选择工作流.");
+          return;
+        }
+        startWholeEvaluate();
+      }
+      
+      //*****************************Draw trust graph End*********************************
+      
+      //*****************************Show Evaluate Demo Begin*********************************
+      
+      function showEvaluateDemo() {
+        if (!gCurBpelName) {
+          alert("请选择工作流");
+          return;
+        }
+        if (!gCurTrustObject) {
+          alert("请先进行评估.")
+          return;
+        }
+        myDrawAnalysisGraph();
+      }
+      
+      function myDrawAnalysisGraph() {			
+        clearTimer();
+        drawAnalysisGraph("analysis_holder", gCurBpelData, gCurTrustObject, 600, 600, 100, 550);
+        
+        var htmlCenter,htmlLeft,htmlRight,htmlBottom;
+		//console.info("saveAnalysis");
+		htmlCenter=encodeURI($("#analysis_holder").html());
+		htmlLeft=encodeURI($("#leftholder").html());
+       	htmlRight=encodeURI($("#rightholder").html());
+        htmlBottom=encodeURI($("#console_holder").html());
+        saveEvaluateResult(htmlLeft,htmlRight,htmlBottom,htmlCenter,"ASA:ANALYSIS");
+        
+  		 $("#analysis_holder").show();
+       	 $("#analysis_holder").colorbox({
+          open:true, 
+          inline:true, 
+          scrolling:true, 
+          href:"#analysis_holder",
+          onClosed: function() {
+            $("#analysis_holder").hide();
+    				$("#analysis_holder").empty();
+    				clickWholeEvaluate();
+          }
+          });
+       
+        	
+      
+          
+          
+        
+  		}
+      
+      //*****************************Show Evaluate Demo End***********************************
+      
+      //*****************************Show Progress Begin***********************************
+      
+      var gCurBpelValue=null;
+      function getEvaluateValue() {
+      	if (gEvaluateResult) {
+      		var evaluateUrl =  SERVER_URL + "/api.php?apiname=evaluate&workflowname="+gCurBpelName+"&uid="+gUID;
+      		$.ajax({
+      			url:evaluateUrl,
+      			dataType:"json",
+      			success: function(data){
+      				gCurBpelValue = data;
+      				showEvaluateValue();
+      			}
+      		});
+      		//$.getJSON(evaluateUrl, function(data) {
+      		//  gCurBpelValue = data;
+      		 // console.info("data:"+data);
+      		//  showEvaluateValue();
+      		//});
+      	} 
+      }
+
+      function showEvaluateValue() {
+      	if (gCurBpelValue==null) {
+      	  	getEvaluateValue();
+      		return;
+      	}
+      	if (gEvaluateResult) {
+//      	  $("#analysis_button").linkbutton("enable");
+      	} else {
+//      	  $("#analysis_button").linkbutton("disable");
+      	}
+      	$('#progress').show();
+      	//console.info(gCurBpelValue);
+      	$("#progress").colorBar(parseFloat(gCurBpelValue*100));
+      	//console.info("show colorBar");
+      }
+      
+      //*****************************Show Progress End***********************************
+      
+      //*****************************Load Bpel Service Begin*********************************
+      
+      function loadBpelService() {
+        var url = SERVER_URL + '/api.php?apiname=listworkflowservice&workflowname='+gCurBpelName+"&uid="+gUID;
+        $('#bpel_service').empty();
+  			$.getJSON(url, function(data) {
+				//console.info("loadBpelService:getJSON");
+  				$.each(data, function(key, val) {
+  					href_tag = $('<a>').attr('href', '#').attr('onclick', "getBackupServices('"+val+"')").html(""+val+"");
+  					li_tag = $('<li>');
+  					gCurBpelServiceList.push(val);
+  					li_tag.appendTo($('#bpel_service'));
+  					href_tag.appendTo(li_tag);
+  				});
+  			});
+      }
+      
+      //*****************************Load Bpel Service End***********************************
+      
+      //*****************************Load Backup Service Begin***********************************
+      
+      var gCurService;
+      var gCurBackupServiceListName;
+      function getBackupServices(service) {
+        gCurBackupServiceListName = [];
+        gCurService = service;
+        var url = SERVER_URL + '/api.php?apiname=getbackupservice&workflowname=Travel&mainservice='+service+"&uid="+gUID;
+        console.log(url);
+        $.getJSON(url, function(data) {
+          $.each(data, function(key, val) {
+            $.each(val, function(key2, val2) {
+              if (key2=='service_name') {
+                gCurBackupServiceListName.push(val2);
+                //service address not use
+              }
+            });
+          });
+          showBackupServiceDialog()
+        });
+      }
+      
+      function showBackupServiceDialog() {
+//        $("#backup_service_list").multiselect("uncheckAll")    
+        $('#backup_service_list').empty();
+        
+        for (i=0; i<gAllServiceListName.length; i++) {
+          option_tag = $('<option>').attr('value', gAllServiceListName[i]).removeAttr('selected').html(gAllServiceListName[i]);
+          option_tag.appendTo($('#backup_service_list'));
+        }
+        
+        for (i=0; i<gCurBackupServiceListName.length; i++) {
+          $("#backup_service_list > option[value|="+gCurBackupServiceListName[i]+"]").attr("selected", "selected");
+        }
+
+ //         href_tag = $('<a>').attr('href', '#').attr('onclick', "selectBackupService('"+gCurBackupServiceListName[i]+"')").html(""+gCurBackupServiceListName[i]+"");
+  
+
+        $("#backup_service_list").multiselect( {
+      	  minWidth: 480
+      	} ).multiselectfilter();
+      	$('#backup_service_list').multiselect("refresh");
+        
+      	
+        $( "#backup_service_dlg" ).dialog({
+        	autoOpen: false,
+        	width: 600
+        });
+        
+        $( "#backup_service_dlg" ).dialog( "open" );
+        
+      } 
+      
+      //*****************************Load Backup Service End***********************************
+      
+      //*****************************Select Backup Service Begin*********************************
+      
+      function selectBackupService() {
+        checkedArray =  $("#backup_service_list").multiselect("getChecked");
+        var backupServices = checkedArray[0].value;
+        for (i=1; i<checkedArray.length; i++) {
+          backupServices = backupServices + ":" +checkedArray[i].value;
+        }
+        var url = SERVER_URL+"/api.php?apiname=setbackupservice&workflowname="+gCurBpelName+"&mainservice="+gCurService+"&backupservice="+backupServices+"&uid="+gUID;
+        $.ajax({
+          url: url,
+          success: function(data){
+            alert("设置备选服务成功!");
+            $( "#backup_service_dlg" ).dialog( "close" );
+            loadBpelData(gCurBpelName);
+            clickWholeEvaluate(gCurBpelName);
+          }
+        });
+      }
+      
+      //*****************************Select Backup Service End***********************************
+      
+      //*****************************File upload begin***********************************
+      
+      function clickAddWorkflow() {
+        $( "#upload_dlg" ).dialog({
+          title: "请选择一个bpel文件",
+        	autoOpen: false,
+        	show: "blind",
+        	hide: "explode",
+        	resizable: false,
+        	width: 410
+        });
+        $( "#upload_dlg" ).dialog( "open" );
+      }
+      
+      function ajaxFileUpload() {
+        var upload_options = { 
+  			      
+  			        beforeSubmit:  showUploadRequest,  // pre-submit callback 
+  			       // success:       showUploadResponse,  // post-submit callback
+  			        url:       SERVER_URL+'/api.php?apiname=addworkflow'+'&uid='+gUID,         // override for form's 'action' 
+  			        type:      'post',      // 'get' or 'post', override for form's 'method' attribute 
+  			        dataType:  'json'        // 'xml', 'script', or 'json' (expected server response type) 
+  			        
+  			    }; 
+           
+           $('#upload_fm').ajaxSubmit(upload_options);
+           //console.info("upload_fm:sumbmit");
+
+      }
+      
+      function showUploadRequest(formData, jqForm, options) { 
+           
+  		   var serviceName = formData[0].value;
+		   var bpelPath=formData[1].value;
+			if(serviceName==null||serviceName==''){
+				alert("请输入服务名称！");
+				return false;
+			}
+			if(bpelPath==null||bpelPath==''){
+				alert("请选择一个bpel文件！");
+				return false;
+			}
+			var ext = bpelPath.substring(bpelPath.lastIndexOf('.') + 1).toLowerCase();
+			if(ext!='bpel'){
+				alert("请选择一个bpel文件！");
+				return false;
+			}
+			
+  		    return true; 
+  		} 
+
+  		
+      //*****************************File upload End*************************************
+
+      //*****************************Deploy Begin*************************************
+      
+      function clickDeploy() {
+        if (!gCurBpelName) {
+          alert("请选择一个工作流!");
+          return;
+        }
+        var deployUrl = SERVER_URL+"/api.php?apiname=run&workflowname="+gCurBpelName+"&uid="+gUID;
+        $.blockUI({ message: '<h1><img src="images/spinner.gif" /> 正在部署...</h1>' }); 
+        $.ajax({
+          url: deployUrl,
+          dataType: 'json',
+          timeout: 5000,
+          success: function(data) {
+            $.unblockUI();
+            alert(data.responseText);
+          },
+          error: function(data) {
+            $.unblockUI();
+            alert(data.responseText);
+          }
+        });
+      }
+      
+      //*****************************Deploy End*************************************
+      
+      
+    </script>
+    
+  	
+  </head>
+  
+  <body>
+    
+    <div class="ui-layout-west">
+
+    	<div class="header">工作流列表</div>
+
+    	<div class="content" id="leftholder">
+    		<h3><b>选择工作流</b></h3>
+    		<div id="list4">
+    		<ul id="bpel_list">
+    		</ul>
+    		</div>
+    	</div>
+
+
+    </div>
+
+<div class="ui-layout-east" id="rightholder">
+
+    	<div class="header">工作流服务列表</div>
+    	  <div id='list4'>
+    	  <ul id="bpel_service">
+    	    
+    	  </ul>
+    	  </div>
+
+    	<div class="content">
+    	<div>
+    	  工作流评估值:
+    	  <div id="progress"></div>
+			    
+        </div>
+      </div>  
+    </div>
+
+   
+
+
+    <div class="ui-layout-north">
+    	 <div class="content">
+    		<img src="images/logo-nju2-cn.jpg">
+    		<span id="login" style="margin:1px; float:right"></span>
+    	</div>
+    	
+    	<ul class="toolbar">
+    		<li id="tbarOpenSouth"><span></span>打开控制台</li>
+    		<li id="tbarCloseSouth"><span></span>关闭控制台</li>
+    		<li id="tbarEvaluate"><span></span>评估工作流</li>
+    		<li id="tbarEvaluateDemo"><span></span>分析</li>
+    		<li id="tbarDeploy"><span></span>部署</li>
+    		<li id="tbarAddWorkflow" class="last"><span></span>增加工作流</li>
+    	</ul>
+    </div>
+
+
+    <div class="ui-layout-south">
+    	<div class="header">控制台</div>
+    	<div class="content" id="console_holder">
+    	  
+    	</div>
+    </div>
+    
+    <div class="ui-layout-center">
+      <div class="header">工作流</div>
+    	<div class="content" id="graph_holder">
+
+    	</div>
+    </div>
+
+  	<div id="analysis_holder" style="display:none;">
+  	</div>
+    
+    <div id="backup_service_dlg" title="Backup Services">
+      <select id="backup_service_list" name="backup_service_list" multiple="multiple">
+        
+      </select>
+      <a href="#" id="update_backup_service_button">更新</a>  
+    </div>
+    
+    <div id="upload_dlg" title="" >
+      <img id="loading" src="images/loading.gif" style="display:none;">
+      <form id="upload_fm" name="form"  method="POST" enctype="multipart/form-data" >
+        <input type='text' name='workflowname'>
+        <input id="fileToUpload" type="file" size="45" name="bpel">
+        <input type='submit' onclick="ajaxFileUpload();">
+      </form>
+    </div>
+  </body>
+</html>
